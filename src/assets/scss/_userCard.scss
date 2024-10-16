@@ -1,0 +1,104 @@
+@use 'colors';
+
+.userCard_container {
+    position: relative;
+    cursor: pointer;
+    .contextMenuHome {
+        .contextMenu{
+            z-index: 10;
+        }
+    }
+
+    .card_elements {
+        display: flex;
+        flex-direction: column;
+        align-items: center;
+        border: solid black;
+        overflow: hidden;
+        position: relative;
+        height: 340px;
+        width: 240px;
+        text-decoration: none;
+        color: black;
+        z-index: -5;
+        .userCard_background {
+            position: absolute;
+            bottom: -12px;
+            right: -20px;
+
+            img {
+                width: 60px;
+            }
+        }
+
+        .userCard_header {
+            padding: 8px;
+            display: flex;
+            align-items: center;
+            gap: 8px;
+            width: 100%;
+
+            .userCard_logo {
+                img {
+                    width: 30px;
+                }
+            }
+
+            .userCard_pricaName {
+                .userCard_shortname {
+                    font-size: 18px;
+                    font-weight: bold;
+                }
+
+                .userCard_longName {
+                    font-size: 8px;
+                }
+            }
+
+        }
+
+        .userCard_user {
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+
+            .userCard_userImage {
+                img {
+                    width: 100px;
+                    aspect-ratio: 1/1;
+                    border-radius: 50%;
+                }
+            }
+
+            .userCard_userName {
+                display: flex;
+
+                p {
+                    font-size: 24px;
+                    font-weight: bold;
+                    text-transform: uppercase;
+                    text-align: center;
+                }
+            }
+
+            .userCard_userCc {
+                padding-bottom: 20px;
+            }
+        }
+
+        .userCard_cargo {
+            width: 100%;
+            background-color: colors.$primary_blue;
+
+            p {
+                padding: 8px;
+                font-size: 24px;
+                font-weight: bold;
+                text-align: center;
+                color: white;
+                text-transform: uppercase;
+            }
+        }
+    }
+
+}

@@ -1,0 +1,77 @@
+@use 'colors';
+
+.card_container{
+    border: solid 5px black;
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    justify-content: center;
+    position: relative;
+
+    width: 200px;
+    height: 200px;
+
+    text-decoration: none;
+    color: black;
+    cursor: pointer;
+
+    .card_name{
+        p{
+            text-align: center;
+        }
+    }
+    &:hover{
+        background-color: rgba(0, 0, 0, 0.377);
+    }
+}
+
+.rqCardContainer{
+    border: solid 3px black;
+    text-decoration: none;
+    color: rgb(56, 56, 56);
+    padding: 12px;
+    position: relative;
+    cursor: pointer;
+    .rqTitle{
+        font-weight: 600;
+    }
+}
+
+.contextMenuHome{
+    position: absolute;
+    top: 0;
+    left: 0;
+    width: 100%;
+    height: 100%;
+    cursor: pointer;
+    .contextMenu{
+        position: absolute;
+        background-color: white;
+        border: solid black 2px;
+        border-radius: 2px;
+        z-index: 30;
+        ul{
+            width: 200px;
+            padding: 0;
+            li{
+                list-style: none;
+                padding: 4px 8px;
+                .option{
+                    display: flex;
+                    gap: 4px;
+                    align-items: center;
+                    svg{
+                        width: 0.75rem;
+                    }
+                }
+
+                &:hover{
+                    background-color: colors.$primary_blue;
+                    color: white;
+                    fill: white;
+                }
+            }
+        }
+      }
+    
+}

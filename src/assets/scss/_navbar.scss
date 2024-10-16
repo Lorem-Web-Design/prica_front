@@ -1,0 +1,60 @@
+@use 'colors';
+
+.navigation {
+    background-color: colors.$primary_blue;
+
+    display: flex;
+    justify-content: space-between;
+    padding: 24px 32px;
+
+    position: relative;
+
+    color: white;
+
+    .background_right{
+        position: absolute;
+        top: -6px;
+        right: 0px;
+        user-select: none;
+        z-index: 0;
+    }
+
+    .enterprise_logo{
+        display: flex;
+        gap: 12px;
+        img{
+            width: 68px;
+        }
+    }
+
+    .enterprise_name{
+        display: flex;
+        flex-direction: column;
+        justify-content: center;
+
+        .reduced_name{
+            font-size: 32px;
+            font-weight: 500;
+        }
+
+        .large_name{
+            font-size: 12px;
+        }
+    }
+
+    .user_info{
+        display: flex;
+        justify-content: center;
+        align-items: center;
+        position: relative;
+        z-index: 6;
+        gap: 12px;
+        .user_image{
+            width: 48px;
+            height: 48px;
+            border-radius: 50%;
+            background-color: gray;
+        }
+
+    }
+}

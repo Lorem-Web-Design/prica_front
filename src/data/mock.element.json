@@ -1,0 +1,24 @@
+{
+  "name": "",
+  "description": "INDEFINIDO",
+  "code": "INDEFINIDO",
+  "serial": "INDEFINIDO",
+  "image": "images/default.jpg",
+  "unit": "",
+  "history": [],
+  "remision": [],
+  "currentOwner": "INDEFINIDO",
+  "amount": 0,
+  "provider": "INDEFINIDO",
+  "giverFolder": {
+    "name": "INDEFINIDO",
+    "_id": "INDEFINIDO"
+  },
+  "takerFolder": {
+    "name": "INDEFINIDO",
+    "_id": "INDEFINIDO"
+  },
+  "onDelivery": true,
+  "category": "Equipo",
+  "_id": ""
+}

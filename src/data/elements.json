@@ -1,0 +1,42 @@
+[
+    {
+        "name": "Escalera",
+        "description": "Escalera en bodega 1",
+        "serial": "S123-456",
+        "location": "Obra madrid",
+        "lastMovement": "12/02/2024",
+        "image": "../assets/images/ladder.png"
+    },
+    {
+        "name": "Escalera",
+        "description": "Escalera en bodega 1",
+        "serial": "S123-456",
+        "location": "Obra madrid",
+        "lastMovement": "12/02/2024",
+        "image": "../assets/images/ladder.png"
+    },
+    {
+        "name": "Escalera",
+        "description": "Escalera en bodega 1",
+        "serial": "S123-456",
+        "location": "Obra madrid",
+        "lastMovement": "12/02/2024",
+        "image": "../assets/images/ladder.png"
+    },
+    {
+        "name": "Escalera",
+        "description": "Escalera en bodega 1",
+        "serial": "S123-456",
+        "location": "Obra madrid",
+        "lastMovement": "12/02/2024",
+        "image": "../assets/images/ladder.png"
+    },{
+        "name": "Escalera",
+        "description": "Escalera en bodega 1",
+        "serial": "S123-456",
+        "location": "Obra madrid",
+        "lastMovement": "12/02/2024",
+        "image": "../assets/images/ladder.png"
+    }
+    
+]

@@ -1,0 +1,84 @@
+.editable_input{
+    border: dashed black 3px;
+    font-size: 24px;
+}
+
+.wide_input{
+    font-size: 16px;
+}
+
+.input_container{
+    gap: 4px;
+    display: flex;
+    flex-direction: column;
+    padding-bottom: 12px;
+    &.error{
+        label{
+            color: red;
+            animation: ring 0.5s ease-in-out;
+        }
+        input{
+            border: dashed red 3px;
+        }
+        select{
+            border: dashed red 3px;
+            color: red;
+            option{
+                color: black;
+            }
+        }
+    }
+}
+
+
+.width_100{
+    width: 100%;
+}
+
+.search_container{
+    display: flex;
+    gap: 8px;
+}
+.search{
+    background-color: #2F2F2F;
+    color: white;
+    border-radius: 14px;
+    font-size: 16px;
+    padding: 12px;
+    flex-shrink: 0;
+    flex-grow: 1;
+    &::placeholder{
+        color: rgba(255, 255, 255, 0.815);
+    }
+}
+
+.ocSelect{
+    border: none;
+    width: 100%;
+    font-size: 1rem;
+}
+
+.ocDateInput{
+    width: 100%;
+    border: none;
+    font-size: 1rem;
+    background-color: transparent;
+}
+
+.observation{
+    width: 100%;
+    border: none;
+    font-size: 1rem;
+}
+
+input[type="file"] {
+    display: none;
+  }
+
+@keyframes ring {
+    0% { transform: rotate(0); }
+    25% { transform: rotate(-0.8deg); }
+    50% { transform: rotate(0deg); }
+    75% { transform: rotate(-0.8deg); }
+    100% { transform: rotate(0); }
+  }

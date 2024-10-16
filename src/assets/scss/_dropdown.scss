@@ -1,0 +1,30 @@
+@use 'colors';
+
+.dropdown{
+    position: absolute;
+    top: 100px;
+    right: 0px;
+    width: 100%;
+    overflow: hidden;
+    height: 0;
+    transition: 0.3s ease;
+    background: colors.$primary_blue;
+    border-radius: 4px;
+    ul{
+        padding-left: 0;
+        li{
+            list-style: none;
+            padding: 3px;
+            cursor: pointer;
+            user-select: none;
+            &:hover{
+                background-color: #006ac0;
+            }
+        }
+    }
+    &.active{
+        border: solid black 2px;
+        height: auto;
+        transition: 0.3s ease;
+    }
+}

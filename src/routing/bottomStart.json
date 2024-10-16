@@ -1,0 +1,28 @@
+[
+  {
+    "name": "Gestión de usuarios",
+    "icon": "../assets/icons/shell32.dll_14_279-6.png",
+    "path": "/worker"
+  },
+  {
+    "name": "Bodegas",
+    "icon": "../assets/icons/mmcndmgr.dll_14_30612-1.png",
+    "path": "/bodega"
+  },
+  {
+    "name": "Elementos",
+    "icon": "../assets/icons/shell32.dll_14_267-6.png",
+    "path": "/elementos"
+  },
+  {
+    "name": "Requisición",
+    "icon": "../assets/icons/shell32.dll_14_22-0.png",
+    "path": "/requisicion"
+  },
+  {
+    "name": "Ordenes de compra",
+    "icon": "../assets/icons/imjputyc.dll_14_116_1041-2.png",
+    "path": "/oc/list"
+  }
+  
+]

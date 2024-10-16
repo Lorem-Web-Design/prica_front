@@ -1,0 +1,72 @@
+.elementCard_container{
+    position: relative;
+    border: solid black 3px;
+    padding: 8px;
+    text-decoration: none;
+    .inside_container{
+        position: relative;
+        display: flex;
+        align-items: center;
+        gap: 12px;
+        color: rgb(58, 58, 58);
+        text-decoration: none;
+        z-index: -5;
+        .elementCard_image{
+            width: 100px;
+            display: flex;
+            align-items: center;
+            img{
+                width: 100%;
+            }
+        }
+        .elementCard_info{
+            p{
+                font-size: 12px;
+            }
+            .elementCard_title{
+                font-size: 16px;
+            }
+        }
+    }
+    .elementCard_options{
+        width: 20px;
+        height: 20px;
+        position: absolute;
+        top: 8px;
+        right: 8px;
+        display: flex;
+        justify-content: end;
+        cursor: pointer;
+        svg{
+            width: 4px;
+        }
+        .optionsDropdown{
+            position: absolute;
+            right: 0;
+            top: 16px;
+            display: block;
+            border: solid rgb(158, 158, 158) 1px;
+            border-radius: 4px;
+            width: 150px;
+            user-select: none;
+            ul{
+                padding: 0;
+                li{
+                    div{
+                        display: flex;
+                        gap: 8px;
+                        svg{
+                            width: 12px;
+                        }
+                    }
+                    background-color: white;
+                    list-style: none;
+                    padding: 2px 8px;
+                    &:hover{
+                        background-color: rgb(233, 233, 233);
+                    }
+                }
+            }
+        }
+    }
+}

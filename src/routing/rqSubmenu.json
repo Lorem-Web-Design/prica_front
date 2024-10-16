@@ -1,0 +1,12 @@
+[
+  {
+    "name": "Crear RQ",
+    "icon": "../assets/icons/comres.dll_14_2867-3.png",
+    "path": "/requisicion/editor"
+  },
+  {
+    "name": "Ver RQs",
+    "icon": "../assets/icons/magnify.exe_14_128-2.png",
+    "path": "/requisicion/list"
+  }
+]

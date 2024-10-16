@@ -1,0 +1,32 @@
+{
+  "provider": {
+    "name": "",
+    "nit": "",
+    "address": "",
+    "city": "",
+    "contact": "",
+    "contactNumber": "",
+    "email": "",
+    "_id": ""
+  },
+  "receiver": {
+    "name": "PROYECTOS DE INGENIERÍA-CONSULTORÍA Y ASESORÍA SAS - PRICA SAS",
+    "nit": "901.340.603-8",
+    "address": "C EMP PONTEVEDRA EDIFICIO VARDI CL 98 70 91 OF 410",
+    "city": "Bogotá",
+    "contact": "Diego Pinto",
+    "contactNumber": "3143073552",
+    "email": "facturacion@pricasas.com",
+    "_id": "66e091a805b2a9226cfaf103"
+  },
+  "items":[],
+  "date": "2024-09-10",
+  "observation": "",
+  "paymentMethod": "Anticipado",
+  "deliverMethod": "Terrestre",
+  "deliverConditions": "Suministro",
+  "deliverAddress": "CLL 35 CRA 35",
+  "deliverDate": "2024-09-10",
+  "ocNumber": 0,
+  "isAlive": true
+}

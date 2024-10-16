@@ -1,0 +1,39 @@
+$border_width: 3px;
+$window_gap: 12px;
+
+.navigation_menu{
+    display: flex;
+    z-index: 6;
+    gap: 12px;
+    cursor: pointer;
+    user-select: none;
+    .navigation_tab{
+        font-size: 28px;
+        padding: 8px 0px $window_gap - 4px 0px;
+        span{
+            padding: 8px;
+            background-color: rgb(201, 201, 201);
+        }
+        .border_bottom{
+            border: solid white $border_width;
+            width: 100%;
+            height: 2px;
+            z-index: 4;
+            position: relative;
+            top: $window_gap;
+        }
+        &.active{
+            span{
+                background-color: white;
+                padding-bottom: 4px;
+            };
+            border: solid black $border_width;
+        }
+    }
+}
+.navigation_content{
+    position: relative;
+    z-index: 1;
+    border: solid black $border_width;
+    top: -2px;
+}

@@ -1,0 +1,19 @@
+{
+    "INICIO": ["admin", "compras", "dir_proyectos", "ing_proyectos", "gerente"],
+    "RQ_PANEL": ["admin", "compras", "dir_proyectos", "ing_proyectos", "gerente"],
+    "RQ_VIEWER": ["admin", "compras", "dir_proyectos"],
+    "RQ_EDITOR": ["admin", "compras", "dir_proyectos", "ing_proyectos", "gerente"],
+    "RQ_LIST": ["admin", "compras", "dir_proyectos"],
+    "BODEGA_PANEL": ["admin", "compras", "dir_proyectos"],
+    "BODEGA_CHILDREN": ["admin", "compras", "dir_proyectos"],
+    "BODEGA_VIEWER": ["admin", "compras", "dir_proyectos"],
+    "OC_PANEL": ["admin", "compras", "dir_proyectos"],
+    "OC_EDITOR": ["admin", "compras"],
+    "OC_VIEWER": ["admin", "compras", "dir_proyectos"],
+    "OC_LIST": ["admin", "compras", "dir_proyectos", "ing_proyectos"],
+    "WORKER_LIST": ["admin", "compras", "dir_proyectos"],
+    "WORKER_DETAILS": ["admin", "compras", "dir_proyectos"],
+    "ELEMENT_LIST": ["admin", "compras", "dir_proyectos"],
+    "ELEMENT_DETAILS":["admin", "compras", "dir_proyectos"],
+    "CREATE_ELEMENT": ["admin", "compras", "dir_proyectos"]
+}
