@@ -216,17 +216,6 @@ type UseAuthTypes = {
   logout: Function;
 };
 
-interface PricaProvider {
-  name: string;
-  nit: string;
-  address: string;
-  city: string;
-  contact: string;
-  contactNumber: string;
-  email: string;
-  _id: string;
-}
-
 type ProviderQuery = {
   getProviders: PricaProvider[];
 };

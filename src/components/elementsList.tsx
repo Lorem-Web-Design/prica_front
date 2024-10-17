@@ -4,7 +4,6 @@ import Paginator from "./paginator";
 import ApolloErrorPage from "./apolloErrorPage";
 
 export default function ElementList({loading, error, data}:OperationVariables){
-    
     if(loading){
         return <div className="loader"></div>
     }

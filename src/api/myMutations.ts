@@ -325,3 +325,38 @@ export const KILL_OC_BY_ID = gql`mutation KillOrder($ocId: ID!) {
     }
   }
 }`
+
+export const CREATE_PROVIDER = gql`mutation CreateProvider($providerData: ProviderInputData!) {
+  createProvider(providerData: $providerData) {
+    code
+    message
+    success
+    provider {
+      name
+    }
+  }
+}`
+
+export const DELETE_PROVIDER = gql`mutation DeleteProviderById($providerId: ID!) {
+  deleteProviderById(providerId: $providerId) {
+    code
+    message
+    success
+    provider {
+      _id
+      name
+    }
+  }
+}`
+
+export const EDIT_PROVIDER_BY_ID = gql`mutation UpdateProviderById($providerId: ID!, $providerData: ProviderInputData!) {
+  updateProviderById(providerId: $providerId, providerData: $providerData) {
+    code
+    message
+    success
+    provider {
+      _id
+      name
+    }
+  }
+}`

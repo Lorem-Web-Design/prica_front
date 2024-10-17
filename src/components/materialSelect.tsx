@@ -45,14 +45,6 @@ export default function MaterialSelect({ label, name, isEmpty, value, setState, 
         return <div className={`input_container gap_12 ${isEmpty ? 'error' : ''}`}>
         <label htmlFor={name}>{label}</label>
         <Select options={selectPairs} onChange={handleSelectedMaterial} className="editable_input" placeholder="Selecciona un material..."/>
-        {/* <select className="editable_input width_100" id={name} name={name} onChange={handleSelectedMaterial} value={value}>
-            <option value="undefined">Selecciona un material</option>
-            {materialList.map(material=>{
-                return(
-                    <option value={material._id} key={material._id}>{material.name}</option>
-                )
-            })}
-        </select> */}
     </div>
     }
 

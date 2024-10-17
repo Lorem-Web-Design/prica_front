@@ -1,5 +1,7 @@
 import BottomStart from "../components/bottomStart";
 import Card from "../components/cards";
+import ProviderMenu from "../components/createProvider";
+import ProviderCard from "../components/createProvider";
 import Gallery from "../components/gallery";
 import Grid from "../components/grid";
 import Layout from "../components/layout";
@@ -18,6 +20,7 @@ export default function Start() {
           <Card name={item.name} icon={item.icon} route={item.path} key={item.name} />
         ))}
         <Gallery/>
+        <ProviderMenu/>
       </Grid>
       <BottomStart />
     </Layout>
