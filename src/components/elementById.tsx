@@ -141,7 +141,8 @@ export default function ElementById({ elementEditor }: { elementEditor: ElementE
       { name: "name", type: "string" },
       { name: "serial", type: "string" },
       { name: "description", type: "string" },
-      { name: "currentOwner", type: "string" }
+      { name: "currentOwner", type: "string" },
+      { name: "unit", type: "string" }
     );
     setValidInputs(checkedInputs);
     if (checkedInputs.length === 0) {
@@ -322,6 +323,14 @@ export default function ElementById({ elementEditor }: { elementEditor: ElementE
               />
               <InputBox
                 onChange={handleChange}
+                inputName="unit"
+                labelTag="Unidad"
+                isEmpty={validInputs.includes("unit")}
+                value={elementInfo.unit}
+                type="text"
+              />
+              <InputBox
+                onChange={handleChange}
                 inputName="serial"
                 labelTag="Serial"
                 isEmpty={validInputs.includes("serial")}
@@ -351,6 +360,7 @@ export default function ElementById({ elementEditor }: { elementEditor: ElementE
                 isEmpty={validInputs.includes("amount")}
                 value={`${elementInfo.amount}`}
                 type="number"
+                disabled={true}
               />
               <WorkerSelectBox
                 defaultOption={{

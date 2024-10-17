@@ -53,7 +53,8 @@ function GeneralRQInfo() {
     name: "",
     _id: "",
     unit: "",
-    category: ""
+    category: "",
+    amount: 0
   });
 
 
@@ -76,7 +77,8 @@ function GeneralRQInfo() {
         unit: selectedMaterial.unit,
         name: selectedMaterial.name,
         type: selectedMaterial.category,
-        _id: selectedMaterial._id
+        _id: selectedMaterial._id,
+        amount: selectedMaterial.amount
       }
     };
     rqControll.rq.rqItems.push(JSON.parse(JSON.stringify(newItem)));

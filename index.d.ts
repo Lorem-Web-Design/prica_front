@@ -256,6 +256,7 @@ type PricaMaterial = {
   unit: string;
   category: string;
   _id: string;
+  amount: number
 };
 
 type SelectBox = {

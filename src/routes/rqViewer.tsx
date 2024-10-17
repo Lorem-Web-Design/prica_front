@@ -376,7 +376,7 @@ type CreateOCButton = {
 function CreateOCButton({approvedStatus, rqId, haveOc}: CreateOCButton) {
   const { user } = useAuth();
   let isVisible =
-    (user.role === ROLES["COMPRAS"] || user.role === ROLES["ADMINISTRADOR"]) && approvedStatus && !haveOc;
+    (user.role === ROLES["COMPRAS"] || user.role === ROLES["ADMINISTRADOR"]) && approvedStatus;
   return (
       <Link to={`/oc/editor/rq/${rqId}`}  className={`${isVisible ? "" : "hide"} smallButton pricaTheme defaultButton`}>
       Crear OC

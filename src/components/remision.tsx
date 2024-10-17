@@ -38,9 +38,9 @@ export default function Remision({ elementEditor, setElementInfo }: RemisionType
     if(parseFloat(remision.amount) > elementEditor.element.amount){
         alert("No puedes mover más cantidad de la existente")
     }else{
+      elementEditor.element.amount -= parseFloat(remision.amount);
         elementEditor.element.remision.push(remision);
     }
-    
     setElementInfo(elementEditor.stateCopy);
   };
 
