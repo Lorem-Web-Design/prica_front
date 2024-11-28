@@ -1,0 +1,24 @@
+{
+  "roles": [
+    {
+      "name": "Gerente",
+      "slug": "gerente"
+    },
+    {
+      "name": "Compras",
+      "slug": "compras"
+    },
+    {
+      "name": "Director de proyectos",
+      "slug": "dir_proyectos"
+    },
+    {
+      "name": "Ingeniero de proyectos",
+      "slug": "ing_proyectos"
+    },
+    {
+      "name": "Coordinador SST",
+      "slug": "coord_sst"
+    }
+  ]
+}

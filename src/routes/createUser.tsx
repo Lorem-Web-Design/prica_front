@@ -7,16 +7,23 @@ import { useMutation } from "@apollo/client";
 import { CREATE_USER, CREATE_WORKER } from "../api/myMutations";
 import { useEffect, useState } from "react";
 import Toast from "../components/toast";
+import Modal from "../components/modal";
+import GalleryViewer from "../components/galleryViewer";
+import { imagesSource } from "../api/datasources";
+import ImageUploader from "../components/imageUploader";
 
 const userMock:PricaWorkerToApi = {
     cc: 0,
-  image: '/img/user.png',
+  image: 'images/default.jpg',
   name: '',
   occupation:'',
+  isActive: true
 }
 export default function CreateUser() {
     const [userData, setUserData] = useState<PricaWorkerToApi>(userMock);
-
+    //Input Image Inicialization
+    const [imageUrl, setImageUrl] = useState<null | string>(null)
+    const [saveImageTrigger, setSaveImageTrigger] = useState(false);
     //Toast
     const [toast, setToast] = useState(false);
     const [toastProps, setToastProps] = useState({
@@ -28,7 +35,7 @@ export default function CreateUser() {
 
     const [createUser, {data, error, loading}] = useMutation(CREATE_WORKER, {variables: {
         workerInfo: {...userData}
-    }});
+    }, refetchQueries: ["GetWorkers"]});
 
     const handleChange = (evt: React.ChangeEvent<HTMLInputElement | HTMLSelectElement>) => {
         const name = evt.target.name;
@@ -46,8 +53,7 @@ export default function CreateUser() {
 
     const handleSubmit = (evt: React.FormEvent<HTMLFormElement>) => {
         evt.preventDefault();
-        console.log({userData: {...userData}});
-        createUser();
+        setSaveImageTrigger(true);
     }
 
     useEffect(() => {
@@ -80,6 +86,18 @@ export default function CreateUser() {
         }
     }, [data, error, loading]);
 
+    useEffect(() => {
+        if(imageUrl !== null){
+            createUser(
+                {
+                    variables:{
+                        workerInfo: {...userData, image: imageUrl}
+                    }
+                }
+            );
+        }
+    }, [imageUrl]);
+
   return (
       <Layout>
         {/* Titulo de la página actual */}
@@ -88,12 +106,9 @@ export default function CreateUser() {
         <div className="pt_def_48"></div>
         {/* Barra de meníu inferior - shortcuts */}
         <form onSubmit={handleSubmit}>
-        <Grid gap={12} def={6} sm={2} md={2} lg={2}>
+        <Grid gap={12} def={1} sm={6} md={6} lg={6}>
             <div className="user_image_container">
-                <div className="user_image">
-                    <img src={USER_IMAGE} alt="user image" />
-                </div>
-                <div  style={{paddingTop: 12}}><a className="mediumBottom input_container" >Añadir imagen</a></div>
+                <ImageUploader setImageUrl={setImageUrl} saveImageTrigger={saveImageTrigger} setSaveImageTrigger={setSaveImageTrigger}/>
             </div>
             
             <div className="new_user_info col_s5">

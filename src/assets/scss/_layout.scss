@@ -4,6 +4,9 @@
     overflow: hidden;
 }
 
+.center_def{
+  justify-items: center;
+}
 .user_image_container{
     .user_image{
         border: solid black 3px;
@@ -23,6 +26,34 @@
 
 .hide{
     display: none !important;
+}
+
+//Tooltips
+.tooltip {
+  position: relative;
+  display: inline-block;
+  border-bottom: 1px dotted black;
+}
+
+.tooltip .tooltiptext {
+  visibility: hidden;
+  width: 120px;
+  background-color: black;
+  color: #fff;
+  text-align: center;
+  border-radius: 6px;
+  padding: 4px 4px;
+  font-size: 12px;
+
+  /* Position the tooltip */
+  position: absolute;
+  z-index: 1;
+  right: 0;
+  top: -35px;
+}
+
+.tooltip:hover .tooltiptext {
+  visibility: visible;
 }
 
 /* HTML: <div class="loader"></div> */
@@ -70,13 +101,28 @@
 
   .uploadImageContainer{
     display: flex;
+    flex-direction: column;
     gap: 8px;
     padding-bottom: 8px;
     justify-content: center;
     .uploadedImage{
         border: solid black 2px;
+        width: 250px;
+        height: 250px;
         img{
-            width: 150px;
+          width: 100%;
+          height: 100%;
+          object-fit: contain;
         }
     }
   }
+
+  
+@media (min-width: 599px) {
+}
+@media (min-width: 904px) {
+
+}
+@media (min-width: 1239px) {
+    
+}

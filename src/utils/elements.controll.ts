@@ -15,7 +15,17 @@ export default class ElementControll {
         results.push(elementInfo);
       }
     }
+    return results;
+  }
 
+  searchByCategory(cat: string, query: string) {
+    let filterByName = this.search("name", query);
+    let results: ElementFromQuery[] = [];
+    for(const elementInfo of filterByName){
+      if(elementInfo.category === cat){
+        results.push(elementInfo)
+      }
+    }
     return results;
   }
 

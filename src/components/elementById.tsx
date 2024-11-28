@@ -69,7 +69,7 @@ export default function ElementById({ elementEditor }: { elementEditor: ElementE
       _id: value,
     };
 
-    const acceptChange = confirm("¿Estás seguro que deseas mover el elemento de bodega? - Esta acción no se puede deshacer");
+    const acceptChange = confirm("Obtendras una vista previa en la pestaña de Historial, una vez selecciones Registrar cambios la información se almacenará permanentemente");
     if (acceptChange) {
       //Update takerFolder and giverFolder with the new info
       elementEditor.element.takerFolder = newTakerFolder;
@@ -77,15 +77,9 @@ export default function ElementById({ elementEditor }: { elementEditor: ElementE
 
       const historyItem = JSON.parse(
         JSON.stringify({
-          giver: {
-            _id: elementEditor.element.currentOwner,
-            name: "",
-          },
+          giver: elementEditor.element.currentOwner,
           giverFolder: newGiverFolder,
-          taker: {
-            _id: elementEditor.element.currentOwner,
-            name: "",
-          },
+          taker: elementEditor.element.currentOwner,
           takerFolder: newTakerFolder,
         })
       );
@@ -103,36 +97,35 @@ export default function ElementById({ elementEditor }: { elementEditor: ElementE
       _id: value,
     };
 
-    const acceptChange = confirm("¿Estás seguro que deseas mover el elemento de bodega? - Esta acción no se puede deshacer");
+    const acceptChange = confirm("Obtendras una vista previa en la pestaña de Historial, una vez selecciones Registrar cambios la información se almacenará permanentemente");
     if (acceptChange) {
       //Update takerFolder and giverFolder with the new info
-      
-
       const historyItem = JSON.parse(
         JSON.stringify({
-          giver: {
-            _id: elementEditor.element.currentOwner,
-            name: "",
-          },
+          giver: elementEditor.element.currentOwner,
           giverFolder: elementEditor.element.giverFolder,
           taker: newOwner,
           takerFolder: elementEditor.element.takerFolder,
         })
       );
-      elementEditor.element.currentOwner = value;
+      elementEditor.element.currentOwner = {
+        name: "",
+        _id: value
+      };
       elementEditor.element.history.push(historyItem);
       setElementInfo(elementEditor.stateCopy);
     }
   };
 
-  const updateHistory = () => {
+  const handleFolderAndUser = (evt: React.FormEvent<HTMLFormElement>) => {
+    evt.preventDefault()
     editElement({
       variables: {
         info: elementEditor.toApi,
         editElementId: id,
       },
     });
-  };
+  }
 
   const handleSubmit = async (evt: React.FormEvent<HTMLFormElement>) => {
     evt.preventDefault();
@@ -146,7 +139,6 @@ export default function ElementById({ elementEditor }: { elementEditor: ElementE
     );
     setValidInputs(checkedInputs);
     if (checkedInputs.length === 0) {
-      console.log(elementEditor.toApi)
       editElement({
         variables: {
           info: elementEditor.toApi,
@@ -184,6 +176,7 @@ export default function ElementById({ elementEditor }: { elementEditor: ElementE
 
   useEffect(() => {
     if (data) {
+      console.log(data)
       elementEditor.element = JSON.parse(JSON.stringify(data.getElementById)) as ElementFromQuery;
       setElementInfo(data.getElementById);
     }
@@ -224,7 +217,8 @@ export default function ElementById({ elementEditor }: { elementEditor: ElementE
   const modalChild = () => {
     if (activeTab === "WORKER") {
       return (
-        <Grid gap={12} def={1} sm={2} md={2} lg={2}>
+        <Grid gap={12} def={1} sm={1} md={1} lg={1}>
+          <form onSubmit={handleFolderAndUser}>
           <WorkerSelectBox
             defaultOption={{
               label: "Selecciona un colaborador...",
@@ -234,19 +228,21 @@ export default function ElementById({ elementEditor }: { elementEditor: ElementE
             label="Persona a cargo"
             onChange={handleChangeWorkerWithHistory}
             isEmpty={validInputs.includes("currentOwner")}
-            value={elementInfo.currentOwner}
+            value={elementInfo.currentOwner._id}
             disabled={false}
           />
-          <button className="btn mediumBottom" onClick={() => updateHistory()}>
+          <button className="btn mediumBottom">
             Registrar cambio
           </button>
+          </form>
         </Grid>
       );
     }
 
     if (activeTab === "FOLDER") {
       return (
-        <Grid gap={12} def={1} sm={2} md={2} lg={2}>
+        <Grid gap={12} def={1} sm={1} md={1} lg={1}>
+          <form onSubmit={handleFolderAndUser}>
           <BodegaSelectBox
             defaultOption={{
               label: "Selecciona una bodega...",
@@ -260,9 +256,10 @@ export default function ElementById({ elementEditor }: { elementEditor: ElementE
             disabled={false}
             className="defaultButton"
           />
-          <button className="btn mediumBottom" onClick={() => updateHistory()}>
+          <button className="btn mediumBottom" type="submit">
             Registrar cambio
           </button>
+          </form>
         </Grid>
       );
     }
@@ -296,7 +293,7 @@ export default function ElementById({ elementEditor }: { elementEditor: ElementE
           <GalleryViewer action={updateImage}/>
         </Modal>
         <form encType="multipart/form-data" onSubmit={handleSubmit}>
-          <Grid gap={12} def={6} sm={2} md={2} lg={2} className="">
+          <Grid gap={12} def={1} sm={6} md={6} lg={6} className="center_def">
             {/* <InputImage  /> */}
             <div className="user_image_container">
               <div className="user_image" onClick={()=>{setImageModal(true)}}>
@@ -371,7 +368,7 @@ export default function ElementById({ elementEditor }: { elementEditor: ElementE
                 label="Persona a cargo"
                 onChange={handleChange}
                 isEmpty={validInputs.includes("currentOwner")}
-                value={elementInfo.currentOwner}
+                value={elementInfo.currentOwner._id}
                 disabled={true}
               />
               <BodegaSelectBox
@@ -394,7 +391,7 @@ export default function ElementById({ elementEditor }: { elementEditor: ElementE
                 value={elementInfo.category}
                 disabled={false}
               />
-              <Grid gap={12} def={3} sm={1} md={1} lg={1}>
+              <Grid gap={12} def={1} sm={2} md={3} lg={4}>
                 <button className="mediumBottom" type="submit">
                   Actualizar
                 </button>

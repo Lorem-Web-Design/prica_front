@@ -5,9 +5,9 @@
     "path": "/worker"
   },
   {
-    "name": "Bodegas",
+    "name": "Centros de costos",
     "icon": "../assets/icons/mmcndmgr.dll_14_30612-1.png",
-    "path": "/bodega"
+    "path": "/centro_costo"
   },
   {
     "name": "Elementos",

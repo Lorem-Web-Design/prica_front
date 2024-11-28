@@ -2,6 +2,7 @@ import { OperationVariables } from "@apollo/client";
 import ErrorPage from "./errorPage";
 import Paginator from "./paginator";
 import ApolloErrorPage from "./apolloErrorPage";
+import ElementCard from "./elementCard";
 
 export default function ElementList({loading, error, data}:OperationVariables){
     if(loading){

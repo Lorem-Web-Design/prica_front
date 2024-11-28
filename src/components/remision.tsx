@@ -67,7 +67,7 @@ export default function Remision({ elementEditor, setElementInfo }: RemisionType
     });
   };
   return (
-    <Grid gap={12} def={1} sm={2} md={2} lg={2}>
+    <Grid gap={12} def={1} sm={1} md={1} lg={1}>
       <form onSubmit={handleRemision}>
         <UserSelectBox
           defaultOption={{

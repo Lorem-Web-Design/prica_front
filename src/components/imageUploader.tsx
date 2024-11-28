@@ -2,11 +2,16 @@ import { postDataWithPayLoad } from "../api/fetchData";
 import { adminDataSource, dataSource } from "../api/datasources";
 import getToken from "../utils/getToken";
 import ELEMENT_IMAGE from "../assets/images/no_image.jpg";
-import { useState } from "react";
+import { useEffect, useState } from "react";
 import imageUploader from "../services/imageUploader";
 import Toast from "./toast";
 
-export default function ImageUploader() {
+type ImageUploader = {
+  setImageUrl: React.Dispatch<React.SetStateAction<string | null>>
+  setSaveImageTrigger: React.Dispatch<React.SetStateAction<boolean>>
+  saveImageTrigger: boolean
+}
+export default function ImageUploader({setImageUrl, setSaveImageTrigger, saveImageTrigger}: ImageUploader) {
   const [visualImage, setVisualImage] = useState<string>(ELEMENT_IMAGE);
   const allowedTypes = ["image/jpg", "image/jpeg", "image/png"]
   // Para subir imagenes
@@ -22,9 +27,12 @@ export default function ImageUploader() {
 
   const handleImage = (evt: React.ChangeEvent<HTMLInputElement>) => {
     const file = evt.target.files;
+    console.log(file?.length)
     if (file !== null) {
-      setVisualImage(URL.createObjectURL(file[0]));
+      if(file.length > 0){
+        setVisualImage(URL.createObjectURL(file[0]));
       setFile(file[0]);
+      }
     }
   };
 
@@ -32,23 +40,22 @@ export default function ImageUploader() {
     const myImage = new FormData();
     myImage.append("image", file);
     if(allowedTypes.includes(file.type)){
-      const elementImage = await imageUploader(myImage);
-    if (elementImage.status === 200) {
-      setToast(true);
-      setToastProps({
-        title: "Cargando imagen",
-        body: "Imagen cargada correctamente",
-        footer: "ERROR_IMG",
-        theme: "primary_theme",
-      });
-    }
-    if (elementImage.status === 200 && elementImage.loading) {
       setToast(true);
       setToastProps({
         title: "Cargando imagen",
         body: "La imagen está siendo guardada, por favor espere",
-        footer: "ERROR_IMG",
+        footer: "LOADING_IMG",
         theme: "primary_theme",
+      });
+      const elementImage = await imageUploader(myImage);
+    if (elementImage.status === 200) {
+      setImageUrl(elementImage.path)
+      setToast(true);
+      setToastProps({
+        title: "Cargando imagen",
+        body: "Imagen cargada correctamente",
+        footer: "SUCCESS_IMG",
+        theme: "success_theme",
       });
     }
     if (elementImage.status === 400) {
@@ -78,6 +85,13 @@ export default function ImageUploader() {
     uploadImage()
   }
 
+  useEffect(() => {
+    if(saveImageTrigger === true){
+      uploadImage()
+    }
+    setSaveImageTrigger(false)
+  }, [saveImageTrigger]);
+
   return (
     <>
       <Toast
@@ -101,7 +115,6 @@ export default function ImageUploader() {
           <input type="file" onChange={handleImage} id="image" name="image" />
         </div>
       </div>
-      <button className="mediumBottom" type="submit">Cargar imagen</button>
       </form>
     </>
   );

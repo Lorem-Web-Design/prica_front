@@ -1,5 +1,8 @@
+import { ProviderFromQuery } from "../@types/providerTypes";
+import OC_DELIVERY_METHODS from "../data/ocDeliverInfo.json"
+
 type SetProvider = {
-  providerList: PricaProvider[];
+  providerList: ProviderFromQuery[];
   providerId: string;
 };
 
@@ -23,7 +26,15 @@ export default class OrdenDeCompra {
   }
 
   get stateCopy() {
+    this.itemsTotalPriceCalculator();
     return JSON.parse(JSON.stringify(this.ocData)) as PricaOC;
+  }
+
+  itemsTotalPriceCalculator(){
+    for(let i=0; i<this.ocData.items.length; i++){
+      let currentItem = this.ocData.items[i];
+      currentItem.totalPrice = this.toCurrency(currentItem.unitaryPrice * currentItem.amount);
+    }
   }
 
   provider({ providerList, providerId }: SetProvider) {
@@ -40,6 +51,8 @@ export default class OrdenDeCompra {
       name: item.material?.name ?? "",
       amount: item.authorizedAmount,
       id: item.material?._id ?? "",
+      unitaryPrice: item.material?.unitaryPrice ?? 0,
+      totalPrice: this.toCurrency(item.material?.unitaryPrice ?? 0 * item.authorizedAmount)
     };
     this.ocData.items.push(parsedItem);
   }
@@ -71,6 +84,7 @@ export default class OrdenDeCompra {
     for(let i=0; i<list.length; i++){
       const selectedList = list[i];
       delete selectedList.name
+      delete selectedList.totalPrice
     }
     return list
   }
@@ -83,5 +97,26 @@ export default class OrdenDeCompra {
       }
     }
     return undefined;
+  }
+
+  toCurrency(price: number){
+    let USDollar = new Intl.NumberFormat('en-US', {
+      style: 'currency',
+      currency: 'USD',
+  });
+  return USDollar.format(price);
+  }
+
+  static toCurrency(price: number){
+    let USDollar = new Intl.NumberFormat('en-US', {
+      style: 'currency',
+      currency: 'USD',
+  });
+  return USDollar.format(price);
+  }
+
+  static OCDeliveryInfo(deliveryProp: "deliveryMethods" | "deliveryConditions" | "paymentMethod", value: string){
+    const PROP_INFO = OC_DELIVERY_METHODS[deliveryProp].find(prop=>prop.value === value);
+    return PROP_INFO?.name;
   }
 }

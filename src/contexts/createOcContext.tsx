@@ -1,4 +1,4 @@
-import { useMutation } from "@apollo/client";
+import { useMutation, useQuery } from "@apollo/client";
 import { createContext, PropsWithChildren, useEffect, useState } from "react";
 import { useAuth } from "../customHooks/centers/auth/useAuth";
 import NEW_MATERIAL_MOCK from "../data/mock.material.json";
@@ -10,6 +10,7 @@ import MOCK_OC from "../data/mock.oc.json";
 import { ADD_OC, INCREMENT_COUNTER, TRIGGER_HAVE_OC } from "../api/myMutations";
 import Toast from "../components/toast";
 import { useParams } from "react-router-dom";
+import { GET_RQ_BY_ID } from "../api/myQueries";
 
 type OcContextInfo = {
   toast: boolean;
@@ -21,7 +22,8 @@ type OcContextInfo = {
   ocInfo: PricaOC
   setOCInfo: React.Dispatch<React.SetStateAction<PricaOC>>
   OC: OrdenDeCompra
-  rqId: string | undefined
+  rqId: string | undefined,
+  rqInfo: RQFromQuery,
 };
 
 const ContextDefaultValue: OcContextInfo = {
@@ -34,7 +36,8 @@ const ContextDefaultValue: OcContextInfo = {
   ocInfo: MOCK_OC,
   setOCInfo: ()=>{},
   OC: new OrdenDeCompra(MOCK_OC),
-  rqId: ""
+  rqId: "",
+  rqInfo: RQ_MOCK
 };
 
 export const CreateOcContext = createContext(ContextDefaultValue);
@@ -42,6 +45,8 @@ export const CreateOcContext = createContext(ContextDefaultValue);
 export default function CreateOcProvider({ children }: PropsWithChildren) {
   const {rqId} = useParams();
   const OC = new OrdenDeCompra(MOCK_OC);
+  
+  
   //Toast Inicialization
   const [toast, setToast] = useState(false);
   const [toastProps, setToastProps] = useState({
@@ -52,10 +57,12 @@ export default function CreateOcProvider({ children }: PropsWithChildren) {
   });
   
   const [ocInfo, setOCInfo] = useState<PricaOC>(OC.info);
+  const [rqInfo, setRqInfo] = useState<RQFromQuery>(RQ_MOCK);
 
   const [storeOC, {data, loading, error}] = useMutation(ADD_OC, {variables: {
     ocData: OC.OC2API
   }});
+  const {loading: loadingRq, error: rqError, data: rqData} = useQuery(GET_RQ_BY_ID, {variables: {rqId}})
 
   const [incrementCounter] = useMutation(INCREMENT_COUNTER);
 
@@ -82,7 +89,7 @@ export default function CreateOcProvider({ children }: PropsWithChildren) {
     storeOC()
   }
 
-  //Notifications on rq creation status
+  //Notifications on oc creation status
   useEffect(() => {
     if (loading) {
       setToast(true);
@@ -136,10 +143,16 @@ export default function CreateOcProvider({ children }: PropsWithChildren) {
     }
   }, [error, loading, data]);
 
+  useEffect(() => {
+    if (rqData) {
+      setRqInfo(rqData.getRqById);
+    }
+  }, [rqData]);
+
   return (
     <CreateOcContext.Provider
       value={
-      {changeDate, createOC, deleteItem, observation, setToast, toast, ocInfo, setOCInfo, OC, rqId}
+      {changeDate, createOC, deleteItem, observation, setToast, toast, ocInfo, setOCInfo, OC, rqId, rqInfo}
       }
     >
       <Toast body={toastProps.body} isActive={toast} setToast={setToast} theme={toastProps.theme} title={toastProps.title} footer={toastProps.footer}/>

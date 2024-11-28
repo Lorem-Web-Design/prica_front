@@ -15,7 +15,7 @@ type ImagePromise = {
 }
 export default async function imageUploader(image: FormData) {
   try {
-    const myResult = await postDataWithPayLoad(`${adminDataSource()}/images/single`, image, getToken());
+    const myResult = await postDataWithPayLoad(`${adminDataSource()}/images/uploader`, image, getToken());
     const response = await myResult.json();
     if (myResult.status === 200) {
       return(

@@ -10,12 +10,14 @@ type InputImage = {
 
 export default function InputImage({ setFile}: InputImage) {
     const [visualImage, setVisualImage] = useState<string>(ELEMENT_IMAGE);
+    const [imgUrl, setImgUrl] = useState("");
 
   const handleImage = (evt: React.ChangeEvent<HTMLInputElement>) => {
     const file = evt.target.files;
     if (file !== null) {
         setVisualImage(URL.createObjectURL(file[0]));
         setFile(file[0]);
+
     }
   };
 

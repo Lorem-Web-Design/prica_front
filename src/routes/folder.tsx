@@ -31,7 +31,7 @@ export default function Folder() {
       <Layout>
         {/* Titulo de la página actual */}
         <Title
-          title="Bodegas"
+          title="Centro de costos"
           description="Sitios de almacenaje de elementos"
         />
         <div className="pt_def_48"></div>
@@ -49,7 +49,7 @@ export default function Folder() {
       <Layout>
         {/* Titulo de la página actual */}
         <Title
-          title="Bodegas"
+          title="Centro de costos"
           description="Sitios de almacenaje de elementos"
         />
         <div className="pt_def_48"></div>
@@ -69,12 +69,12 @@ export default function Folder() {
       <Layout>
         {/* Titulo de la página actual */}
         <Title
-          title="Bodegas"
+          title="Centro de costos"
           description="Sitios de almacenaje de elementos"
         />
         <div className="pt_def_48"></div>
         {/* Barra de meníu inferior - shortcuts */}
-        <Grid gap={12} sm={2} md={2} lg={2} def={6} className="">
+        <Grid gap={12} sm={2} md={3} lg={6} def={1} className="center_def">
           {myData.map(({ name, image, _id, isParent, parentId }) => (
             <FolderCard name={name} icon={image} route={_id} key={_id} ID={_id} isParent={isParent} parentId={parentId}/>
           ))}
@@ -83,7 +83,7 @@ export default function Folder() {
           </Modal>
         </Grid>
         <div className="pt_def_12"></div>
-        <Grid gap={12} sm={2} md={2} lg={2} def={6}>
+        <Grid gap={12} sm={2} md={2} lg={2} def={1}>
           <button className="mediumBottom" onClick={() => setModal(true)}>
             + Crear centro
           </button>
@@ -103,6 +103,7 @@ function CreateFolderForm({ folderControll }: CreateFolderForm) {
   const [folderData, setFolderData] = useState(folderControll.stateCopy);
   const [createFolder, { data, loading, error }] = useMutation(ADD_FOLDER, {
     variables: { folderData },
+    refetchQueries: ["ParentFolders"]
   });
 
   const [toast, setToast] = useState(false);
@@ -158,8 +159,8 @@ function CreateFolderForm({ folderControll }: CreateFolderForm) {
     if (data) {
       setToast(true);
       setToastProps({
-        title: "Creación de bodega",
-        body: "Bodega creada con éxito",
+        title: "Creación de centro de costos",
+        body: "Centro de costos creado con éxito",
         footer: "SUCCESS",
         theme: "primary_theme",
       });
@@ -167,8 +168,8 @@ function CreateFolderForm({ folderControll }: CreateFolderForm) {
     if (error) {
       setToast(true);
       setToastProps({
-        title: "Creación de bodega",
-        body: "Error creando bodega",
+        title: "Creación de centro de costos",
+        body: "Error creando centro de costos",
         footer: "ERROR",
         theme: "error_theme",
       });
@@ -189,7 +190,7 @@ function CreateFolderForm({ folderControll }: CreateFolderForm) {
         <InputBox
           inputName="name"
           isEmpty={validInputs.includes("name")}
-          labelTag="Nombre de bodega"
+          labelTag="Nombre de centro de costos"
           onChange={handleChange}
           value={folderData.name}
           type="text"
@@ -216,7 +217,7 @@ function CreateFolderForm({ folderControll }: CreateFolderForm) {
         <BodegaSelectBox
           defaultOption={{ label: "Seleccione el centro", value: "" }}
           isEmpty={validInputs.includes("parentId")}
-          label="A que bodega pertenece?"
+          label="A que centro de costos pertenece?"
           name="parentId"
           onChange={handleChange}
           value={folderData.parentId}

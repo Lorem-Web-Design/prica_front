@@ -33,7 +33,7 @@ function OCList(){
     }
     if(data){
         return (
-        <Grid gap={12} sm={2} md={2} lg={2} def={3}>
+        <Grid gap={12} sm={2} md={3} lg={4} def={1} className="center_def">
         {data.getOcs.map((rq: PricaOC)=>{
             return(<OcCard cardInfo={rq} key={rq._id}/>)
         })}

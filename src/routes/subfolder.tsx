@@ -43,15 +43,17 @@ export default function Subfolder() {
         />
         <div className="pt_def_48"></div>
         {/* Barra de meníu inferior - shortcuts */}
-        <Grid gap={12} sm={2} md={2} lg={2} def={6}>
+        <Grid gap={12} sm={2} md={3} lg={6} def={1} className="center_def">
           {myData.map(({ name, image, _id }) => (
             <FolderCard
               name={name}
               icon={image}
               route={`/bodega/info/${_id}`}
               key={_id}
-              ID={_id}
-            />
+              ID={_id} 
+              isParent={false} 
+              parentId={""}            
+              />
           ))}
         </Grid>
         <BottomStart />

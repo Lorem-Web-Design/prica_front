@@ -23,7 +23,7 @@ export default class ElementEditor {
       amount: parseFloat(this.element.amount as unknown as string),
       history: this.historyAndRemisionToApi(this.element.history),
       remision: this.historyAndRemisionToApi(this.element.remision),
-      currentOwner: this.element.currentOwner,
+      currentOwner: this.element.currentOwner._id,
       giverFolder: this.element.takerFolder._id,
       takerFolder: this.element.takerFolder._id,
       onDelivery: true,

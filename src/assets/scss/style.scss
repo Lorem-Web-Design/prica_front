@@ -61,6 +61,10 @@ body{
   }
 }
 
+.txt_center{
+  text-align: center;
+}
+
 @keyframes colorWarning {
   0% { color: red; }
   50% { color: blue; }

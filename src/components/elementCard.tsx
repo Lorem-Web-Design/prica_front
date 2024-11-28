@@ -7,14 +7,15 @@ import Toast from "./toast";
 import CustomContextMenu from "./customContextMenu";
 import TrashCan from "../assets/icon/trashcan";
 import EyeIcon from "../assets/icon/eye";
+import { ElementFromQuery } from "../@types/elementTypes";
 
 interface ElementCardInfo {
-    info: ElementInformation
+    info: ElementFromQuery
 }
 
 export default function ElementCard(element:ElementCardInfo){
     const [isActive, setIsActive] = useState(false);
-    const [deleteElementById, {loading, data, error}] = useMutation(DELETE_ELEMENT, {variables: {deleteElementById: element.info._id}})
+    const [deleteElementById, {loading, data, error}] = useMutation(DELETE_ELEMENT, {variables: {deleteElementById: element.info._id}, refetchQueries: ["GetElements"]})
     const navigate = useNavigate();
     const cardReference = useRef<HTMLDivElement>(null);
     const handleDelete = () => {

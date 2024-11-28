@@ -4,13 +4,20 @@ import ORANGE from "../assets/images/orange.png";
 import { Link, useLocation } from "react-router-dom";
 import DropDown from "./dropdown";
 import { useAuth } from "../customHooks/centers/auth/useAuth";
+import imageUploader from "../services/imageUploader";
+import { imagesSource } from "../api/datasources";
+import { useQuery } from "@apollo/client";
+import { GET_PENDING_RQS } from "../api/myQueries";
+import BellIcon from "../assets/icon/bell";
 
 export default function Layout({children}: PropsWithChildren) {
   const [isActive, setIsActive] = useState(false);
-  const [isVisible, setIsVisible] = useState('');
+  const [isVisible, setIsVisible] = useState(true);
   const [username, setUsername] = useState('');
+  const [image, setImage] = useState('');
   /* @ts-ignore*/
   const {logout, user} = useAuth();
+
   const handleLogOut = () => {
     let close = confirm("¿Deseas cerrar sesión?");
     if(close){
@@ -19,12 +26,14 @@ export default function Layout({children}: PropsWithChildren) {
   }
 
   const location = useLocation();
+
   useEffect(()=>{
     if(user){
       setUsername(user.name);
+      setImage(user.image);
     }
     if(location.pathname === "/login"){
-      setIsVisible('hide');
+      setIsVisible(false);
     }
   })
 
@@ -45,18 +54,7 @@ export default function Layout({children}: PropsWithChildren) {
             </div>
           </div>
         </div>
-        <div className={`user_info ${isVisible}`}>
-          <div className="user_name">
-            <p>Bienvenido, {username}</p>
-          </div>
-          <div className="user_image" onClick={()=>setIsActive(!isActive)}>
-          <DropDown isActive={isActive}>
-            <ul>
-              <li onClick={handleLogOut}>Cerrar sesión</li>
-              </ul>
-          </DropDown>
-          </div>
-        </div>
+        <DropDown image={image} username={username} action={handleLogOut} isVisible={isVisible}/>
       </nav>
       <div className="layout_container">
         {children}

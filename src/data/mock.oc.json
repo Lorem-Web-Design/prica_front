@@ -28,5 +28,6 @@
   "deliverAddress": "CLL 35 CRA 35",
   "deliverDate": "2024-09-10",
   "ocNumber": 0,
-  "isAlive": true
+  "isAlive": true,
+  "project": ""
 }

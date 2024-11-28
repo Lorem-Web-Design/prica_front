@@ -5,6 +5,32 @@ export type UserToMutation = {
   password: string;
   cc: string | number;
   role: AuthorizedRoles
-  image: "/img/user.png";
+  image: string;
   confirmPassword?: string
+};
+
+export type EditUserToMutation = {
+  name: string;
+  password: string;
+  cc: string | number;
+  role: striing
+  image: string;
+  confirmPassword?: string
+  _id?: string
+};
+
+export type WorkerToApi = {
+  name: string,
+  cc: number
+  occupation: string,
+  image: string
+  _id?: string
+}
+
+export type VisibleAdmin = {
+  cc: number;
+  image: string;
+  name: string;
+  role: string;
+  _id: string;
 };

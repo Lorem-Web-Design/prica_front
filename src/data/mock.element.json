@@ -7,7 +7,10 @@
   "unit": "",
   "history": [],
   "remision": [],
-  "currentOwner": "INDEFINIDO",
+  "currentOwner": {
+    "name": "INDEFINIDO",
+    "_id": "INDEFINIDO"
+  },
   "amount": 0,
   "provider": "INDEFINIDO",
   "giverFolder": {

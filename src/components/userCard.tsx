@@ -1,77 +1,138 @@
 import { useMutation } from "@apollo/client";
 import { useEffect, useRef, useState } from "react";
 import { Link, useNavigate } from "react-router-dom";
-import { DELETE_WORKER_BY_ID } from "../api/myMutations";
+import { imagesSource } from "../api/datasources";
+import { DELETE_WORKER_BY_ID, EDIT_WORKER_BY_ID, UPDATE_USER_STATUS } from "../api/myMutations";
+import EditIcon from "../assets/icon/edit";
 import EyeIcon from "../assets/icon/eye";
 import TrashCan from "../assets/icon/trashcan";
 import LOGO_BLUE from "../assets/images/prica_logo_blue.png";
 import LOGO_COLOR from "../assets/images/prica_logo_color.png";
-import USER_LOGO from "../assets/images/user.png";
 import CustomContextMenu from "./customContextMenu";
 import Toast from "./toast";
+import Modal from "./modal";
+import InputBox from "./inputElement";
+import checkForms from "../utils/checkForms";
+import { WorkerToApi } from "../@types/usersTypes";
+import GalleryViewer from "./galleryViewer";
+import Grid from "./grid";
+import DeactivateUser from "../assets/icon/deactivateUser";
+import ActivateUser from "../assets/icon/activateUser";
 
-export default function UserCard({name, cc, cargo, id}:User){
-    const cardReference = useRef<HTMLDivElement>(null);
-    const navigate = useNavigate();
-    const [deleteWorker, {data, error, loading}] = useMutation(DELETE_WORKER_BY_ID);
-    //Toast
-    const [toast, setToast] = useState(false);
-    const [toastProps, setToastProps] = useState({
-        title: "Titulo del toast",
-        body: "Cuerpo del toast",
-        footer: "Footer del toast",
-        theme: "primary_theme"
-    })
-    useEffect(() => {
-        if(loading){
-            setToast(true);
-            setToastProps({
-                title: "Eliminando Colaborador",
-                body: "La operación está siendo ejecutada",
-                footer: "Exito",
-                theme: "primary_theme"
-            })
-            
-        }
-        if(error){
-            setToast(true);
-            setToastProps({
-                title: "Eliminando Colaborador",
-                body: "Error eliminando colaborador",
-                footer: "Error",
-                theme: "error_theme"
-            })
-            
-        }
-        if(data){
-            setToast(true);
-            setToastProps({
-                title: "Eliminando Colaborador",
-                body: "El colaborador ha sido eliminado, recargue la página para ver los resultados",
-                footer: "Exito",
-                theme: "primary_theme"
-            })
-            
-        }
-    }, [data, error, loading]);
+export default function UserCard({ name, cc, cargo, id, image, isActive }: User) {
+  const cardReference = useRef<HTMLDivElement>(null);
+  const navigate = useNavigate();
+  const [deleteWorker, { data, error, loading }] = useMutation(DELETE_WORKER_BY_ID, {
+    refetchQueries: ['GetWorkers']
+  });
+  const [updateUserStatus, { data: statusData, error: statusError, loading: statusLoading }] = useMutation(UPDATE_USER_STATUS, {
+    refetchQueries: ['GetWorkers']
+  });
+  const [modal, setModal] = useState(false);
+  const [isVisible, setIsVisible] = useState(false);
+  //Toast
+  const [toast, setToast] = useState(false);
+  const [toastProps, setToastProps] = useState({
+    title: "Titulo del toast",
+    body: "Cuerpo del toast",
+    footer: "Footer del toast",
+    theme: "primary_theme",
+  });
+  useEffect(() => {
+    if (loading) {
+      setToast(true);
+      setToastProps({
+        title: "Eliminando Colaborador",
+        body: "La operación está siendo ejecutada",
+        footer: "Exito",
+        theme: "primary_theme",
+      });
+    }
+    if (error) {
+      setToast(true);
+      setToastProps({
+        title: "Eliminando Colaborador",
+        body: "Error eliminando colaborador",
+        footer: "Error",
+        theme: "error_theme",
+      });
+    }
+    if (data) {
+      setToast(true);
+      setToastProps({
+        title: "Eliminando Colaborador",
+        body: "El colaborador ha sido eliminado, recargue la página para ver los resultados",
+        footer: "Exito",
+        theme: "primary_theme",
+      });
+    }
+  }, [data, error, loading]);
 
-    return (
-        <>
-        <Toast title={toastProps.title} body={toastProps.body} theme={toastProps.theme} footer={toastProps.footer} isActive={toast} setToast={setToast} />
-        <div className="userCard_container" onClick={()=>navigate(`/worker/${id}`)} ref={cardReference}>
-            <CustomContextMenu cardReference={cardReference}>
-            <ul>
-            <li onClick={()=>navigate(`/worker/${id}`)}>
+  useEffect(() => {
+    if (statusLoading) {
+      setToast(true);
+      setToastProps({
+        title: "Actualizando estado de colaborador",
+        body: "La operación está siendo ejecutada",
+        footer: "Exito",
+        theme: "primary_theme",
+      });
+    }
+    if (statusError) {
+      setToast(true);
+      setToastProps({
+        title: "Actualizando estado de colaborador",
+        body: "Error actualizando colaborador",
+        footer: "Error",
+        theme: "error_theme",
+      });
+    }
+    if (statusData) {
+      setToast(true);
+      setToastProps({
+        title: "Actualizando estado de colaborador",
+        body: statusData.activateWorkerById.message,
+        footer: "Exito",
+        theme: "primary_theme",
+      });
+    }
+  }, [statusData, statusError, statusLoading]);
+
+  return (
+    <>
+      <Modal modal={modal} setModal={setModal}>
+        <EditWorkerForm userInfo={{ name, cc, image, occupation: cargo, _id: id }} isActive={isVisible} />
+      </Modal>
+      <Toast
+        title={toastProps.title}
+        body={toastProps.body}
+        theme={toastProps.theme}
+        footer={toastProps.footer}
+        isActive={toast}
+        setToast={setToast}
+      />
+      <div className={`userCard_container`} onClick={() => navigate(`/worker/${id}`)} ref={cardReference}>
+        <CustomContextMenu cardReference={cardReference}>
+          <ul>
+            <li onClick={() => navigate(`/worker/${id}`)}>
               <div className="option">
                 <EyeIcon />
                 Ver
+              </div>
+            </li>
+            <li onClick={() => {
+              setModal(true)
+            }}>
+              <div className="option" onClick={()=>{setIsVisible(true)}}>
+                <EditIcon />
+                Editar
               </div>
             </li>
             <li
               onClick={() => {
                 const deleteConfirmed = confirm("¿Estás seguro que deseas eliminar este Colaborador?");
                 if (deleteConfirmed) {
-                  deleteWorker({variables: {workerId: id}})
+                  deleteWorker({ variables: { workerId: id } });
                 }
               }}
             >
@@ -80,74 +141,235 @@ export default function UserCard({name, cc, cargo, id}:User){
                 Eliminar
               </div>
             </li>
+            <li  onClick={()=>{
+              updateUserStatus({variables: {
+                workerId: id,
+                action: "activate"
+              }})
+            }}>
+              <div className="option">
+                <ActivateUser />
+                Activar
+              </div>
+            </li>
+            <li onClick={()=>{
+              updateUserStatus({variables: {
+                workerId: id,
+                action: "deactivate"
+              }})
+            }}>
+              <div className="option">
+                <DeactivateUser />
+                Desactivar
+              </div>
+            </li>
           </ul>
-            </CustomContextMenu>
-            <div className="card_elements">
-            <div className="userCard_header">
-                <div className="userCard_logo">
-                    <img src={LOGO_COLOR} alt="logo" />
-                </div>
-                <div className="userCard_pricaName">
-                    <div className="userCard_shortname">
-                        <p>PRICA SAS</p>
-                    </div>
-                    <div className="userCard_longName">
-                        <p>PROYECTOS DE INGENIERÍA, CONSULTORÍA Y ASESORÍA</p>
-                    </div>
-                </div>
+        </CustomContextMenu>
+        <div className="card_elements">
+          <div className="userCard_header">
+            <div className="userCard_logo">
+              <img src={LOGO_COLOR} alt="logo" />
             </div>
-            <div className="userCard_user">
-                <div className="userCard_userImage">
-                    <img src={USER_LOGO} alt="user" />
-                </div>
-                <div className="userCard_userName">
-                    <p>{name}</p>
-                </div>  
-                <div className="userCard_userCc">
-                    <p>C.C: {cc}</p>
-                </div>
+            <div className="userCard_pricaName">
+              <div className="userCard_shortname">
+                <p>PRICA SAS</p>
+              </div>
+              <div className="userCard_longName">
+                <p>PROYECTOS DE INGENIERÍA, CONSULTORÍA Y ASESORÍA</p>
+              </div>
             </div>
-            <div className="userCard_cargo">
-                <p>{cargo}</p>
+          </div>
+          <div className="userCard_user">
+            <div className="userCard_userImage">
+              <img src={`${imagesSource()}/${image}`} alt="user" />
             </div>
-            <div className="userCard_background">
-                <img src={LOGO_BLUE} alt="logo" draggable={false}/>
+            <div className="userCard_userName">
+              <p>{name}</p>
             </div>
+            <div className="userCard_userCc">
+              <p>C.C: {cc}</p>
+              <p className={`${!isActive ? "red" : "green"} txt_center`}>{`${!isActive ? "Inactivo" : "Activo"}`}</p>
             </div>
-        </div></>
-    )
-    return(
-        <Link className="userCard_container " to={`/worker/${id}`}>
-            <div className="userCard_header">
-                <div className="userCard_logo">
-                    <img src={LOGO_COLOR} alt="logo" />
-                </div>
-                <div className="userCard_pricaName">
-                    <div className="userCard_shortname">
-                        <p>PRICA SAS</p>
-                    </div>
-                    <div className="userCard_longName">
-                        <p>PROYECTOS DE INGENIERÍA, CONSULTORÍA Y ASESORÍA</p>
-                    </div>
-                </div>
-            </div>
-            <div className="userCard_user">
-                <div className="userCard_userImage">
-                    <img src={USER_LOGO} alt="user" />
-                </div>
-                <div className="userCard_userName">
-                    <p>{name}</p>
-                </div>  
-                <div className="userCard_userCc">
-                    <p>C.C: {cc}</p>
-                </div>
-            </div>
-            <div className="userCard_cargo">
-                <p>{cargo}</p>
-            </div>
-            <div className="userCard_background">
-                <img src={LOGO_BLUE} alt="logo" draggable={false}/>
-            </div>
-        </Link>
+          </div>
+          <div className="userCard_cargo">
+            <p>{cargo}</p>
+          </div>
+          <div className="userCard_background">
+            <img src={LOGO_BLUE} alt="logo" draggable={false} />
+          </div>
+        </div>
+      </div>
+    </>
+  );
+}
+
+type EditWorkerForm = {
+  userInfo: WorkerToApi;
+  isActive: boolean
+};
+
+function EditWorkerForm({ userInfo, isActive }: EditWorkerForm) {
+  const [validInputs, setValidInputs] = useState<string[]>([]);
+  const [imageModal, setImageModal] = useState(false);
+  const [userData, setUserData] = useState<WorkerToApi>({
+    name: userInfo.name,
+    cc: userInfo.cc,
+    image: userInfo.image,
+    occupation: userInfo.occupation,
+    
+  });
+  const [editWorker, {loading, error, data}] = useMutation(EDIT_WORKER_BY_ID, {refetchQueries: ['GetWorkers']})
+
+  //Toast
+  const [toast, setToast] = useState(false);
+  const [toastProps, setToastProps] = useState({
+    title: "Titulo del toast",
+    body: "Cuerpo del toast",
+    footer: "Footer del toast",
+    theme: "primary_theme",
+  });
+  const handleChange = (evt: React.ChangeEvent<HTMLInputElement | HTMLSelectElement>) => {
+    const name = evt.target.name;
+    let value = evt.target.value;
+    setUserData((prev) => {
+      return {
+        ...prev,
+        [name]: value,
+      };
+    });
+  };
+
+  const handleSubmit = (evt: React.FormEvent<HTMLFormElement>) => {
+    evt.preventDefault()
+    console.log("Submit.")
+    const checks = new checkForms(userData);
+    const checkedInputs = checks.checkEmpty(
+      { name: "name", type: "string" },
+      { name: "cc", type: "number" },
+      { name: "occupation", type: "string" },
+      { name: "image", type: "string" }
     );
+    setValidInputs(checkedInputs);
+    if (checkedInputs.length === 0) {
+      userData.cc = parseFloat(`${userData.cc}`)
+        editWorker({
+          variables: {
+            info: userData,
+            workerId: userInfo._id,
+          },
+        });   
+      } else {
+        setToastProps({
+          title: "Error en la creación",
+          body: "Verifica que todos los campos esten diligenciasdos",
+          footer: "Error: Campos incompletos",
+          theme: "error_theme",
+        });
+        setToast(true);
+      }
+  };
+  const updateImage = (image: string) => {
+    setUserData((prev) => {
+      return {
+        ...prev,
+        image: image,
+      };
+    });
+    setToast(true);
+    setToastProps({
+        title: "Imagen seleccionada",
+    body: "La imagen ha sido seleccionada",
+    footer: "SUCCESS",
+    theme: "success_theme",
+    })
+  };
+
+  useEffect(() => {
+    if (data) {
+        setToastProps({
+            title: "Edición del elemento",
+            body: "La información ha sido actualizada, actualice la página para ver los cambios",
+            footer: "Exito",
+            theme: "success_theme",
+          });
+          setToast(true);
+    }
+    if (error) {
+        setToastProps({
+            title: "Edición del elemento",
+            body: "La información no ha podido actualizarse",
+            footer: "ERROR",
+            theme: "error_theme",
+          });
+          setToast(true);
+    }
+    if (loading) {
+        setToastProps({
+            title: "Edición del elemento",
+            body: "La información está siendo guardada",
+            footer: "Loading...",
+            theme: "primary_theme",
+          });
+          setToast(true);
+    }
+  }, [loading, error, data]);
+
+  return (
+    <>
+      <Toast
+        title={toastProps.title}
+        body={toastProps.body}
+        theme={toastProps.theme}
+        footer={toastProps.footer}
+        isActive={toast}
+        setToast={setToast}
+      />
+      <Modal modal={imageModal} setModal={setImageModal}>
+        <GalleryViewer action={updateImage} isActive={isActive}/>
+      </Modal>
+      <form onSubmit={handleSubmit}>
+        <Grid gap={12} def={1} sm={1} md={2} lg={3}>
+          <div className="user_image_container">
+            <div className="user_image">
+              <img src={`${imagesSource()}/${userData.image}`} alt="user image" />
+            </div>
+            <div style={{ paddingTop: 12 }} onClick={() => setImageModal(true)}>
+              <a className="mediumBottom input_container">Cambiar imagen</a>
+            </div>
+          </div>
+          <div className="col_span_def_2">
+            <InputBox
+              onChange={handleChange}
+              inputName="name"
+              labelTag="Nombre del colaborador"
+              isEmpty={validInputs.includes("name")}
+              value={userData.name}
+              type="text"
+            />
+            <InputBox
+              onChange={handleChange}
+              inputName="cc"
+              labelTag="Identificación del colaborador"
+              isEmpty={validInputs.includes("cc")}
+              value={`${userData.cc}`}
+              type="number"
+            />
+            <InputBox
+              onChange={handleChange}
+              inputName="occupation"
+              labelTag="Cargo del colaborador"
+              isEmpty={validInputs.includes("occupation")}
+              value={`${userData.occupation}`}
+              type="text"
+            />
+          </div>
+        </Grid>
+        <div style={{ paddingTop: 12 }}>
+          <button className="mediumBottom defaultButton" type="submit">
+            Guardar cambios
+          </button>
+        </div>
+      </form>
+    </>
+  );
 }

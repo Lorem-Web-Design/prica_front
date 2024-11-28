@@ -8,7 +8,7 @@ $toastWidth: 400px;
     border-radius: 8px;
     width: $toastWidth;
     transition: ease 300ms;
-    z-index: 20;
+    z-index: 1000;
     
     &.show{
         transition: ease 300ms;

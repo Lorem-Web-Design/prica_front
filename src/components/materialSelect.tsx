@@ -23,9 +23,7 @@ type SelectType = SingleValue<{
 
 export default function MaterialSelect({ label, name, isEmpty, value, setState, setRqNewItem, rqNewItem }: MaterialSelectBox){
     const {data, loading, error} = useQuery(GET_MATERIALS);
-    const handleSelectedMaterial = (evt: React.ChangeEvent<HTMLSelectElement>) => {
-
-    }
+    const handleSelectedMaterial = (evt: React.ChangeEvent<HTMLSelectElement>) => {}
 
     if(data){
         let materialList = data.getElements as PricaMaterial[];

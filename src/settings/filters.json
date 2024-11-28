@@ -1,0 +1,33 @@
+{
+    "categories": [
+        {
+            "name": "Todos",
+            "slug": "Todos"
+          },
+      {
+        "name": "Material",
+        "slug": "Material"
+      },
+      {
+        "name": "Herramienta",
+        "slug": "Herramienta"
+      },
+      {
+        "name": "EPP",
+        "slug": "EPP"
+      },
+      {
+        "name": "Dotacion",
+        "slug": "Dotacion"
+      },
+      {
+        "name": "Equipo",
+        "slug": "Equipo"
+      },
+      {
+        "name": "EPCC",
+        "slug": "EPCC"
+      }
+    ]
+  }
+  

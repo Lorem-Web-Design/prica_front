@@ -1,14 +1,21 @@
 import { useEffect, useState } from "react";
+import { AuthorizedRoles } from "../../@types/authorizationTypes";
 
+type UserTypes = {
+  username: string,
+    id: string,
+    token: string,
+    role: AuthorizedRoles
+}
 export default function useUser() {
-  const [user, setUser] = useState({
+  const [user, setUser] = useState<UserTypes>({
     username: "",
     id: "",
     token: "",
-    role: "",
+    role: "ing_proyectos" ,
   });
   const localUser = window.localStorage.getItem(
-    "estinorteLoggedUser"
+    "pricaUser"
   ) as string;
 
   useEffect(() => {
@@ -20,7 +27,7 @@ export default function useUser() {
         username: "",
         id: "",
         token: "",
-        role: "",
+        role: "ing_proyectos",
       });
     }
   }, []);

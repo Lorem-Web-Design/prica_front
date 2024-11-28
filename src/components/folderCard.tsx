@@ -34,7 +34,7 @@ export default function FolderCard({ icon, name, route, ID, isParent, parentId }
     theme: "primary_theme",
   });
 
-  const [deleteFolder, { data, error, loading }] = useMutation(DELETE_FOLDER_BY_ID, { variables: { folderId: ID } });
+  const [deleteFolder, { data, error, loading }] = useMutation(DELETE_FOLDER_BY_ID, { variables: { folderId: ID }, refetchQueries: ["ParentFolders"] });
   useEffect(() => {
     if (loading) {
       setToastProps({
@@ -171,9 +171,9 @@ function EditFolderForm({ folderInfo, ID }: CreateFolderForm) {
       setToast(true);
       setToastProps({
         title: "Edición de bodega",
-        body: "Bodega editada con éxito, recarga para ver los",
+        body: "Bodega editada con éxito, recarga para ver los cambios",
         footer: "SUCCESS",
-        theme: "primary_theme",
+        theme: "success_theme",
       });
     }
     if (error) {
@@ -191,7 +191,7 @@ function EditFolderForm({ folderInfo, ID }: CreateFolderForm) {
         title: "Edición de bodega",
         body: "Cargando datos",
         footer: "Waiting...",
-        theme: "error_theme",
+        theme: "primary_theme",
       });
     }
   }, [error, loading, data]);

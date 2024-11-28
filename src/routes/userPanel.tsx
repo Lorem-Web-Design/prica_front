@@ -39,7 +39,7 @@ export default function UserPanel() {
       <Title title="Gestión usuarios" description="A continuación selecciona lo que deseas hacer:" />
       <div className="pt_def_48"></div>
       {/* Barra de meníu inferior - shortcuts */}
-      <Grid gap={12} def={6} sm={2} md={2} lg={2} className="">
+      <Grid gap={12} def={6} sm={2} md={2} lg={6} className="">
         <CurrentUser />
         <div className="navigation_container col_s5">
           <div className="navigation_menu">
@@ -80,9 +80,9 @@ function FilteredElements({ workerId, selectedCategory }: FilteredElements) {
     const elements: ElementInformation[] = data.getElementsByWorkerAndCategory;
     return (
       <>
-        {elements.map((element) => (
+        {elements.length ? elements.map((element) => (
           <ElementCard info={element} />
-        ))}
+        )) : <p>No se encontraron elementos en esta categoría</p>} 
       </>
     );
   }
@@ -90,9 +90,9 @@ function FilteredElements({ workerId, selectedCategory }: FilteredElements) {
     <p>Error</p>;
   }
   if (loading) {
-    <div className="loading"></div>;
+    <div className="loader"></div>;
   }
-  return <p>No hay elementos...</p>;
+  return <div className="loader"></div>;
 }
 
 function CurrentUser() {
@@ -102,7 +102,7 @@ function CurrentUser() {
     const workerData = data.getWorkerById as PricaWorker;
     return (
       <div>
-        <UserCard name={workerData.name} cc={workerData.cc} cargo={workerData.occupation} image={USER_IMAGE} id={`${workerData._id}`} />
+        <UserCard name={workerData.name} cc={workerData.cc} cargo={workerData.occupation} image={workerData.image} id={`${workerData._id}`} isActive={workerData.isActive} />
       </div>
     );
   }

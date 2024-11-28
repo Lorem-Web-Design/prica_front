@@ -25,6 +25,7 @@ type User = {
   cargo: string;
   image: string;
   id: string;
+  isActive: boolean
 };
 
 type Button = {
@@ -55,6 +56,7 @@ type PricaWorker = {
   name: string;
   occupation: string;
   _id: string;
+  isActive: boolean
 };
 
 type PricaWorkerToApi = {
@@ -62,6 +64,7 @@ type PricaWorkerToApi = {
   image: string;
   name: string;
   occupation: string;
+  isActive: boolean
 };
 
 type ElementInformation = {
@@ -205,7 +208,7 @@ type AuthUser = {
   name: string;
   role: string;
   token: string;
-  position: string;
+  image: string
   name: string;
   id: string;
 };
@@ -231,12 +234,15 @@ type PricaOC = {
   deliverConditions: string;
   deliverAddress: string;
   ocNumber: number;
-  isAlive: boolean
+  isAlive: boolean;
+  project: string;
   _id?: string
   items: {
     name?: string;
     amount: number;
     id: string;
+    unitaryPrice: number;
+    totalPrice?: string
   }[];
 };
 
@@ -291,7 +297,8 @@ type RQItemsFromQuery = {
     unit: string;
     type: string;
     _id: string;
-    amount: number
+    amount: number;
+    unitaryPrice: number
   } | null;
 };
 

@@ -1,6 +1,6 @@
 import { ApolloError, QueryResult, useMutation, useQuery } from "@apollo/client";
 import { useParams } from "react-router-dom";
-import { GET_OC_BY_ID } from "../api/myQueries";
+import { GET_OC_BY_ID, GET_OCS } from "../api/myQueries";
 import PRC_LOGO from "../assets/images/prica_full_color_logo.png";
 import ApolloErrorPage from "../components/apolloErrorPage";
 import BottomStart from "../components/bottomStart";
@@ -11,6 +11,8 @@ import RuledActionButton from "../components/ruledActionButton";
 import { KILL_OC_BY_ID } from "../api/myMutations";
 import Toast from "../components/toast";
 import { useEffect, useState } from "react";
+import OrdenDeCompra from "../utils/oc.controll";
+import OC_DELIVERY_INFO from "../data/ocDeliverInfo.json";
 
 export default function OCViewer() {
 
@@ -19,7 +21,7 @@ export default function OCViewer() {
       {/* Titulo de la página actual */}
       <Title title="Orden de compra" description="" />
       {/* OC TABLE */}
-      <Grid def={1} gap={12} lg={3} md={3} sm={3}>
+      <Grid def={1} gap={12} lg={1} md={1} sm={1}>
         <OCInfo/>
       </Grid>
       <BottomStart />
@@ -44,25 +46,23 @@ function OCInfo(){
           footer: "Footer del toast",
           theme: "primary_theme"
       })
-  const [killOc, {loading: loadingKill, error:errorKill, data:dataKill}] = useMutation(KILL_OC_BY_ID, {variables: {ocId}, 
-    update(cache, { data }) {
-      /*@ts-ignore */
-      const { getOcById } = cache.readQuery<ApolloCache<RQControllTypes>>({
-        query: GET_OC_BY_ID,
-        variables: { ocId },
-      });
-      cache.writeQuery({
-        query: GET_OC_BY_ID,
-        variables: { ocId },
-        data: {
-          getOcById: {
-            ...getOcById,
-            isAlive: !getOcById.isAlive,
+
+      const [killOc, {loading: loadingKill, error:errorKill, data:dataKill}] = useMutation(KILL_OC_BY_ID, {
+        refetchQueries :[
+          {
+            query: GET_OCS
           },
-        },
-      });
-    },
-  })
+          {
+            query: GET_OC_BY_ID,
+            variables: {
+              ocId
+            }
+          }
+        ],
+        variables: {
+          ocId
+        }
+      })
 
   useEffect(() => {
     if(loadingKill){
@@ -109,7 +109,6 @@ useEffect(() => {
 }, [data]);
   
   if(data){
-    console.log(data.getOcById.isAlive )
     return (
       <>
       <Toast
@@ -245,6 +244,7 @@ useEffect(() => {
                 {data.getOcById.receiver.email}
                 </td>
               </tr>
+              <td colSpan={5} className="projectName">{data.getOcById.project}</td>
             </thead>
             <tbody>
               <tr>
@@ -260,10 +260,10 @@ useEffect(() => {
                 <th className="primary_background">FECHA DE ENTREGA</th>
               </tr>
               <tr>
-                <th>{data.getOcById.deliverMethod}</th>
-                <th>{data.getOcById.deliverConditions}</th>
+                <th>{OrdenDeCompra.OCDeliveryInfo("deliveryMethods", data.getOcById.deliverMethod)}</th>
+                <th>{OrdenDeCompra.OCDeliveryInfo("deliveryConditions", data.getOcById.deliverConditions)}</th>
                 <th>{data.getOcById.deliverAddress}</th>
-                <th>{data.getOcById.paymentMethod}</th>
+                <th>{OrdenDeCompra.OCDeliveryInfo("paymentMethod", data.getOcById.paymentMethod)}</th>
                 <th>{data.getOcById.deliverDate}</th>
               </tr>
             </thead>
@@ -286,8 +286,8 @@ useEffect(() => {
                 <td>{index + 1}</td>
                 <td>{item.name}</td>
                 <td>{item.amount}</td>
-                <td>--------</td>
-                <td>--------</td>
+                <td>{OrdenDeCompra.toCurrency(item.unitaryPrice)}</td>
+                <td>{OrdenDeCompra.toCurrency(item.amount * item.unitaryPrice)}</td>
               </tr>
                 )
               })}

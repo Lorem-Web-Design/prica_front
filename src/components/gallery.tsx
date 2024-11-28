@@ -8,9 +8,12 @@ import CustomContextMenu from "./customContextMenu";
 import ImageUploader from "./imageUploader";
 import Modal from "./modal";
 import Toast from "./toast";
+import { AuthorizedRoles } from "../@types/authorizationTypes";
+import useUser from "../customHooks/users/useUser";
 
-export default function Gallery() {
+export default function Gallery({roles}: {roles: AuthorizedRoles[]}) {
   const [modal, setModal] = useState(false);
+  const user =useUser();
   const [storeMaterials, { loading, data, error }] = useMutation(ADD_MATERIAL);
   const cardReference = useRef<HTMLDivElement>(null);
   // Para subir imagenes
@@ -59,7 +62,7 @@ export default function Gallery() {
       <ImageUploader/>
       </Modal>
 
-      <div className="card_container select_none" style={{ cursor: "pointer" }} onClick={() => setModal(true)}  ref={cardReference}>
+      <div className={`card_container select_none ${roles.includes(user.role) ? "" : "hide"}`} style={{ cursor: "pointer" }} onClick={() => setModal(true)}  ref={cardReference}>
       <CustomContextMenu cardReference={cardReference}>
             <ul>
             <li onClick={()=>{setModal(true)}}>

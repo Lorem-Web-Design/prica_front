@@ -15,6 +15,7 @@ import Toast from "../components/toast";
 import CreateRqProvider, { CreateRqContext } from "../contexts/createRqContext";
 import RQ_ITEM_MOCK from "../data/mock.newItem.json";
 import RQControll from "../utils/rq.controll";
+import RQMaterialSelect from "../components/RQMaterialSelect";
 
 /*La vaina se puso complicada llave, acá pongo unos conceptos que te daran una luz en el futuro
 
@@ -78,7 +79,8 @@ function GeneralRQInfo() {
         name: selectedMaterial.name,
         type: selectedMaterial.category,
         _id: selectedMaterial._id,
-        amount: selectedMaterial.amount
+        amount: selectedMaterial.amount,
+        unitaryPrice: 0
       }
     };
     rqControll.rq.rqItems.push(JSON.parse(JSON.stringify(newItem)));
@@ -91,7 +93,7 @@ function GeneralRQInfo() {
       <form onSubmit={handleSubmit}>
         <InputBox inputName="rq" isEmpty={false} labelTag="Título de la requisición" onChange={handleChange} value={rqInfo.rq} type="text"/>
         <div className="pt_def_12"></div>
-        <InputBox inputName="ppto" isEmpty={false} labelTag="Capitulo Presupuesto" onChange={handleChange} value={rqInfo.ppto} type="text"/>
+        <InputBox inputName="ppto" isEmpty={false} labelTag="PRC" onChange={handleChange} value={rqInfo.ppto} type="number"/>
         <div className="pt_def_12"></div>
         <BodegaSelectBox
           defaultOption={{
@@ -114,7 +116,7 @@ function GeneralRQInfo() {
   if (rqOption === "RQ_ITEMS") {
     return (
       <form onSubmit={addNewItem}>
-        <MaterialSelect
+        <RQMaterialSelect
           setState={setSelectedMaterial}
           isEmpty={false}
           label="Material"
@@ -268,7 +270,14 @@ function RQLayout() {
   const { user, rqInfo } = useContext(CreateRqContext);
   return (
     <>
-      <Grid gap={12} sm={2} md={2} lg={2} def={9} className="rqContainer rqBorder">
+      <Grid
+          gap={12}
+          sm={9}
+          md={9}
+          lg={9}
+          def={9}
+          className="rqContainer rqBorder"
+        >
         <div className="col_span_def_2 rqLogoContainer">
           <div className="reqLogo">
             <img src={PRC_LOGO} alt="PRICA SAS" />
@@ -297,7 +306,14 @@ function RQLayout() {
         </div>
       </Grid>
       <div className="pt_def_16"></div>
-      <Grid gap={12} sm={2} md={2} lg={2} def={9} className="rqInfoContainer rqBorder">
+      <Grid
+          gap={12}
+          sm={9}
+          md={9}
+          lg={9}
+          def={9}
+          className="rqInfoContainer rqBorder"
+        >
         <div className="col_span_def_2">
           <p>Fecha</p>
           <p>Proyecto</p>
@@ -308,7 +324,7 @@ function RQLayout() {
         </div>
         <div className="col_span_def_2">
           <p>No. Solicitud</p>
-          <p>Capitulo PPTO</p>
+          <p>PRC </p>
         </div>
         <div className="col_span_def_2">
           <p>{rqInfo.rq}</p>
@@ -316,7 +332,8 @@ function RQLayout() {
         </div>
       </Grid>
       <div className="pt_def_16"></div>
-      <Grid gap={12} sm={2} md={2} lg={2} def={1} className="rqInfoContainer">
+      {/* Información de la RQ */}
+      <Grid gap={12} sm={2} md={2} lg={1} def={1} className="rqInfoContainer">
         <table className="rqTable">
           <thead>
             <tr>
@@ -336,7 +353,8 @@ function RQLayout() {
         </table>
       </Grid>
       <div className="pt_def_16"></div>
-      <Grid gap={12} sm={2} md={2} lg={2} def={4} className="rqInfoContainer rqBorder">
+      {/* Información del solicitante */}
+      <Grid gap={12} sm={2} md={2} lg={4} def={4} className="rqInfoContainer rqBorder">
         <div>
           <p>SOLICITANTE</p>
         </div>

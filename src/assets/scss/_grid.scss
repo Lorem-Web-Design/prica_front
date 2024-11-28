@@ -36,12 +36,21 @@ $cols: 12;
 
 @media (min-width: 599px) {
     @include grid-cols(sm);
+    .center_sm{
+        justify-content: center;
+    }
 }
 @media (min-width: 904px) {
     @include grid-cols(md);
+    .center_md{
+        justify-content: center;
+    }
 }
 @media (min-width: 1239px) {
-    @include grid-cols(sm);
+    @include grid-cols(lg);
+    .center_lg{
+        justify-content: center;
+    }
 }
 
 .flex{

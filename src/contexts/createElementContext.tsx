@@ -30,6 +30,9 @@ type ContextInfo = {
     selectedType: string,
     elementEditor: ElementEditor,
     setElementInfo: React.Dispatch<React.SetStateAction<ElementFromQuery>>
+    setSaveImageTrigger: React.Dispatch<React.SetStateAction<boolean>>
+    setImageUrl: React.Dispatch<React.SetStateAction<string | null>>
+    saveImageTrigger: boolean
 }
 
 const ContextDefaultValue:ContextInfo = {
@@ -50,7 +53,11 @@ const ContextDefaultValue:ContextInfo = {
     setToastProps: () => {},
     selectedType: "Material",
     elementEditor: new ElementEditor(AS_QUERY_ELEMENT as ElementFromQuery),
-    setElementInfo: () => {}
+    setElementInfo: () => {},
+    saveImageTrigger: false,
+    setImageUrl: () => {},
+    setSaveImageTrigger: () => {}
+
 }
 
 export const CreateElementContext = createContext(ContextDefaultValue);
@@ -73,8 +80,13 @@ export default function CreateElementProvider({children}:PropsWithChildren){
         footer: "Footer del toast",
         theme: "primary_theme"
     })
+        //Input Image Inicialization
+        const [imageUrl, setImageUrl] = useState<null | string>(null)
+        const [saveImageTrigger, setSaveImageTrigger] = useState(false);
     //Mutation for the element creation
-    const [createElement, { data: elementData, loading: elementLoading, error: elementError }] = useMutation(CREATE_ELEMENT)
+    const [createElement, { data: elementData, loading: elementLoading, error: elementError }] = useMutation(CREATE_ELEMENT, {
+        refetchQueries:["GetElements"]
+    })
     
     const handleChange = (evt: React.ChangeEvent<HTMLInputElement | HTMLSelectElement>) => {
         const name = evt.target.name;
@@ -83,6 +95,12 @@ export default function CreateElementProvider({children}:PropsWithChildren){
         elementEditor.element[name] = value;
         if(name === "takerFolder"){
             elementEditor.element.takerFolder = {
+                name,
+                _id: value
+            }
+        }
+        if(name === "currentOwner"){
+            elementEditor.element.currentOwner = {
                 name,
                 _id: value
             }
@@ -97,22 +115,16 @@ export default function CreateElementProvider({children}:PropsWithChildren){
         setElementInfo(elementEditor.stateCopy)
     }
 
+    
+
     const handleSubmit = async (evt: React.FormEvent<HTMLFormElement>) => {
         evt.preventDefault();
-
         const checks = new checkForms(elementEditor.toApi);
-        
         const checkedInputs = checks.checkEmpty({ name: "name", type: "string" }, { name: "description", type: "string" }, { name: "currentOwner", type: "string" }, { name: "takerFolder", type: "string" }, { name: "category", type: "string" }, { name: "provider", type: "string" }, { name: "image", type: "string" }, { name: "unit", type: "string" });
-
+        
         setValidInputs(checkedInputs);
-
         if (checkedInputs.length === 0) {
-
-            createElement({
-                variables: {
-                    elementData: elementEditor.toApi
-                }
-            });
+            setSaveImageTrigger(true);
         }
     }
 
@@ -148,8 +160,17 @@ export default function CreateElementProvider({children}:PropsWithChildren){
         }
     }, [elementData, elementError, elementData]);
 
-
-    return <CreateElementContext.Provider value={{elementInfo, handleChange, handleSubmit, validInputs, toast, toastProps, setFile, setToast, setToastProps, selectedType, handleTypeChange, elementEditor, setElementInfo}}>
+    useEffect(()=>{
+        if(imageUrl !== null){
+            elementEditor.element.image = imageUrl;
+            createElement({
+                variables: {
+                    elementData: elementEditor.toApi
+                }
+            });
+        }
+    },[imageUrl])
+    return <CreateElementContext.Provider value={{elementInfo, handleChange, handleSubmit, validInputs, toast, toastProps, setFile, setToast, setToastProps, selectedType, handleTypeChange, elementEditor, setElementInfo, saveImageTrigger, setImageUrl, setSaveImageTrigger}}>
         <Toast
           title={toastProps.title}
           body={toastProps.body}

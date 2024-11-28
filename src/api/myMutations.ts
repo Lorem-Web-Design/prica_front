@@ -360,3 +360,48 @@ export const EDIT_PROVIDER_BY_ID = gql`mutation UpdateProviderById($providerId: 
     }
   }
 }`
+
+export const EDIT_WORKER_BY_ID = gql`mutation Mutation($workerId: ID!, $info: WorkerInput!) {
+  editWorkerById(workerId: $workerId, info: $info) {
+    code
+    message
+    success
+    worker {
+      name
+      image
+    }
+  }
+}`
+
+export const EDIT_USER = gql`mutation DeleteUserById($userId: String!, $info: UserInput) {
+  editUserById(userId: $userId, info: $info) {
+    code
+    message
+    user {
+      _id
+      role
+      name
+    }
+  }
+}`
+
+export const DELETE_IMAGE = gql`mutation DeleteImages($imageName: ID!) {
+  deleteImages(imageName: $imageName) {
+    code
+    image
+    message
+    success
+  }
+}`
+
+export const UPDATE_USER_STATUS =gql`mutation ChangeWorkerStatus($workerId: ID!, $action: String!) {
+  activateWorkerById(workerId: $workerId, action: $action) {
+    code
+    message
+    success
+    worker {
+      _id
+      name
+    }
+  }
+}`

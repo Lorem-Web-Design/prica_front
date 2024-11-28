@@ -37,11 +37,17 @@ export default function RqMenu() {
           className="option_container"
           onClick={() => handleModal("RQ_ITEMS")}
         >
+          <div className="tooltip">
           <img
             src={ADD_ELEMENT}
             alt="Añadir elemento"
             className="option_icon"
           />
+          <span className="tooltiptext">
+          Añadir ítem RQ
+          </span>
+          </div>
+          
         </div>
         <div
           className="option_container"
@@ -49,7 +55,13 @@ export default function RqMenu() {
             handleModal("GENERAL");
           }}
         >
+          <div className="tooltip">
           <img src={EDIT} alt="Editar" className="option_icon" />
+          <span className="tooltiptext">
+            Opciones generales
+          </span>
+          </div>
+          
         </div>
         <div
           className="option_container"
@@ -57,10 +69,21 @@ export default function RqMenu() {
             handleModal("ADD_MATERIAL");
           }}
         >
+          <div className="tooltip">
           <img src={ADD_MATERIAL} alt="Editar" className="option_icon" />
+          <span className="tooltiptext">
+            Crear elemento
+          </span>
+          </div>
         </div>
         <div className="option_container" onClick={handleSubmit}>
+          
+          <div className="tooltip">
           <img src={SAVE} alt="Editar" className="option_icon" />
+          <span className="tooltiptext">
+            Guardar
+          </span>
+          </div>
         </div>
       </div>
     </div>

@@ -82,9 +82,10 @@ export default function OcCard({cardInfo}:OCCard){
             </li>
           </ul>
             </CustomContextMenu>
-            <p className="rqTitle">Orden de compra</p>
+            <p className="rqTitle">OC: {cardInfo.project ? cardInfo.project : "SIN NOMBRE"}</p>
             <p className="rqDate">Consecutivo: {cardInfo.ocNumber}</p>
             <p className="rqDate">Fecha de creación: {cardInfo.date}</p>
+            <p className={`${cardInfo.isAlive ? "red" : "green"}`}>{`${cardInfo.isAlive ? "Pendiente" : "Aprobado"}`}</p>
         </div></>
     )
 }

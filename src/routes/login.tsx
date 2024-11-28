@@ -20,9 +20,7 @@ export default function Login() {
         try{
           const result = await postDataNoToken(`${dataSource()}/user/login`, myForm);
           const parsedData = await result.json();
-          console.log(result.status)
           if(result.status === 200){
-            console.log(parsedData)
             login(parsedData);
           }
           

@@ -30,6 +30,7 @@ export const LOGIN = gql`
       name
       role
       token
+      image
     }
   }
 `;
@@ -42,8 +43,34 @@ export const GET_WORKERS = gql`
       occupation
       image
       _id
+      isActive
     }
   }
+`;
+
+export const GET_ADMINS = gql`
+  query GetUsers {
+  getUsers {
+    name
+    cc
+    role
+    image
+    _id
+  }
+}
+`;
+
+export const DELETE_ADMINS = gql`mutation DeleteUserById($userId: String!) {
+  deleteUserById(userId: $userId) {
+    code
+    message
+    success
+    user {
+      name
+      role
+    }
+  }
+}
 `;
 
 export const GET_FOLDERS = gql`
@@ -66,6 +93,7 @@ export const GET_ELEMENTS = gql`
       code
       serial
       image
+      category
       history {
         giverFolder {
           name
@@ -84,7 +112,10 @@ export const GET_ELEMENTS = gql`
           _id
         }
       }
-      currentOwner
+      currentOwner {
+      name
+      _id
+    }
       giverFolder {
           name
           _id
@@ -98,6 +129,53 @@ export const GET_ELEMENTS = gql`
     }
   }
 `;
+
+export const GET_RQ_ELEMENTS = gql`
+query Query {
+  getElementsForRq {
+    _id
+    name
+    description
+    code
+    serial
+    image
+    history {
+      giver {
+        name
+        _id
+      }
+      taker {
+        name
+        _id
+      }
+      amount
+    }
+    remision {
+      amount
+    }
+    currentOwner {
+      name
+      _id
+    }
+    giverFolder {
+      name
+      _id
+    }
+    takerFolder {
+      name
+      _id
+    }
+    onDelivery
+    category
+    amount
+    size
+    price
+    provider
+    lastMovement
+    unit
+  }
+}
+`
 
 export const GET_ELEMENT_BY_ID = gql`query GetElementById($getElementById: String!) {
   getElementById(id: $getElementById) {
@@ -144,7 +222,10 @@ export const GET_ELEMENT_BY_ID = gql`query GetElementById($getElementById: Strin
         _id
       }
     }
-    currentOwner
+    currentOwner {
+      name
+      _id
+    }
     giverFolder {
           name
           _id
@@ -195,7 +276,10 @@ export const EDIT_ELEMENT = gql`
             _id
           }
         }
-        currentOwner
+        currentOwner {
+          name
+          _id
+        }
         giverFolder {
           name
           _id
@@ -237,7 +321,10 @@ export const GET_ELEMENTS_BY_ID_AND_CATEGORY = gql`
           _id
         }
       }
-      currentOwner
+      currentOwner {
+      name
+      _id
+    }
       giverFolder{
           name
           _id
@@ -248,6 +335,7 @@ export const GET_ELEMENTS_BY_ID_AND_CATEGORY = gql`
       }
       onDelivery
       _id
+      category
     }
   }
 `;
@@ -279,7 +367,10 @@ export const GET_ELEMENTS_BY_FOLDER_ID = gql`
           _id
         }
       }
-      currentOwner
+      currentOwner {
+      name
+      _id
+    }
       giverFolder{
           name
           _id
@@ -321,7 +412,10 @@ export const GET_ELEMENTS_BY_FOLDER_AND_CATEGORY = gql`
           _id
         }
       }
-      currentOwner
+      currentOwner {
+      name
+      _id
+    }
       giverFolder {
         name
         _id
@@ -445,6 +539,7 @@ export const GET_OCS = gql`
         email
         _id
       }
+      project
       date
       observation
       paymentMethod
@@ -452,6 +547,7 @@ export const GET_OCS = gql`
       deliverDate
       deliverConditions
       deliverAddress
+      isAlive
       ocNumber
       items {
         amount
@@ -485,6 +581,7 @@ export const GET_OC_BY_ID = gql`query GetOcById($ocId: ID!) {
       _id
     }
     date
+    project
     observation
     paymentMethod
     deliverMethod
@@ -497,6 +594,7 @@ export const GET_OC_BY_ID = gql`query GetOcById($ocId: ID!) {
       name
       amount
       id
+      unitaryPrice
     }
     _id
   }
@@ -504,7 +602,7 @@ export const GET_OC_BY_ID = gql`query GetOcById($ocId: ID!) {
 `;
 
 export const GET_IMAGES = gql`
-query Query {
+query GetImages {
   getImages
 }`
 
@@ -533,6 +631,7 @@ export const GET_WORKER_BY_ID = gql`query GetWorkerById($workerId: ID!) {
     occupation
     image
     _id
+    isActive
   }
 }`
 
@@ -542,4 +641,8 @@ export const CREATE_ADMIN = gql`mutation AddUser($userData: UserInput!) {
     message
     success
   }
+}`
+
+export const GET_PENDING_RQS = gql`query GetPendingRqs {
+  getPendingRq
 }`

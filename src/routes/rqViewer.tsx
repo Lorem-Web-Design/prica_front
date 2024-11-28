@@ -50,9 +50,9 @@ export default function RQViewer() {
         {/* Barra de meníu inferior - shortcuts */}
         <Grid
           gap={12}
-          sm={2}
-          md={2}
-          lg={2}
+          sm={9}
+          md={9}
+          lg={9}
           def={9}
           className="rqContainer rqBorder"
         >
@@ -88,9 +88,9 @@ export default function RQViewer() {
         <div className="pt_def_16"></div>
         <Grid
           gap={12}
-          sm={2}
-          md={2}
-          lg={2}
+          sm={9}
+          md={9}
+          lg={9}
           def={9}
           className="rqInfoContainer rqBorder"
         >
@@ -104,7 +104,7 @@ export default function RQViewer() {
           </div>
           <div className="col_span_def_2">
             <p>No. Solicitud</p>
-            <p>Capitulo PPTO</p>
+            <p>PRC</p>
           </div>
           <div className="col_span_def_2">
             <p>{rqInfo.rq}</p>
@@ -112,7 +112,9 @@ export default function RQViewer() {
           </div>
         </Grid>
         <div className="pt_def_16"></div>
-        <Grid gap={12} sm={2} md={2} lg={2} def={1} className="rqInfoContainer">
+        {/* Información de RQ */}
+        <Grid gap={12} sm={1} md={1} lg={1} def={1} className="rqInfoContainer">
+          <div className="tableOverflow">
           <table className="rqTable">
             <thead>
               <tr>
@@ -135,16 +137,11 @@ export default function RQViewer() {
               />
             </thead>
           </table>
+          </div>
         </Grid>
         <div className="pt_def_16"></div>
-        <Grid
-          gap={12}
-          sm={2}
-          md={2}
-          lg={2}
-          def={4}
-          className="rqInfoContainer rqBorder"
-        >
+        {/* Información del solicitante */}
+        <Grid gap={12} sm={2} md={2} lg={4} def={4} className="rqInfoContainer rqBorder">
           <div>
             <p>SOLICITANTE</p>
           </div>
@@ -159,7 +156,8 @@ export default function RQViewer() {
           </div>
         </Grid>
         <div className="pt_def_16"></div>
-        <Grid gap={12} sm={2} md={2} lg={2} def={4} className="rqInfoContainer">
+        {/* Boton crear oc */}
+        <Grid gap={12} sm={2} md={2} lg={3} def={1} className="rqInfoContainer">
           <ApproveRQButton
             rqId={rqId || ""}
             approvedStatus={rqInfo.isApproved}
@@ -259,23 +257,12 @@ function ApproveRQButton({ rqId, approvedStatus, haveOC, rqControll }: ApproveRQ
   const { setToast, toast, toastProps, setToastProps } =
     useContext(NotiContext);
   const [updateRQ, { loading, error, data }] = useMutation(UPDATE_RQ_BY_ID, {
-    update(cache, { data }) {
-      /*@ts-ignore */
-      const { getRqById } = cache.readQuery<ApolloCache<RQControllTypes>>({
-        query: GET_RQ_BY_ID,
-        variables: { rqId },
-      });
-      cache.writeQuery({
-        query: GET_RQ_BY_ID,
-        variables: { rqId },
-        data: {
-          getRqById: {
-            ...getRqById,
-            isApproved: !getRqById.isApproved,
-          },
-        },
-      });
-    },
+    refetchQueries: [{
+      query: GET_RQ_BY_ID,
+      variables: {
+        rqId
+      }
+    }]
   });
 
   let isVisible =
@@ -284,8 +271,8 @@ function ApproveRQButton({ rqId, approvedStatus, haveOC, rqControll }: ApproveRQ
 
 
   const approveRq = async (appr: string) => {
-    await setApprState(appr);
-    rqControll.rq.isApproved = true;
+    setApprState(appr);
+    rqControll.rq.isApproved = appr === "true";
     updateRQ({
       variables: { info: rqControll.rqToAPI, rqId: rqId }
     });

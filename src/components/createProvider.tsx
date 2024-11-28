@@ -17,12 +17,16 @@ import ApolloErrorPage from "./apolloErrorPage";
 import Grid from "./grid";
 import ProviderCard from "./providerCard";
 import CustomContextMenuV2 from "./customContextMenuV2";
+import AddIcon from "../assets/icon/addIcon";
+import { AuthorizedRoles } from "../@types/authorizationTypes";
+import useUser from "../customHooks/users/useUser";
 
-export default function ProviderMenu() {
+export default function ProviderMenu({roles}: {roles: AuthorizedRoles[]}) {
   const [modal, setModal] = useState(false);
   const [listModal, setListModal] = useState(false);
   const [storeMaterials, { loading, data, error }] = useMutation(ADD_MATERIAL);
   const cardReference = useRef<HTMLDivElement>(null);
+  const user =useUser();
   // Para subir imagenes
   const [file, setFile] = useState<string | File>(ELEMENT_IMAGE);
   //Toast Inicialization
@@ -72,7 +76,7 @@ export default function ProviderMenu() {
         <h2>Listado de proveedores</h2>
         <ProvidersList/>
       </Modal>
-      <div className="card_container select_none" style={{ cursor: "pointer" }} onClick={() => setListModal(true)} ref={cardReference}>
+      <div className={`card_container select_none ${roles.includes(user.role) ? "" : "hide"}`} style={{ cursor: "pointer" }} onClick={() => setListModal(true)} ref={cardReference}>
         <CustomContextMenu cardReference={cardReference}>
           <ul>
             <li
@@ -91,7 +95,7 @@ export default function ProviderMenu() {
               }}
             >
               <div className="option">
-                <UploadIcon />
+                <AddIcon />
                 Crear proveedores
               </div>
             </li>

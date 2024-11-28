@@ -24,6 +24,7 @@ import OCStart from "./routes/ocStart";
 import OCViewList from "./routes/ocList";
 import AUTHORIZATION from "./settings/authorized.json"
 import Unauthorized from "./routes/unauthorized";
+import GestionAdmins from "./routes/gestionAdmins";
 
 //PAGES
 
@@ -36,16 +37,17 @@ function App() {
       <Routes>
       <Route path="/login" element={<Login />} />
         <Route path="/" element={<ProtectedRoute roles={AUTHORIZATION.INICIO}><Start /></ProtectedRoute>} />
-        <Route path="/bodega" element={<ProtectedRoute roles={AUTHORIZATION.BODEGA_PANEL}><Folder/></ProtectedRoute>} />
+        <Route path="/centro_costo" element={<ProtectedRoute roles={AUTHORIZATION.BODEGA_PANEL}><Folder/></ProtectedRoute>} />
         <Route path="/requisicion" element={<ProtectedRoute  roles={AUTHORIZATION.RQ_PANEL}><RQStart/></ProtectedRoute>} />
         <Route path="/oc" element={<ProtectedRoute roles={AUTHORIZATION.OC_PANEL}><OCStart/></ProtectedRoute>} />
         <Route path="/requisicion/editor" element={<ProtectedRoute roles={AUTHORIZATION.RQ_EDITOR}><RQEditor/></ProtectedRoute>} />
         <Route path="/requisicion/list" element={<ProtectedRoute roles={AUTHORIZATION.RQ_LIST}><RQViewList/></ProtectedRoute>} />
         <Route path="/oc/list" element={<ProtectedRoute roles={AUTHORIZATION.OC_LIST}><OCViewList/></ProtectedRoute>} />
         <Route path="/requisicion/viewer/:rqId" element={<ProtectedRoute roles={AUTHORIZATION.RQ_VIEWER}><RQViewer/></ProtectedRoute>} />
-        <Route path="/bodega/:parentId" element={<ProtectedRoute roles={AUTHORIZATION.BODEGA_CHILDREN}><Subfolder /></ProtectedRoute>} />
-        <Route path="/bodega/info/:folderId" element={<ProtectedRoute roles={AUTHORIZATION.BODEGA_VIEWER}><BodegaInfo /></ProtectedRoute>} />
+        <Route path="/centro_costo/:parentId" element={<ProtectedRoute roles={AUTHORIZATION.BODEGA_CHILDREN}><Subfolder /></ProtectedRoute>} />
+        <Route path="/centro_costo/info/:folderId" element={<ProtectedRoute roles={AUTHORIZATION.BODEGA_VIEWER}><BodegaInfo /></ProtectedRoute>} />
         <Route path="/worker" element={<ProtectedRoute roles={AUTHORIZATION.WORKER_LIST}><GestionUsuarios /></ProtectedRoute>} />
+        <Route path="/admins" element={<ProtectedRoute roles={AUTHORIZATION.WORKER_LIST}><GestionAdmins /></ProtectedRoute>} />
         <Route path="/create/user" element={<CreateUser />} />
         <Route path="/oc/editor/rq/:rqId" element={<ProtectedRoute roles={AUTHORIZATION.OC_EDITOR}><OCEditor /></ProtectedRoute>} />
         <Route path="/oc/viewer/:ocId" element={<ProtectedRoute roles={AUTHORIZATION.OC_VIEWER}><OCViewer /></ProtectedRoute>} />

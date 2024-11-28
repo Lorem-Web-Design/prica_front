@@ -50,7 +50,10 @@ export type ElementFromQuery = {
   unit: string;
   history: HistoryAndRemision[];
   remision: HistoryAndRemision[]
-  currentOwner: string;
+  currentOwner: {
+    name: string;
+    _id: string;
+  };
   giverFolder: {
     name: string;
     _id: string;
