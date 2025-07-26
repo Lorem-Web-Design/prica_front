@@ -25,6 +25,8 @@ export type WorkerToApi = {
   occupation: string,
   image: string
   _id?: string
+  isActive: boolean | string
+  eppHistory: EppInfo[]
 }
 
 export type VisibleAdmin = {

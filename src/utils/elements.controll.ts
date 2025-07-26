@@ -18,22 +18,29 @@ export default class ElementControll {
     return results;
   }
 
+  searchByUrl(url: string) {
+    let results: ElementFromQuery[] = [];
+    const urlParams = new URLSearchParams(url.split('?')[1]);
+    const searchString = urlParams.get('searchString') || '';
+    const cat = urlParams.get('cat') || '';
+    results = this.searchByCategory(cat, searchString);
+    return results;
+  }
+
   searchByCategory(cat: string, query: string) {
     let filterByName = this.search("name", query);
+    console.log(filterByName);
     let results: ElementFromQuery[] = [];
+
+    if(cat === "Todos"){
+      return filterByName;
+    }
+
     for(const elementInfo of filterByName){
       if(elementInfo.category === cat){
         results.push(elementInfo)
       }
     }
     return results;
-  }
-
-  pagination({elementsPerPage,elementList,}: {elementsPerPage: number;elementList: ElementFromQuery[];}) {
-    let pagination: ElementFromQuery[][] = [];
-    for (let i = 0; i < elementList.length; i += elementsPerPage) {
-      pagination.push(elementList.slice(i, i + elementsPerPage));
-    }
-    return pagination;
   }
 }

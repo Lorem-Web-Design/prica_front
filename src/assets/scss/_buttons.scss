@@ -1,5 +1,9 @@
 @use 'colors';
 
+.pointer{
+    cursor: pointer;
+}
+
 .bigButton{
     background-color: colors.$primary_blue;
     font-size: 32px;
@@ -7,6 +11,10 @@
     padding: 8px;
     text-decoration: none;
     cursor: pointer;
+    &:hover{
+        background-color: #000000;
+        transition: 0.3s ease;
+    }
 }
 
 .mediumBottom{
@@ -58,6 +66,14 @@
     color: white;
 }
 
+.addElementButton{
+    height: fit-content;
+    background-color: colors.$primary_blue;
+    cursor: pointer;
+    color: white;
+    width: 100%;
+}
+
 .defaultButton{
     border-top: 2px solid #545454;
     border-right: 2px solid #000000;
@@ -68,5 +84,18 @@
     border-left: 2px solid #000000;
     border-top: 2px solid #000000;
     border-right: 2px solid #545454;
+    }
+}
+
+.chipsContainer{
+    display: flex;
+    align-items: center;
+    gap: 12px;
+    padding-bottom: 12px;
+    div{
+        text-align: center;
+        font-size: 16px;
+        min-width: 30px;
+        padding: 4px;
     }
 }

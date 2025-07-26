@@ -1,21 +1,29 @@
 import { useContext, useState } from "react";
 import TrashCan from "../assets/icon/trashcan";
 import PRC_LOGO from "../assets/images/prica_full_color_logo.png";
+import RQMaterialSelect from "../components/RQMaterialSelect";
 import BodegaSelectBox from "../components/bodegaSelectBox";
 import BottomStart from "../components/bottomStart";
 import CategorySelectBox from "../components/categorySelectBox";
+import CreateFolderForm from "../components/forms/creaeteFolderForm";
 import Grid from "../components/grid";
 import InputBox from "../components/inputElement";
 import Layout from "../components/layout";
-import MaterialSelect from "../components/materialSelect";
 import Modal from "../components/modal";
 import RqMenu from "../components/rqMenu";
 import Title from "../components/title";
 import Toast from "../components/toast";
 import CreateRqProvider, { CreateRqContext } from "../contexts/createRqContext";
 import RQ_ITEM_MOCK from "../data/mock.newItem.json";
+import ELEMENT_FROM_QUERY_MOCK from "../data/mock.element.json"
 import RQControll from "../utils/rq.controll";
-import RQMaterialSelect from "../components/RQMaterialSelect";
+import FolderControll from "../utils/folder.controll";
+import ParentChildrenSelector from "../components/selector/parentChildrenSelector";
+import CategoryMaterialSelector from "../components/selector/categoryMaterialSelector";
+import EppClassificationSelect from "../components/eppClassificationSelect";
+import { ElementFromQuery } from "../@types/elementTypes";
+import UnitSelector from "../components/selector/unitSelector";
+import WorkerSelectBox from "../components/workerSelectBox";
 
 /*La vaina se puso complicada llave, acá pongo unos conceptos que te daran una luz en el futuro
 
@@ -48,15 +56,16 @@ export default function RQEditor() {
 }
 
 function GeneralRQInfo() {
-  const { rqControll, setRqInfo, rqOption, handleSubmit, handleChange, rqInfo, handleSelects, handleNewMaterial, elementControll, saveNewMaterial, newElement } = useContext(CreateRqContext);
+  const { rqControll, setRqInfo, rqOption, handleSubmit, handleChange, rqInfo, handleSelects, handleNewMaterial, elementControll, saveNewMaterial, newElement, validInputs } = useContext(CreateRqContext);
   const [rqNewItem, setRqNewItem] = useState<RQItems>(RQ_ITEM_MOCK);
-  const [selectedMaterial, setSelectedMaterial] = useState<PricaMaterial>({
-    name: "",
-    _id: "",
-    unit: "",
-    category: "",
-    amount: 0
-  });
+  const [selectedMaterial, setSelectedMaterial] = useState<ElementFromQuery>(ELEMENT_FROM_QUERY_MOCK as ElementFromQuery);
+  const [selectedEppId, setSelectedEppId] = useState("")
+  const folderControll = new FolderControll({
+      image: "/assets/icons/mmcndmgr.dll_14_30612-1.png",
+      isParent: false,
+      name: "",
+      parentId: "",
+    });
 
 
   const handleNewItem = (evt: React.ChangeEvent<HTMLInputElement | HTMLSelectElement>) => {
@@ -71,20 +80,45 @@ function GeneralRQInfo() {
 
   const addNewItem = (evt: React.FormEvent<HTMLFormElement>) => {
     evt.preventDefault();
-    let newItem: RQItemsFromQuery = {
-      ...rqNewItem,
-      materialId: selectedMaterial._id,
-      material: {
-        unit: selectedMaterial.unit,
-        name: selectedMaterial.name,
-        type: selectedMaterial.category,
-        _id: selectedMaterial._id,
-        amount: selectedMaterial.amount,
-        unitaryPrice: 0
-      }
-    };
+    let newItem: RQItemsFromQuery;
+    if(selectedMaterial.category === "EPP" || selectedMaterial.category === "Dotacion"){
+      newItem = {
+        ...rqNewItem,
+        materialId: selectedMaterial._id,
+        materialCategory: selectedMaterial.category,
+        classificationId: selectedEppId,
+        material: {
+          unit: selectedMaterial.unit,
+          name: selectedMaterial.name,
+          type: selectedMaterial.category,
+          _id: selectedMaterial._id,
+          amount: selectedMaterial.amount,
+          unitaryPrice: 0,
+          description: "",
+          serial: "",
+          classification: []
+        }
+      };
+    }
+    else{
+      newItem = {
+        ...rqNewItem,
+        materialId: selectedMaterial._id,
+        materialCategory: selectedMaterial.category,
+        material: {
+          unit: selectedMaterial.unit,
+          name: selectedMaterial.name,
+          type: selectedMaterial.category,
+          _id: selectedMaterial._id,
+          amount: selectedMaterial.amount,
+          unitaryPrice: 0,
+          serial: selectedMaterial.serial,
+          classification: [],
+          description: selectedMaterial.description
+        }
+      };
+    }
     rqControll.rq.rqItems.push(JSON.parse(JSON.stringify(newItem)));
-    console.log(rqControll.rq)
     setRqInfo(rqControll.stateCopy);
   };
 
@@ -95,17 +129,7 @@ function GeneralRQInfo() {
         <div className="pt_def_12"></div>
         <InputBox inputName="ppto" isEmpty={false} labelTag="PRC" onChange={handleChange} value={rqInfo.ppto} type="number"/>
         <div className="pt_def_12"></div>
-        <BodegaSelectBox
-          defaultOption={{
-            label: "Selecciona una bodega...",
-            value: "",
-          }}
-          name="project"
-          label="Bodega"
-          onChange={handleSelects}
-          isEmpty={false}
-          value={rqInfo.project._id}
-        />
+        <ParentChildrenSelector  isEmpty={false} label="Bodega" name="folder" value=""/>
         <div className="pt_def_12"></div>
         <button className="mediumBottom" type="submit">
           Guardar
@@ -116,16 +140,14 @@ function GeneralRQInfo() {
   if (rqOption === "RQ_ITEMS") {
     return (
       <form onSubmit={addNewItem}>
-        <RQMaterialSelect
+        <CategoryMaterialSelector 
           setState={setSelectedMaterial}
           isEmpty={false}
-          label="Material"
+          label="Tipo"
           name="material"
           value={`${rqNewItem.materialId}`}
-          setRqNewItem={setRqNewItem}
-          rqNewItem={rqNewItem}
-        />
-        <div className="pt_def_12"></div>
+          setRqNewItem={setRqNewItem}/>
+        <EppClassificationSelect handleChange={(evt)=>setSelectedEppId(evt.target.value)} selectedEpp={selectedMaterial}/>
         <InputBox
           inputName="requiredAmount"
           isEmpty={false}
@@ -134,7 +156,6 @@ function GeneralRQInfo() {
           value={`${rqNewItem.requiredAmount}`}
           type="number"
         />
-        <div className="pt_def_12"></div>
         <InputBox
           inputName="authorizedAmount"
           isEmpty={false}
@@ -144,7 +165,6 @@ function GeneralRQInfo() {
           type="number"
           disabled={true}
         />
-        <div className="pt_def_12"></div>
         <InputBox
           inputName="receivedAmount"
           isEmpty={false}
@@ -154,7 +174,6 @@ function GeneralRQInfo() {
           type="number"
           disabled={true}
         />
-        <div className="pt_def_12"></div>
         <InputBox
           inputName="pendingAmount"
           isEmpty={false}
@@ -164,9 +183,7 @@ function GeneralRQInfo() {
           type="number"
           disabled={true}
         />
-        <div className="pt_def_12"></div>
         <InputBox inputName="observation" isEmpty={false} labelTag="Observación" onChange={handleNewItem} value={`${rqNewItem.observation}`} type="text"/>
-        <div className="pt_def_12"></div>
         <button className="mediumBottom" type="submit">
           Guardar
         </button>
@@ -175,38 +192,89 @@ function GeneralRQInfo() {
   }
   if (rqOption === "ADD_MATERIAL") {
     return (
+      <>
       <form onSubmit={saveNewMaterial}>
-        <InputBox
-          inputName="name"
-          isEmpty={false}
-          labelTag="Nombre del material"
-          onChange={handleNewMaterial}
-          value={newElement.name}
-          type="text"
-        />
-        <div className="pt_def_12"></div>
-        <CategorySelectBox 
-        isEmpty={false}
-        label="Seleccione el tipo"
-        name="category"
-        onChange={handleNewMaterial}
-        value={newElement.category}
-        />
-        <div className="pt_def_12"></div>
-        <InputBox
-          inputName="unit"
-          isEmpty={false}
-          labelTag="Unidad de medida"
-          onChange={handleNewMaterial}
-          value={newElement.unit}
-          type="text"
-        />
-        <div className="pt_def_12"></div>
-        <button className="mediumBottom" type="submit">
-          Agregar material
-        </button>
-      </form>
+            <Grid gap={12} def={6} sm={1} md={1} lg={1} className="">
+              <div className="new_user_info col_s5">
+                <InputBox
+                  onChange={handleNewMaterial}
+                  inputName="name"
+                  labelTag="Nombre"
+                  isEmpty={validInputs.includes("name")}
+                  value={newElement.name}
+                  type="text"
+                />
+                <InputBox
+                  onChange={handleNewMaterial}
+                  inputName="serial"
+                  labelTag="Referencia"
+                  isEmpty={validInputs.includes("serial")}
+                  value={newElement.serial}
+                  type="text"
+                />
+                <InputBox
+                  onChange={handleNewMaterial}
+                  inputName="description"
+                  labelTag="Descripción"
+                  isEmpty={validInputs.includes("description")}
+                  value={newElement.description}
+                  type="text"
+                />
+                <InputBox
+                  onChange={handleNewMaterial}
+                  inputName="provider"
+                  labelTag="Proveedor"
+                  isEmpty={validInputs.includes("provider")}
+                  value={newElement.provider}
+                  type="text"
+                />
+                <InputBox
+                  onChange={handleNewMaterial}
+                  inputName="amount"
+                  labelTag="Cantidad"
+                  isEmpty={validInputs.includes("amount")}
+                  value={`${newElement.amount}`}
+                  type="number"
+                />
+                <UnitSelector onChange={handleNewMaterial} value={newElement.unit} isEmpty={validInputs.includes("unit")}/>
+                <WorkerSelectBox
+                  defaultOption={{ label: "Selecciona un colaborador...", value: "" }}
+                  name="currentOwner"
+                  label="Persona a cargo"
+                  onChange={handleNewMaterial}
+                  isEmpty={validInputs.includes("currentOwner")}
+                  value={newElement.currentOwner._id}
+                />
+                <BodegaSelectBox
+                  defaultOption={{ label: "Selecciona una bodega...", value: "" }}
+                  name="takerFolder"
+                  label="Bodega"
+                  onChange={handleNewMaterial}
+                  isEmpty={validInputs.includes("takerFolder")}
+                  value={newElement.takerFolder._id}
+                />
+                <CategorySelectBox
+                  isEmpty={validInputs.includes("category")}
+                  label="Categoría"
+                  name="category"
+                  onChange={handleNewMaterial}
+                  value={newElement.category}
+                />
+                <div style={{ paddingTop: 24 }}>
+                  <button className="bigButton" type="submit">
+                    + Añadir Elemento
+                  </button>
+                </div>
+              </div>
+            </Grid>
+          </form>
+      </>
     );
+  }
+  if(rqOption === "ADD_FOLDER"){
+    return(
+      <CreateFolderForm folderControll={folderControll}/>
+    )
   }
   return <div>Mmm, algo salió mal</div>;
 }
@@ -226,8 +294,8 @@ function RQItems() {
         return (
           <tr key={index}>
             <td>{index + 1}</td>
-            <td style={{textTransform: "uppercase"}}>{item.material?.type}</td>
-            <td>{item.material?.name}</td>
+            <td style={{textTransform: "uppercase"}}>{item.material?.serial}</td>
+            <td>{`${item.material?.description}`}</td>
             <td>{item.material?.unit}</td>
             <td>{item.requiredAmount}</td>
             <td>{item.authorizedAmount}</td>
@@ -338,7 +406,7 @@ function RQLayout() {
           <thead>
             <tr>
               <th>Código</th>
-              <th>Tipo</th>
+              <th>Ref</th>
               <th>Descripción</th>
               <th>Unidad</th>
               <th>Cantidad solicitada</th>
@@ -365,7 +433,7 @@ function RQLayout() {
           <p>CARGO</p>
         </div>
         <div>
-          <p>{user.position}</p>
+          <p>{user.role}</p>
         </div>
       </Grid>
     </>

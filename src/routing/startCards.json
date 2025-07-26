@@ -5,9 +5,9 @@
     "path": "/centro_costo"
   },
   {
-    "name": "Elementos",
+    "name": "Equipos, Material, Herramientas, EPCC",
     "icon": "../assets/icons/shell32.dll_14_267-6.png",
-    "path": "/elementos"
+    "path": "/elementos?searchString=&cat=Todos"
   },
   {
     "name": "Requisición",
@@ -18,6 +18,10 @@
     "name": "Ordenes de compra",
     "icon": "../assets/icons/imjputyc.dll_14_116_1041-2.png",
     "path": "/oc/list"
+  },
+  {
+    "name": "Remisiones",
+    "icon": "../assets/icons/comres.dll_14_2867-3.png",
+    "path": "/remision"
   }
-  
 ]

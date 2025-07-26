@@ -12,15 +12,11 @@
         "isActive": false
     },
     {
-        "name": "EPP",
-        "isActive": false
-    },
-    {
-        "name": "Dotacion",
-        "isActive": false
-    },
-    {
         "name": "EPCC",
+        "isActive": false
+    },
+    {
+        "name": "EPP",
         "isActive": false
     }
 ]

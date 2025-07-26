@@ -113,7 +113,7 @@ export default function ProviderMenu({roles}: {roles: AuthorizedRoles[]}) {
 }
 
 function CreateProviderForm() {
-  const [createProvider, { loading, error, data }] = useMutation(CREATE_PROVIDER);
+  const [createProvider, { loading, error, data }] = useMutation(CREATE_PROVIDER, {refetchQueries: ["GetProviders"]});
   // Realiza chequeo de los inputs válidos
   const [validInputs, setValidInputs] = useState<string[]>([]);
   //Toast

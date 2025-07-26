@@ -9,6 +9,7 @@ import CustomContextMenuV2 from "./customContextMenuV2";
 import { DELETE_IMAGE } from "../api/myMutations";
 import TrashCan from "../assets/icon/trashcan";
 import Toast from "./toast";
+import Pagination from "./pagination";
 
 type GalleryViewer = {
   action: Function;
@@ -22,11 +23,11 @@ export default function GalleryViewer({ action, isActive }: { action: Function, 
     let reverseImages = [...images].reverse()
     if(isActive){
       return (
-        <Grid def={4} gap={12} lg={4} md={4} sm={4}>
+        <Pagination itemsPerPage={10}>
           {reverseImages.map((image, index) => {
             return <ImageBox action={action} image={image} key={index}/>;
           })}
-        </Grid>
+        </Pagination>
       );
     }
     else{

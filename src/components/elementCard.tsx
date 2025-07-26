@@ -97,10 +97,10 @@ export default function ElementCard(element:ElementCardInfo){
                 <img src={`${imagesSource()}/${element.info.image}`} alt={element.info.name} />
             </div>
             <div className="elementCard_info">
-                <p className="elementCard_title">{element.info.name}</p>
+                <p className="elementCard_title">{element.info.name} ({element.info.description})</p>
                 <p>Serial: {element.info.serial}</p>
                 <p>Ubicación: {element.info.onDelivery ? element.info.giverFolder.name : element.info.takerFolder.name}</p>
-                <p>Último movimiento: {}</p>
+                <p>Stock: {element.info.amount} {element.info.unit}</p>
             </div>
             </div>
         </div>

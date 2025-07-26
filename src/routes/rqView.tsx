@@ -6,6 +6,7 @@ import Title from "../components/title";
 import { GET_RQS } from "../api/myQueries";
 import RqCard from "../components/rqCard";
 import ApolloErrorPage from "../components/apolloErrorPage";
+import Pagination from "../components/pagination";
 
 export default function RQViewList(){
     return(
@@ -33,10 +34,12 @@ function RQList(){
     }
     if(data){
         return (
-        <Grid gap={12} sm={2} md={3} lg={4} def={1} className="center_def">
+        <Grid gap={12} sm={2} md={3} lg={1} def={1} className="center_def">
+        <Pagination itemsPerPage={12}>
         {data.getRqs.map((rq: RQFromQuery)=>{
             return(<RqCard cardInfo={rq} key={rq._id}/>)
         })}
+        </Pagination>
         </Grid>
         )
     }

@@ -1,8 +1,7 @@
 import { useQuery } from "@apollo/client";
 import { useEffect, useState } from "react";
-import { useParams } from "react-router-dom";
+import { Link, useParams } from "react-router-dom";
 import { GET_ELEMENTS_BY_ID_AND_CATEGORY, GET_WORKER_BY_ID } from "../api/myQueries";
-import USER_IMAGE from "../assets/images/user.png";
 import ApolloErrorPage from "../components/apolloErrorPage";
 import BottomStart from "../components/bottomStart";
 import ElementCard from "../components/elementCard";
@@ -11,27 +10,14 @@ import Layout from "../components/layout";
 import Title from "../components/title";
 import UserCard from "../components/userCard";
 import USER_MENU from "../settings/userMenu.json";
-
+import { ElementFromQuery } from "../@types/elementTypes";
+import EPP_LIFE_IN_DAYS from "../settings/eppLife.json"
 
 export default function UserPanel() {
   const [userMenu, setUserMenu] = useState(USER_MENU);
   const [activeIndex, setActiveIndex] = useState(0);
-  const [selectedCategory, setSelectedCategory] = useState("Material");
-  const { workerId } = useParams();
-
-  useEffect(() => {
-    let USER_MENU_COPY = JSON.parse(JSON.stringify(USER_MENU));
-    USER_MENU_COPY[activeIndex].isActive = true;
-    setUserMenu(USER_MENU_COPY);
-  }, []);
-
-  const handleClick = (itemIndex: number) => {
-    let USER_MENU_COPY = JSON.parse(JSON.stringify(USER_MENU));
-    USER_MENU_COPY[itemIndex].isActive = true;
-    setActiveIndex(itemIndex);
-    setSelectedCategory(USER_MENU[itemIndex].name);
-    setUserMenu(USER_MENU_COPY);
-  };
+  const { workerId, tab } = useParams();
+  const [selectedCategory, setSelectedCategory] = useState(tab);
 
   return (
     <Layout>
@@ -45,16 +31,21 @@ export default function UserPanel() {
           <div className="navigation_menu">
             {userMenu.map((item, index) => {
               return (
-                <div className={`navigation_tab ${item.isActive ? "active" : ""}`} onClick={() => handleClick(index)} key={index}>
+                <Link className={`navigation_tab ${item.name.toLowerCase() === tab?.toLowerCase() ? "active" : ""}`} key={index} to={`/worker/${workerId}/${item.name}`} onClick={()=>setSelectedCategory(item.name)}>
                   <span>{item.name}</span>
-                  <div className="border_bottom"></div>
-                </div>
+                  {/* <div className="border_bottom"></div> */}
+                </Link>
               );
             })}
           </div>
           <div className="navigation_content" style={{ padding: 12 }}>
-            <Grid sm={2} md={2} lg={2} gap={12} def={2} className="">
+            <Grid sm={2} md={2} lg={2} gap={12} def={2} className={`${tab?.toLowerCase() === "epp" ? "hide" : ""}`}>
               <FilteredElements workerId={workerId} selectedCategory={selectedCategory} />
+            </Grid>
+            <Grid sm={1} md={1} lg={1} gap={12} def={1} className={`${tab?.toLowerCase() === "epp" ? "" : "hide"}`}>
+            <div style={{padding: 12}}>
+              <EPPList />
+            </div>
             </Grid>
           </div>
         </div>
@@ -66,7 +57,7 @@ export default function UserPanel() {
 
 type FilteredElements = {
   workerId: string | undefined;
-  selectedCategory: string;
+  selectedCategory: string | undefined;
 };
 
 function FilteredElements({ workerId, selectedCategory }: FilteredElements) {
@@ -77,14 +68,8 @@ function FilteredElements({ workerId, selectedCategory }: FilteredElements) {
     },
   });
   if (data) {
-    const elements: ElementInformation[] = data.getElementsByWorkerAndCategory;
-    return (
-      <>
-        {elements.length ? elements.map((element) => (
-          <ElementCard info={element} />
-        )) : <p>No se encontraron elementos en esta categoría</p>} 
-      </>
-    );
+    const elements: ElementFromQuery[] = data.getElementsByWorkerAndCategory;
+    return <>{elements.length ? elements.map((element) => <ElementCard info={element} key={element._id}/>) : <p>No se encontraron elementos en esta categoría</p>}</>;
   }
   if (error) {
     <p>Error</p>;
@@ -102,7 +87,71 @@ function CurrentUser() {
     const workerData = data.getWorkerById as PricaWorker;
     return (
       <div>
-        <UserCard name={workerData.name} cc={workerData.cc} cargo={workerData.occupation} image={workerData.image} id={`${workerData._id}`} isActive={workerData.isActive} />
+        <UserCard
+          name={workerData.name}
+          cc={workerData.cc}
+          occupation={workerData.occupation}
+          image={workerData.image}
+          _id={`${workerData._id}`}
+          eppHistory={workerData.eppHistory}
+          isActive={workerData.isActive}
+        />
+      </div>
+    );
+  }
+  if (loading) {
+    return (
+      <div>
+        <div className="loader"></div>
+      </div>
+    );
+  }
+  if (error) {
+    return (
+      // @ts-ignore
+      <ApolloErrorPage customCode="500" error={error} />
+    );
+  }
+  return (
+    <div>
+      <div className="loader"></div>
+    </div>
+  );
+}
+
+function EPPList() {
+  const { workerId } = useParams();
+  const { data, loading, error } = useQuery(GET_WORKER_BY_ID, { variables: { workerId } });
+
+  if (data) {
+    const workerData = data.getWorkerById as PricaWorker;
+    return (
+      <div className="eppSingleContainer">
+        {workerData.eppHistory.map((eppInfo, index) => {
+          let estado: string = "AL DÍA";
+          let eppDate = new Date(eppInfo.date);
+          let currentDate = new Date();
+          //@ts-ignore
+          let timeElapsed = Math.abs(currentDate - eppDate);
+          console.log({timeElapsed, days: EPP_LIFE_IN_DAYS.eppLife*24*60*60*1000})
+          if(EPP_LIFE_IN_DAYS.eppLife*24*60*60*1000 <= timeElapsed){
+            estado = "REVISAR"
+          }
+          return(
+            <div key={index} className="eppSingle">
+            <h5>{eppInfo.eppId?.name}</h5>
+            <div className="eppDeliverInfo">
+              <p>Fecha: {`${new Date(eppInfo.date).toLocaleDateString()}`}</p>
+              <p>
+                {eppInfo.eppId?.classificationName}: {eppInfo.eppId?.classification[0].name}
+              </p>
+              <p>Cantidad: {eppInfo.amount}</p>
+              <p>Centro de costo: {eppInfo.folder.name}</p>
+              <p>Estado: {estado === "REVISAR" ? <span className="red">{estado}</span> : <span className="green">{estado}</span>}</p>
+            </div>
+          </div>
+          )
+        })}
       </div>
     );
   }

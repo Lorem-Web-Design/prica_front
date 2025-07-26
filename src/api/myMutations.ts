@@ -197,17 +197,31 @@ export const CREATE_WORKER = gql`mutation AddWorker($workerInfo: WorkerInput!) {
     }
   }`
 
-  export const INCREMENT_COUNTER = gql`mutation IncrementCounter {
-    incrementCounter {
+  export const INCREMENT_OC_COUNTER = gql`mutation IncrementOCCounter {
+    incrementOCCounter {
       code
       success
       message
       oc {
+        oc
         _id
-        counter
       }
     }
   }`
+
+export const INCREMENT_REMISION_COUNTER = gql`mutation IncrementRemisionCounter {
+  incrementRemisionCounter {
+    code
+    success
+    message
+    oc {
+      oc
+      remision
+      counter
+      _id
+    }
+  }
+}`
 
   export const TRIGGER_HAVE_OC = gql`mutation HaveOcTrigger($approveState: String!, $rqId: String!) {
     haveOcTrigger(approveState: $approveState, rqId: $rqId) {
@@ -326,6 +340,17 @@ export const KILL_OC_BY_ID = gql`mutation KillOrder($ocId: ID!) {
   }
 }`
 
+export const APPROVE_ORDER = gql`mutation Mutation($ocData: OCInput!, $ocId: ID!) {
+  approveOrder( ocData: $ocData, ocId: $ocId) {
+    code
+    success
+    message
+    oc {
+      _id
+    }
+  }
+}`
+
 export const CREATE_PROVIDER = gql`mutation CreateProvider($providerData: ProviderInputData!) {
   createProvider(providerData: $providerData) {
     code
@@ -402,6 +427,65 @@ export const UPDATE_USER_STATUS =gql`mutation ChangeWorkerStatus($workerId: ID!,
     worker {
       _id
       name
+    }
+  }
+}`
+
+export const CREATE_EPP = gql`mutation Mutation($eppInfo: EppInput!) {
+  addEpp(eppInfo: $eppInfo) {
+    code
+    success
+    message
+    epp {
+      name
+      classificationName
+      classification {
+        name
+        amount
+        id
+      }
+      _id
+    }
+  }
+}`
+
+export const ASSIGN_EPP = gql`mutation AssignEpp($movementInfo: MovementInfo!) {
+  assignEpp(movementInfo: $movementInfo) {
+    code
+    epp {
+      _id
+      classification {
+        name
+        amount
+        id
+      }
+      name
+      classificationName
+    }
+    success
+    message
+  }
+}`
+
+export const CREATE_REMISION = gql`mutation CreateRemision($remisionData: RemisionInput!) {
+  createRemision(remisionData: $remisionData) {
+    code
+    success
+    message
+    remision {
+      _id
+      date
+    }
+  }
+}`
+
+export const DELETE_REMISION_BY_ID = gql`mutation DeleteRemisionById($remisionId: String!) {
+  deleteRemisionById(remisionId: $remisionId) {
+    code
+    success
+    message
+    remision {
+      _id
     }
   }
 }`

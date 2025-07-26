@@ -3,7 +3,7 @@ import Grid from "../components/grid";
 import Layout from "../components/layout";
 import Title from "../components/title";
 import { useQuery } from "@apollo/client";
-import { useState } from "react";
+import { useEffect, useState } from "react";
 import { Link } from "react-router-dom";
 import { GET_WORKERS } from "../api/myQueries";
 import ApolloErrorPage from "../components/apolloErrorPage";
@@ -11,6 +11,11 @@ import CreateAdminForm from "../components/createAdminForm";
 import Modal from "../components/modal";
 import UserCard from "../components/userCard";
 import { useAuth } from "../customHooks/centers/auth/useAuth";
+import Pagination from "../components/pagination";
+import { WorkerToApi } from "../@types/usersTypes";
+import WorkersControll from "../utils/search.controll";
+import AS_QUERY_WORKER from "../data/mock.workers.json";
+import SearchControll from "../utils/search.controll";
 
 export default function GestionUsuarios() {
   const [modal, setModal] = useState(false);
@@ -48,13 +53,48 @@ export default function GestionUsuarios() {
   );
 }
 
+
+const Workers = new SearchControll([AS_QUERY_WORKER] as PricaWorker[]);
+
 function WorkersList(){
   const {data, loading, error} = useQuery(GET_WORKERS);
+  const [searchString, setSearchString] = useState<string>("");
+  const [workersLoaded, setWorkersLoaded] = useState<PricaWorker[]>([]);
+
+    const handleSearch = (evt: React.FormEvent<HTMLFormElement>) => {
+      evt.preventDefault();
+      if (workersLoaded) {
+        const search = Workers.search("name", searchString);
+        setWorkersLoaded(search);
+      }
+    };
+
+    const handleChange = (evt: React.ChangeEvent<HTMLInputElement>) => {
+      const value = evt.target.value;
+      setSearchString(value);
+    };
+
+      useEffect(() => {
+        if (data) {
+          Workers.list = JSON.parse(JSON.stringify(data.getWorkers));
+          setWorkersLoaded(Workers.list);
+        }
+      }, [data, loading, error]);
+
   if(data){
-    const workers:PricaWorker[] = data.getWorkers;
-    return(<Grid gap={12} def={1} sm={2} md={3} lg={5} className="center_def">
-      {workers.map((worker, index)=><UserCard name={worker.name} cc={worker.cc} cargo={worker.occupation} image={worker.image} id={worker._id} isActive={worker.isActive} key={index}/>)}
-    </Grid>)
+    return(
+      <>
+      <form className="search_container" onSubmit={handleSearch} style={{paddingBottom: 12}}>
+        <input type="text" placeholder="Buscar usuarios..." className="search" name="search" onChange={handleChange} value={searchString} />
+        <button className="searchButton" type="submit">
+          Buscar
+        </button>
+      </form>
+      <Pagination itemsPerPage={12}>
+        {workersLoaded.map((worker, index)=><UserCard name={worker.name} cc={worker.cc} occupation={worker.occupation} image={worker.image} _id={worker._id} isActive={worker.isActive} key={index} eppHistory={worker.eppHistory}/>)}
+      </Pagination>
+      </>
+    )
   }
   if(loading){
     return(

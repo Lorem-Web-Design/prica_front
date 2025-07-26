@@ -19,7 +19,7 @@ export default function CreateAdminForm(){
       theme: "primary_theme",
     });
     const [createAdmin, { data, loading, error }] = useMutation(CREATE_ADMIN, {
-      refetchQueries: ['getWorkers']
+      refetchQueries: ['GetUsers']
     });
     const handleSubmit = (evt: React.FormEvent<HTMLFormElement>) => {
       evt.preventDefault();

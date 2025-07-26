@@ -17,6 +17,7 @@ import Toast from "./toast";
 import WorkerSelectBox from "./workerSelectBox";
 import Remision from "./remision";
 import GalleryViewer from "./galleryViewer";
+import UnitSelector from "./selector/unitSelector";
 
 export default function ElementById({ elementEditor }: { elementEditor: ElementEditor }) {
   var { id } = useParams();
@@ -26,6 +27,7 @@ export default function ElementById({ elementEditor }: { elementEditor: ElementE
   const [modal, setModal] = useState(false);
   const [imageModal, setImageModal] = useState(false);
   const [activeTab, setActiveTab] = useState("FOLDER");
+  const [isGalleryActive, setIsGalleryActive] = useState(false)
 
   const { loading, error, data } = useQuery(GET_ELEMENT_BY_ID, {
     variables: { getElementById: id },
@@ -290,13 +292,16 @@ export default function ElementById({ elementEditor }: { elementEditor: ElementE
           {modalChild()}
         </Modal>
         <Modal modal={imageModal} setModal={setImageModal}>
-          <GalleryViewer action={updateImage}/>
+          <GalleryViewer action={updateImage} isActive={isGalleryActive}/>
         </Modal>
         <form encType="multipart/form-data" onSubmit={handleSubmit}>
           <Grid gap={12} def={1} sm={6} md={6} lg={6} className="center_def">
             {/* <InputImage  /> */}
             <div className="user_image_container">
-              <div className="user_image" onClick={()=>{setImageModal(true)}}>
+              <div className="user_image" onClick={()=>{
+                setImageModal(true)
+                setIsGalleryActive(true)
+              }}>
                 <img src={`${imagesSource()}/${elementInfo.image}`} alt="Element image" />
               </div>
             </div>
@@ -318,18 +323,15 @@ export default function ElementById({ elementEditor }: { elementEditor: ElementE
                 value={elementInfo.name}
                 type="text"
               />
-              <InputBox
+              <UnitSelector
                 onChange={handleChange}
-                inputName="unit"
-                labelTag="Unidad"
                 isEmpty={validInputs.includes("unit")}
                 value={elementInfo.unit}
-                type="text"
               />
               <InputBox
                 onChange={handleChange}
                 inputName="serial"
-                labelTag="Serial"
+                labelTag="Referencia"
                 isEmpty={validInputs.includes("serial")}
                 value={elementInfo.serial}
                 type="text"
@@ -357,7 +359,7 @@ export default function ElementById({ elementEditor }: { elementEditor: ElementE
                 isEmpty={validInputs.includes("amount")}
                 value={`${elementInfo.amount}`}
                 type="number"
-                disabled={true}
+                disabled={false}
               />
               <WorkerSelectBox
                 defaultOption={{

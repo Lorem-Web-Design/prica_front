@@ -1,16 +1,13 @@
 import { useMutation, useQuery } from "@apollo/client";
 import { createContext, PropsWithChildren, useEffect, useState } from "react";
-import { useAuth } from "../customHooks/centers/auth/useAuth";
-import NEW_MATERIAL_MOCK from "../data/mock.material.json";
-import RQ_MOCK from "../data/mock.rq.json";
-import RQ_MOCK_API from "../data/mock.rqToAPI.json";
-import RQControll from "../utils/rq.controll";
-import OrdenDeCompra from "../utils/oc.controll";
-import MOCK_OC from "../data/mock.oc.json";
-import { ADD_OC, INCREMENT_COUNTER, TRIGGER_HAVE_OC } from "../api/myMutations";
-import Toast from "../components/toast";
 import { useParams } from "react-router-dom";
+import { ADD_OC, INCREMENT_OC_COUNTER, TRIGGER_HAVE_OC } from "../api/myMutations";
 import { GET_RQ_BY_ID } from "../api/myQueries";
+import Toast from "../components/toast";
+import MOCK_OC from "../data/mock.oc.json";
+import RQ_MOCK from "../data/mock.rq.json";
+import OrdenDeCompra from "../utils/oc.controll";
+import { OCFromQuery } from "../@types/oc.types";
 
 type OcContextInfo = {
   toast: boolean;
@@ -19,8 +16,8 @@ type OcContextInfo = {
   deleteItem: (itemId: string) => void;
   observation: (evt: React.ChangeEvent<HTMLInputElement>) => void;
   createOC: () => void;
-  ocInfo: PricaOC
-  setOCInfo: React.Dispatch<React.SetStateAction<PricaOC>>
+  ocInfo: OCFromQuery
+  setOCInfo: React.Dispatch<React.SetStateAction<OCFromQuery>>
   OC: OrdenDeCompra
   rqId: string | undefined,
   rqInfo: RQFromQuery,
@@ -45,7 +42,8 @@ export const CreateOcContext = createContext(ContextDefaultValue);
 export default function CreateOcProvider({ children }: PropsWithChildren) {
   const {rqId} = useParams();
   const OC = new OrdenDeCompra(MOCK_OC);
-  
+  OC.ocData.rq._id = rqId || "";
+  OC.ocData.date = new Date().toISOString().slice(0, 10);
   
   //Toast Inicialization
   const [toast, setToast] = useState(false);
@@ -56,15 +54,15 @@ export default function CreateOcProvider({ children }: PropsWithChildren) {
     theme: "primary_theme",
   });
   
-  const [ocInfo, setOCInfo] = useState<PricaOC>(OC.info);
+  const [ocInfo, setOCInfo] = useState<OCFromQuery>(OC.info);
   const [rqInfo, setRqInfo] = useState<RQFromQuery>(RQ_MOCK);
 
   const [storeOC, {data, loading, error}] = useMutation(ADD_OC, {variables: {
     ocData: OC.OC2API
-  }});
+  }, refetchQueries: ["GetOcs"]});
   const {loading: loadingRq, error: rqError, data: rqData} = useQuery(GET_RQ_BY_ID, {variables: {rqId}})
 
-  const [incrementCounter] = useMutation(INCREMENT_COUNTER);
+  const [incrementCounter] = useMutation(INCREMENT_OC_COUNTER);
 
   const [triggerHaveOc] = useMutation(TRIGGER_HAVE_OC, {variables: {rqId: rqId, approveState: "true"}});
   

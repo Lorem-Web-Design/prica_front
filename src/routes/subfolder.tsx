@@ -1,14 +1,12 @@
-import Layout from "../components/layout";
 import BottomStart from "../components/bottomStart";
-import Title from "../components/title";
 import Grid from "../components/grid";
-import Card from "../components/cards";
+import Layout from "../components/layout";
+import Title from "../components/title";
 
-import MENU_ITEMS from "../routing/bottomStart.json";
-import { GET_CHILDRENFOLDERS } from "../api/myQueries";
 import { useQuery } from "@apollo/client";
-import { useNavigate, useParams } from "react-router-dom";
 import { useEffect } from "react";
+import { useNavigate, useParams } from "react-router-dom";
+import { GET_CHILDRENFOLDERS } from "../api/myQueries";
 import FolderCard from "../components/folderCard";
 
 export default function Subfolder() {
@@ -23,7 +21,7 @@ export default function Subfolder() {
     if (data) {
       let myData = data.folderByParentId as Bodega[];
       if (myData.length === 0) {
-        navigate(`/bodega/info/${parentId}`, { replace: true });
+        navigate(`/centro_costo/info/${parentId}`, { replace: true });
       }
     }
   }, [data]);
@@ -48,7 +46,7 @@ export default function Subfolder() {
             <FolderCard
               name={name}
               icon={image}
-              route={`/bodega/info/${_id}`}
+              route={`/centro_costo/info/${_id}`}
               key={_id}
               ID={_id} 
               isParent={false} 

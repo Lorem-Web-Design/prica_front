@@ -4,7 +4,7 @@ import {
   useMutation,
   useQuery,
 } from "@apollo/client";
-import { useContext, useEffect, useState } from "react";
+import { useCallback, useContext, useEffect, useRef, useState } from "react";
 import { useParams } from "react-router-dom";
 import { APPROVE_RQ, UPDATE_RQ_BY_ID } from "../api/myMutations";
 import { GET_RQ_BY_ID } from "../api/myQueries";
@@ -21,6 +21,7 @@ import RQ_MOCK from "../data/mock.rq.json";
 import RQControll from "../utils/rq.controll";
 import { ROLES } from "../../enums";
 import { Link } from "react-router-dom";
+import { useReactToPrint } from "react-to-print";
 
 const rqControll = new RQControll(RQ_MOCK);
 
@@ -119,7 +120,7 @@ export default function RQViewer() {
             <thead>
               <tr>
                 <th>Código</th>
-                <th>Tipo</th>
+                <th>Referencia</th>
                 <th>Descripción</th>
                 <th>Unidad</th>
                 <th>Cantidad solicitada</th>
@@ -128,14 +129,14 @@ export default function RQViewer() {
                 <th>Cantidad pendientes</th>
                 <th>Observaciones</th>
               </tr>
-              <RQItems
+            </thead>
+            <RQItems
                 rqControll={rqControll}
                 rqInfo={rqInfo}
                 setRqInfo={setRqInfo}
                 loading={loading}
                 error={error}
               />
-            </thead>
           </table>
           </div>
         </Grid>
@@ -165,6 +166,7 @@ export default function RQViewer() {
             rqControll={rqControll}
           />
           <CreateOCButton approvedStatus={rqInfo.isApproved} rqId={rqId || ""} haveOc={rqInfo.haveOC}/>
+          <button onClick={()=>{window.print()}} className="smallButton pricaTheme defaultButton">Imprimir</button>
         </Grid>
         <BottomStart />
       </Layout>
@@ -229,7 +231,7 @@ function RQItems({ rqControll, error, loading, rqInfo, setRqInfo }: RQITemsTypes
         return (
           <tr key={index}>
             <td>{index + 1}</td>
-            <td style={{textTransform: "uppercase"}}>{item.material?.type || "---"}</td>
+            <td style={{textTransform: "uppercase"}}>{item.material?.serial || "---"}</td>
             <td>{item.material?.name || "MATERIAL ELIMINADO"}</td>
             <td>{item.material?.unit || "---"}</td>
             <td>{item.requiredAmount}</td>

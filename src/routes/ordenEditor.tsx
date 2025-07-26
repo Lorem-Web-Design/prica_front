@@ -12,15 +12,22 @@ import CreateOcProvider, { CreateOcContext } from "../contexts/createOcContext";
 import OrdenDeCompra from "../utils/oc.controll";
 import OC_DELIVERY_INFO from "../data/ocDeliverInfo.json";
 import SelectFromArray from "../components/selectFromArray";
+import { OCFromQuery } from "../@types/oc.types";
+import WorkerSelectBox from "../components/workerSelectBox";
+import Modal from "../components/modal";
+import InputBox from "../components/inputElement";
 
 type ProviderSelector = {
   OC: OrdenDeCompra;
-  setOCInfo: React.Dispatch<React.SetStateAction<PricaOC>>;
-  ocInfo: PricaOC;
+  setOCInfo: React.Dispatch<React.SetStateAction<OCFromQuery>>;
+  ocInfo: OCFromQuery;
 };
 
 function OCEditorTable() {
   const { setOCInfo, ocInfo, changeDate, OC, deleteItem, observation, createOC, rqInfo } = useContext(CreateOcContext);
+
+  const [modal, setModal] = useState(false);
+
   const changeAmount = (evt: React.ChangeEvent<HTMLInputElement>, itemIndex: number) => {
     OC.ocData.items[itemIndex].amount = parseFloat(evt.target.value);
     setOCInfo(OC.stateCopy);
@@ -28,6 +35,11 @@ function OCEditorTable() {
 
   const changeUnitaryPrice = (evt: React.ChangeEvent<HTMLInputElement>, itemIndex: number) => {
     OC.ocData.items[itemIndex].unitaryPrice = parseFloat(evt.target.value);
+    setOCInfo(OC.stateCopy);
+  };
+
+  const changeTaker = (evt: React.ChangeEvent<HTMLSelectElement>) => {
+    OC.ocData.taker !== undefined ? (OC.ocData.taker._id = evt.target.value) : "";
     setOCInfo(OC.stateCopy);
   };
 
@@ -72,6 +84,34 @@ function OCEditorTable() {
     <Layout>
       {/* Titulo de la página actual */}
       <Title title="Orden de compra" description="" />
+      <Modal modal={modal} setModal={setModal}>
+        <InputBox
+          onChange={(evt)=>{
+            OC.ocData.discount = OC.ocData.discount ?? { name: "", value: 0 };
+            OC.ocData.discount.name = evt.target.value;
+            setOCInfo(OC.stateCopy);
+          }}
+          inputName="discountName"
+          labelTag="Nombre descuento"
+          isEmpty={false}
+          value={`${ocInfo.discount?.name}`}
+          type="text"
+        />
+        <InputBox
+          onChange={(evt)=>{
+            OC.ocData.discount = OC.ocData.discount ?? { name: "", value: 0 };
+            OC.ocData.discount.value = parseFloat(evt.target.value);
+            setOCInfo(OC.stateCopy);
+
+          }}
+          inputName="discountValue"
+          labelTag="Valor del descuento"
+          isEmpty={false}
+          value={`${ocInfo.discount?.value}`}
+          type="number"
+        />
+        <button onClick={()=>{setModal(false)}} className="pointer primary_theme defaultButton">Guardar</button>
+      </Modal>
       {/* OC TABLE */}
       <Grid def={1} gap={12} lg={1} md={1} sm={1}>
         <table className="ocTable">
@@ -99,7 +139,7 @@ function OCEditorTable() {
               </td>
               <td></td>
               <td className="borderGray">
-                <input type="date" name="ocDate" id="ocDate" className="ocDateInput" value={ocInfo.date} onChange={changeDate} />
+                <input type="date" name="ocDate" id="ocDate" className="ocDateInput" value={ocInfo.date} onChange={changeDate} disabled />
               </td>
             </tr>
             <tr>
@@ -147,7 +187,9 @@ function OCEditorTable() {
           </thead>
           <thead>
             <tr>
-              <td colSpan={5}>FACTURAR A</td>
+              <td colSpan={5} style={{ fontWeight: "bold" }}>
+                FACTURAR A
+              </td>
             </tr>
           </thead>
           <thead>
@@ -195,7 +237,7 @@ function OCEditorTable() {
             </tr>
             <tr>
               <td colSpan={5} className="projectName">
-                {rqInfo.project.name}
+                PRC {rqInfo.ppto} - {rqInfo.rq}
               </td>
             </tr>
           </thead>
@@ -242,6 +284,7 @@ function OCEditorTable() {
                     setOCInfo(OC.stateCopy);
                   }}
                   value={ocInfo.deliverAddress}
+                  placeholder="Ingrese dirección"
                 />
               </th>
               <th>
@@ -284,11 +327,74 @@ function OCEditorTable() {
             </tr>
             {table()}
           </tbody>
+          <tbody>
+            <tr>
+              <td colSpan={5}></td>
+            </tr>
+          </tbody>
           <tfoot>
             <tr>
+              <td className="primary_background borderGray">Solicitado por</td>
+              <td colSpan={2} className="borderGray">
+                <input type="text" className="observation" onChange={observation} value={rqInfo.petitioner.name} disabled />
+              </td>
+              <td className="txtBold txtBlue">Subtotal</td>
+              <td className="txtBold">{OrdenDeCompra.toCurrency(OC.Subtotal)}</td>
+            </tr>
+            <tr>
+              <td className="primary_background borderGray">Proyecto</td>
+              <td colSpan={2} className="borderGray">
+                <input type="text" className="observation" onChange={observation} value={ocInfo.project} disabled />
+              </td>
+              <td className="txtBold txtBlue">IVA (19%)</td>
+              <td className="txtBold">{OrdenDeCompra.toCurrency(OC.IVA)}</td>
+            </tr>
+            <tr>
+              <td className="primary_background borderGray">Cotización No.</td>
+              <td colSpan={2} className="borderGray">
+                <input
+                  type="text"
+                  className="observation"
+                  onChange={(evt) => {
+                    OC.ocData.request = evt.target.value;
+                    setOCInfo(OC.stateCopy);
+                  }}
+                  value={ocInfo.request}
+                />
+              </td>
+              <td className="txtBold txtBlue">{ocInfo.discount?.name}</td>
+              <td className="txtBold">{OrdenDeCompra.toCurrency(ocInfo.discount?.value ?? 0)}</td>
+            </tr>
+            <tr>
+              <td className="primary_background borderGray">Recibe</td>
+              <td colSpan={2} className="borderGray ocTaker">
+                <WorkerSelectBox
+                  defaultOption={{ label: "Seleccione trabajador", value: "" }}
+                  isEmpty={false}
+                  label=""
+                  name="taker"
+                  onChange={changeTaker}
+                  value={ocInfo.taker?._id}
+                />
+              </td>
+              <td className="txtBold txtBlue">Total</td>
+              <td className="txtBold">{OrdenDeCompra.toCurrency(OC.Total)}</td>
+            </tr>
+            <tr>
               <td className="primary_background borderGray">Observaciones</td>
-              <td colSpan={4} className="borderGray">
+              <td colSpan={2} className="borderGray">
                 <input type="text" className="observation" onChange={observation} value={ocInfo.observation} />
+              </td>
+              <td colSpan={2}>
+                {" "}
+                <button
+                  className="pointer primary_theme defaultButton"
+                  onClick={() => {
+                    setModal(true);
+                  }}
+                >
+                  Añadir descuentos
+                </button>{" "}
               </td>
             </tr>
           </tfoot>
@@ -369,11 +475,18 @@ function LeftPanel() {
             </thead>
             <tbody>
               {rq.rqItems.map((item, index) => {
+                let itemName = item.material?.name;
+                let amount = item.material?.amount;
+                if (item.material?.type === "EPP" || item.material?.type === "Dotacion") {
+                  let currentClassification = item.material.classification.find((element) => element.id === item.classificationId);
+                  itemName = `${item.material.name} (${currentClassification?.name})`;
+                  amount = currentClassification?.amount || 0;
+                }
                 return (
                   <tr className="elementCell" key={index}>
-                    <td>{item.material?.name}</td>
+                    <td>{itemName}</td>
                     <td>{item.authorizedAmount}</td>
-                    <td>{item.material?.amount}</td>
+                    <td>{amount}</td>
                     <td
                       onClick={() => {
                         addElement(item);
@@ -452,8 +565,8 @@ function OCCOunter() {
     return <>{"Error"}</>;
   }
   if (data) {
-    OC.ocData.ocNumber = parseInt(data.getOcCount.counter);
-    return <>{data.getOcCount.counter}</>;
+    OC.ocData.ocNumber = parseInt(data.getOcCount.oc);
+    return <>{data.getOcCount.oc}</>;
   }
   return <>Cargando...</>;
 }

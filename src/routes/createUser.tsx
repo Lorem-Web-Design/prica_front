@@ -11,6 +11,7 @@ import Modal from "../components/modal";
 import GalleryViewer from "../components/galleryViewer";
 import { imagesSource } from "../api/datasources";
 import ImageUploader from "../components/imageUploader";
+import RoleSelectBox from "../components/rolesSelectBox";
 
 const userMock:PricaWorkerToApi = {
     cc: 0,
@@ -121,12 +122,7 @@ export default function CreateUser() {
                     <input type="number" className="editable_input width_100" name="cc" value={userData.cc} onChange={handleChange}/>
                 </div>
                 <div className="input_container gap_12">
-                    <label htmlFor="occupation">Ocupación / cargo</label>
-                    <select className="editable_input width_100" name="occupation" value={userData.occupation} onChange={handleChange}>
-                        <option value="undefinded">Selecciona una opción</option>
-                        <option value="Oficial">Oficial</option>
-                        <option value="Ayudante">Ayudante</option>
-                    </select>
+                    <RoleSelectBox isEmpty={false} label="Ocupación/cargo" name="role" setUserData={setUserData} value={userData.occupation}/>
                 </div>
                 <div  style={{paddingTop: 24}}><button className="bigButton" type="submit">+ Añadir colaborador</button></div>
             </div>

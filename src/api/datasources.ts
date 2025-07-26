@@ -1,5 +1,15 @@
 import { MODE } from "./mode"
 
+export function excelSource(){
+    if(MODE === "PRODUCTION"){
+        return "https://api.lorem.fun/createExcel"
+    }
+    if(MODE === "DEV"){
+        return "http://localhost:3500/createExcel"
+    }
+    return "http://localhost:3500/createExcel"
+}
+
 export function dataSource(){
     if(MODE === "PRODUCTION"){
         return "https://api.lorem.fun/prica"

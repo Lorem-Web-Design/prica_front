@@ -6,6 +6,7 @@ import Grid from "../components/grid";
 import Layout from "../components/layout";
 import OcCard from "../components/ocCard";
 import Title from "../components/title";
+import Pagination from "../components/pagination";
 
 export default function OCViewList(){
     return(
@@ -33,10 +34,12 @@ function OCList(){
     }
     if(data){
         return (
-        <Grid gap={12} sm={2} md={3} lg={4} def={1} className="center_def">
+        <Grid gap={12} sm={2} md={3} lg={1} def={1} className="center_def">
+        <Pagination itemsPerPage={12}>
         {data.getOcs.map((rq: PricaOC)=>{
             return(<OcCard cardInfo={rq} key={rq._id}/>)
         })}
+        </Pagination>
         </Grid>
         )
     }

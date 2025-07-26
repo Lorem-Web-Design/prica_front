@@ -1,10 +1,12 @@
 @use 'colors';
 
 .paginatorContainer{
+    width: 100%;
     .paginatorPages{
         ul{
             padding: 0;
-            display: flex;
+            display: grid;
+            grid-template-columns: repeat(35, 1fr);
             gap: 8px;
             justify-content: center;
             li{
@@ -13,7 +15,6 @@
                 background-color: colors.$primary_blue;
                 color: white;
                 font-weight: bolder;
-                width: 30px;
                 text-align: center;
                 user-select: none;
                 cursor: pointer;

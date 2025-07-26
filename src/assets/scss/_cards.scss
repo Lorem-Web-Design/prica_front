@@ -75,3 +75,27 @@
       }
     
 }
+
+.eppSingleContainer{
+    display: grid;
+    grid-template-columns: repeat(3, 1fr);
+}
+
+.eppSingle{
+    padding: 4px;
+    margin: 4px;
+    border: solid black 2px;
+    .eppDeliverInfo{
+        display: flex;
+        gap: 16px;
+        font-size: 12px;
+    }
+}
+
+.inventario{
+    text-decoration: none;
+    margin: 12px 0 12px 0;
+    a{
+        text-decoration: none;
+    }
+}

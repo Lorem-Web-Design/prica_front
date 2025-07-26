@@ -6,7 +6,7 @@ type InputBox = {
   inputName: string;
   isEmpty: boolean
   value: string | undefined
-  type: "text" | "number" | "password" | "email"
+  type: "text" | "number" | "password" | "email" | "date"
   className?: string
   disabled?: boolean
 };

@@ -1,6 +1,6 @@
 import { useMutation } from "@apollo/client";
 import { createContext, PropsWithChildren, useEffect, useState } from "react";
-import { ElementFromQuery } from "../@types/elementTypes";
+import { ElementFromQuery, SelectType } from "../@types/elementTypes";
 import { CREATE_ELEMENT, CREATE_RQ } from "../api/myMutations";
 import { useAuth } from "../customHooks/centers/auth/useAuth";
 import AS_QUERY_ELEMENT from "../data/mock.element.json";
@@ -8,6 +8,8 @@ import RQ_MOCK from "../data/mock.rq.json";
 import RQ_MOCK_API from "../data/mock.rqToAPI.json";
 import ElementEditor from "../utils/elementEditor.controll";
 import RQControll from "../utils/rq.controll";
+import { GET_ELEMENTS_BY_CATEGORY } from "../api/myQueries";
+import checkForms from "../utils/checkForms";
 
 type RqContextInfo = {
   rqControll: RQControll;
@@ -25,6 +27,7 @@ type RqContextInfo = {
   rqOption: string;
   setRqOption: React.Dispatch<React.SetStateAction<string>>;
   storeRQ: any;
+  validInputs: string[];
   handleChange: (evt: React.ChangeEvent<HTMLInputElement | HTMLSelectElement>) => void;
   handleSelects: (evt: React.ChangeEvent<HTMLSelectElement>) => void;
   handleSubmit: (evt: React.FormEvent<HTMLFormElement>) => void;
@@ -33,6 +36,7 @@ type RqContextInfo = {
   deleteItem: (id: string) => void;
   user: AuthUser;
   elementControll: ElementEditor
+  handleFullSelects: (evt: SelectType) => void
 }
 
 const ContextDefaultValue: RqContextInfo = {
@@ -65,18 +69,20 @@ const ContextDefaultValue: RqContextInfo = {
   user: {
     id: "",
     name: "",
-    position: "",
     role: "",
     token: "",
+    image: ""
   },
-  elementControll: new ElementEditor(AS_QUERY_ELEMENT as ElementFromQuery)
+  elementControll: new ElementEditor(AS_QUERY_ELEMENT as ElementFromQuery),
+  handleFullSelects: ()=>{},
+  validInputs: [""]
 };
 
 export const CreateRqContext = createContext(ContextDefaultValue);
+const elementControll = new ElementEditor(AS_QUERY_ELEMENT as ElementFromQuery)
 
 export default function CreateRqProvider({ children }: PropsWithChildren) {
   // Controlador de requisicion
-  const elementControll = new ElementEditor(AS_QUERY_ELEMENT as ElementFromQuery)
   const rqControll = new RQControll(RQ_MOCK);
   //User authO
   const { user } = useAuth();
@@ -102,6 +108,7 @@ export default function CreateRqProvider({ children }: PropsWithChildren) {
 
   const [modal, setModal] = useState(false);
   const [rqOption, setRqOption] = useState("GENERAL");
+  const [validInputs, setValidInputs] = useState<string[]>([]);
 
   //Querys and mutations
   const [storeRQ, { loading, data, error }] = useMutation(CREATE_RQ, {
@@ -131,6 +138,14 @@ export default function CreateRqProvider({ children }: PropsWithChildren) {
     setRqInfo(rqControll.stateCopy);
   };
 
+  const handleFullSelects = (evt: SelectType) => {
+    rqControll.rq.project = {
+      _id: evt.value,
+      name: evt.label
+    };
+    setRqInfo(rqControll.stateCopy);
+  };
+
   const handleSubmit = (evt: React.FormEvent<HTMLFormElement>) => {
     evt.preventDefault();
     setModal(false);
@@ -151,13 +166,41 @@ export default function CreateRqProvider({ children }: PropsWithChildren) {
     const name = evt.target.name;
     /*@ts-ignore*/
     elementControll.element[name] = value;
+    if (name === "takerFolder") {
+      elementControll.element.takerFolder = {
+        name,
+        _id: value,
+      };
+    }
+    if (name === "currentOwner") {
+      elementControll.element.currentOwner = {
+        name,
+        _id: value,
+      };
+    }
     setNewElement(elementControll.stateCopy);
   };
 
   const saveNewMaterial = (evt: React.FormEvent<HTMLFormElement>) => {
     evt.preventDefault();
+     const checks = new checkForms(elementControll.toApi);
+        const checkedInputs = checks.checkEmpty(
+          { name: "name", type: "string" },
+          { name: "description", type: "string" },
+          { name: "currentOwner", type: "string" },
+          { name: "takerFolder", type: "string" },
+          { name: "category", type: "string" },
+          { name: "provider", type: "string" },
+          { name: "image", type: "string" },
+          { name: "unit", type: "string" }
+        );
+    
+        setValidInputs(checkedInputs);
     storeMaterials({
       variables: { elementData: elementControll.toApi },
+      refetchQueries: [{query: GET_ELEMENTS_BY_CATEGORY, variables: {
+        category: newElement.category
+      }} ]
     })
   };
 
@@ -263,6 +306,7 @@ export default function CreateRqProvider({ children }: PropsWithChildren) {
         handleChange,
         handleSelects,
         handleSubmit,
+        validInputs,
         modal,
         rqInfo,
         rqInfoToAPI,
@@ -279,7 +323,8 @@ export default function CreateRqProvider({ children }: PropsWithChildren) {
         setToastProps,
         handleNewMaterial,
         saveNewMaterial,
-        elementControll
+        elementControll,
+        handleFullSelects
       }}
     >
       {children}

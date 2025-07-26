@@ -26,6 +26,21 @@ type User = {
   image: string;
   id: string;
   isActive: boolean
+  eppHistory: {
+    eppId: {
+      name: string,
+      classificationName: string
+      classification: {
+        name: string
+        amount: number
+        id: string
+      }
+      category: string
+      _id: string
+    }
+    amount: number
+    date: string
+  }[]
 };
 
 type Button = {
@@ -56,8 +71,26 @@ type PricaWorker = {
   name: string;
   occupation: string;
   _id: string;
-  isActive: boolean
+  isActive: boolean;
+  eppHistory: EppInfo[]
 };
+
+type EppInfo = {
+  amount: number,
+  date: string
+  folder: Bodega 
+  eppId?: {
+    classification: {
+      amount: number;
+      id: string;
+      name: string;
+    }[];
+    classificationName: string;
+    icons: string;
+    name: string;
+    _id: string;
+  };
+}
 
 type PricaWorkerToApi = {
   cc: number;
@@ -73,6 +106,7 @@ type ElementInformation = {
   code: string;
   serial: string;
   image: string;
+  unit?: string
   history: {
     giverFolder: {
       name: string;
@@ -193,7 +227,7 @@ type Toast = {
 };
 
 type FormByType = {
-  selectedType: "Material" | "Equipo" | "Dotacion" | "Epp" | "Herramienta";
+  selectedType: "Material" | "Equipo" | "Dotacion" | "EPP" | "Herramienta";
 };
 
 enum SelectedType {
@@ -236,6 +270,7 @@ type PricaOC = {
   ocNumber: number;
   isAlive: boolean;
   project: string;
+  rq: string;
   _id?: string
   items: {
     name?: string;
@@ -292,6 +327,8 @@ type RQItemsFromQuery = {
   pendingAmount: number;
   observation: string;
   materialId: string;
+  materialCategory: string,
+  classificationId?: string
   material?: {
     name: string;
     unit: string;
@@ -299,6 +336,13 @@ type RQItemsFromQuery = {
     _id: string;
     amount: number;
     unitaryPrice: number
+    serial: string 
+    description: string
+    classification: {
+      name: string
+      amount: number
+      id: string
+    }[]
   } | null;
 };
 
@@ -307,24 +351,4 @@ type Material = {
   unit: string;
   type: string;
   _id?: string;
-};
-
-// OC TYPES
-//MUTATIONS
-type OCAPI = {
-  date: string;
-  deliverAddress: string;
-  deliverConditions: string;
-  deliverDate: string;
-  deliverMethod: string;
-  observation: string;
-  paymentMethod: string;
-  providerId: string;
-  receiverId: string;
-  items: OCItemsAPI[];
-};
-
-type OCItemsAPI = {
-  amount: number;
-  id: string;
 };

@@ -1,0 +1,25 @@
+{
+  "remitent": {
+    "name": "",
+    "_id": "",
+    "role": ""
+  },
+  "receiverProject": {
+    "name": "",
+    "_id": ""
+  },
+  "remitentProject": {
+    "name": "",
+    "_id": ""
+  },
+  "receiver": {
+    "name": "",
+    "_id": "",
+    "occupation": ""
+  },
+  "elementsList": [],
+  "_id": "",
+  "date": "",
+  "observation": "",
+  "number": "0"
+}

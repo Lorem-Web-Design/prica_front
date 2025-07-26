@@ -9,10 +9,6 @@ type ImageUploader = {
   loading: boolean;
 };
 
-type ImagePromise = {
-  resolve: (value: ImageUploader) => void
-  reject: (reason?: any) => void
-}
 export default async function imageUploader(image: FormData) {
   try {
     const myResult = await postDataWithPayLoad(`${adminDataSource()}/images/uploader`, image, getToken());

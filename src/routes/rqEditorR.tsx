@@ -21,7 +21,7 @@ import MaterialSelect from "../components/materialSelect";
 
 export default function RQEditor() {
   const rqControll = new RQControll(RQ_MOCK);
-  const [rqInfo, setRqInfo] = useState<RQControllTypes>(rqControll.rq);
+  const [rqInfo, setRqInfo] = useState<RQFromQuery>(rqControll.rq);
   const [rqInfoToAPI, setRqInfoToAPI] = useState<RQControllAPI>(RQ_MOCK_API);
   const [modal, setModal] = useState(false);
   const [rqOption, setRqOption] = useState("GENERAL");
@@ -42,9 +42,7 @@ export default function RQEditor() {
     theme: "primary_theme",
   });
 
-  const handleChange = (
-    evt: React.ChangeEvent<HTMLInputElement | HTMLSelectElement>
-  ) => {
+  const handleChange = (evt: React.ChangeEvent<HTMLInputElement | HTMLSelectElement>) => {
     const name = evt.target.name;
     let value: string | number = evt.target.value;
     /*@ts-ignore*/
@@ -76,7 +74,7 @@ export default function RQEditor() {
   };
 
   useEffect(() => {
-    console.log(rqInfoToAPI)
+    console.log(rqInfoToAPI);
     setRqInfoToAPI(rqControll.rqToAPI);
   }, [rqInfo]);
 
@@ -127,8 +125,14 @@ export default function RQEditor() {
   return (
     <Layout>
       {/* Titulo de la página actual */}
-      <Title title="Requisición" description="Crea la requisición para nuevos elementos:"/>
-      <Toast title={toastProps.title} body={toastProps.body} theme={toastProps.theme} footer={toastProps.footer} isActive={toast} setToast={setToast}
+      <Title title="Requisición" description="Crea la requisición para nuevos elementos:" />
+      <Toast
+        title={toastProps.title}
+        body={toastProps.body}
+        theme={toastProps.theme}
+        footer={toastProps.footer}
+        isActive={toast}
+        setToast={setToast}
       />
       <div className="pt_def_48"></div>
       {/* Barra de meníu inferior - shortcuts */}
@@ -141,9 +145,7 @@ export default function RQEditor() {
         <div className="col_span_def_5 rqFlexYCentered">
           <div className="reqTitles">
             <p className="rqCenteredText">PROCESO DE COMPRAS</p>
-            <p className="rqCenteredText">
-              FORMATO REQUISICION DE MATERIALES Y HERRAMIENTAS
-            </p>
+            <p className="rqCenteredText">FORMATO REQUISICION DE MATERIALES Y HERRAMIENTAS</p>
             <p className="rqCenteredText">PARTE OPERATIVA</p>
           </div>
         </div>
@@ -201,14 +203,7 @@ export default function RQEditor() {
         </table>
       </Grid>
       <div className="pt_def_16"></div>
-      <Grid
-        gap={12}
-        sm={2}
-        md={2}
-        lg={2}
-        def={4}
-        className="rqInfoContainer rqBorder"
-      >
+      <Grid gap={12} sm={2} md={2} lg={2} def={4} className="rqInfoContainer rqBorder">
         <div>
           <p>SOLICITANTE</p>
         </div>
@@ -219,10 +214,10 @@ export default function RQEditor() {
           <p>CARGO</p>
         </div>
         <div>
-          <p>{user.position}</p>
+          <p>{user.role}</p>
         </div>
       </Grid>
-      <RqMenu/>
+      <RqMenu />
       <Modal modal={modal} setModal={setModal}>
         <GeneralRQInfo
           handleChange={handleChange}
@@ -241,36 +236,25 @@ export default function RQEditor() {
 
 type GeneralRQInfoTypes = {
   handleSubmit: FormEventHandler<HTMLFormElement>;
-  handleChange: (
-    evt: ChangeEvent<HTMLInputElement | HTMLSelectElement>
-  ) => void;
-  rqInfo: RQControllTypes;
-  setRqInfo: (value: React.SetStateAction<RQControllTypes>) => void;
+  handleChange: (evt: ChangeEvent<HTMLInputElement | HTMLSelectElement>) => void;
+  rqInfo: RQFromQuery;
+  setRqInfo: (value: React.SetStateAction<RQFromQuery>) => void;
   activeTab: string;
   rqControll: RQControll;
   handleSelects: (evt: React.ChangeEvent<HTMLSelectElement>) => void;
 };
 
-function GeneralRQInfo({
-  handleSubmit,
-  handleChange,
-  rqInfo,
-  activeTab,
-  setRqInfo,
-  rqControll,
-  handleSelects,
-}: GeneralRQInfoTypes) {
+function GeneralRQInfo({ handleSubmit, handleChange, rqInfo, activeTab, setRqInfo, rqControll, handleSelects }: GeneralRQInfoTypes) {
   const [rqNewItem, setRqNewItem] = useState<RQItems>(RQ_ITEM_MOCK);
   const [selectedMaterial, setSelectedMaterial] = useState<PricaMaterial>({
-    "name": "",
-    _id:"",
-    "unit":"",
-    "type":""
-  })
+    name: "",
+    _id: "",
+    unit: "",
+    amount: 0,
+    category: "",
+  });
 
-  const handleNewItem = (
-    evt: React.ChangeEvent<HTMLInputElement | HTMLSelectElement>
-  ) => {
+  const handleNewItem = (evt: React.ChangeEvent<HTMLInputElement | HTMLSelectElement>) => {
     const name = evt.target.name;
     let value: string | number = evt.target.value;
     setRqNewItem((prev) => {
@@ -278,15 +262,14 @@ function GeneralRQInfo({
     });
   };
 
-
   const addNewItem = (evt: React.FormEvent<HTMLFormElement>) => {
-    evt.preventDefault()
-    let newItem:RQItems = {
-        ...rqNewItem,
-        materialId: selectedMaterial._id,
-        unit: selectedMaterial.unit,
-        name: selectedMaterial.name
-    }
+    evt.preventDefault();
+    let newItem: RQItems = {
+      ...rqNewItem,
+      materialId: selectedMaterial._id,
+      unit: selectedMaterial.unit,
+      name: selectedMaterial.name,
+    };
     rqControll.rq.rqItems.push(JSON.parse(JSON.stringify(newItem)));
     setRqInfo(rqControll.stateCopy);
   };
@@ -294,13 +277,7 @@ function GeneralRQInfo({
   if (activeTab === "GENERAL") {
     return (
       <form onSubmit={handleSubmit}>
-        <InputBox
-          inputName="ppto"
-          isEmpty={false}
-          labelTag="Capitulo Presupuesto"
-          onChange={handleChange}
-          value={rqInfo.ppto}
-        />
+        <InputBox inputName="ppto" isEmpty={false} labelTag="Capitulo Presupuesto" onChange={handleChange} value={rqInfo.ppto} type={"text"} />
         <div className="pt_def_12"></div>
         <WorkerSelectBox
           defaultOption={{
@@ -351,6 +328,7 @@ function GeneralRQInfo({
           labelTag="Cantidad solicitada"
           onChange={handleNewItem}
           value={`${rqNewItem.requiredAmount}`}
+          type={"number"}
         />
         <div className="pt_def_12"></div>
         <InputBox
@@ -359,6 +337,7 @@ function GeneralRQInfo({
           labelTag="Cantidad Autorizada"
           onChange={handleNewItem}
           value={`${rqNewItem.authorizedAmount}`}
+          type={"number"}
         />
         <div className="pt_def_12"></div>
         <InputBox
@@ -367,6 +346,7 @@ function GeneralRQInfo({
           labelTag="Cantidad Recibida"
           onChange={handleNewItem}
           value={`${rqNewItem.receivedAmount}`}
+          type={"number"}
         />
         <div className="pt_def_12"></div>
         <InputBox
@@ -375,6 +355,7 @@ function GeneralRQInfo({
           labelTag="Cantidad Pendiente"
           onChange={handleNewItem}
           value={`${rqNewItem.pendingAmount}`}
+          type={"number"}
         />
         <div className="pt_def_12"></div>
         <InputBox
@@ -383,6 +364,7 @@ function GeneralRQInfo({
           labelTag="Observación"
           onChange={handleNewItem}
           value={`${rqNewItem.observation}`}
+          type={"text"}
         />
         <div className="pt_def_12"></div>
         <button className="mediumBottom" type="submit">

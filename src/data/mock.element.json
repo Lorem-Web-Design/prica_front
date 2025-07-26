@@ -23,5 +23,7 @@
   },
   "onDelivery": true,
   "category": "Equipo",
-  "_id": ""
+  "_id": "",
+  "classification": [],
+  "classificationName": ""
 }

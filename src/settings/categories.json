@@ -9,20 +9,20 @@
         "slug": "Herramienta"
       },
       {
-        "name": "EPP",
-        "slug": "EPP"
-      },
-      {
-        "name": "Dotacion",
-        "slug": "Dotacion"
-      },
-      {
         "name": "Equipo",
         "slug": "Equipo"
       },
       {
         "name": "EPCC",
         "slug": "EPCC"
+      },
+      {
+        "name": "EPP",
+        "slug": "EPP"
+      },
+      {
+        "name": "Dotación",
+        "slug": "DOTACION"
       }
     ]
   }

@@ -14,6 +14,11 @@ export type ElementToApi = {
   category: Categories;
 };
 
+export type SelectType = SingleValue<{
+  value: string;
+  label: string;
+}>;
+
 export type RawHistory = {
   giverFolder: string;
   takerFolder: string;
@@ -67,6 +72,14 @@ export type ElementFromQuery = {
   amount: number,
   provider: string,
   _id: string;
+  classification: Classification[],
+  classificationName: string
+}
+
+type Classification = {
+  name: string,
+  amount: number,
+  id: string
 }
 
 export type RawRemision = {
@@ -90,4 +103,4 @@ export type RemisionExtended = {
   amount: string
 }
 
-type Categories = "Material" | "Equipo" | "Dotacion" | "Epp" | "Herramienta";
+type Categories = "Material" | "Equipo" | "Dotacion" | "EPP" | "Herramienta" | "Todos";

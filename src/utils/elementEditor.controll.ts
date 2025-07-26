@@ -28,9 +28,10 @@ export default class ElementEditor {
       takerFolder: this.element.takerFolder._id,
       onDelivery: true,
       category: this.element.category,
-      lastMovement: "09/25/2024",
+      lastMovement: `${ new Date()}`,
+      classification: this.element.classification,
+      classificationName: this.element.classificationName
     };
-
     return info;
   }
 
@@ -46,6 +47,21 @@ export default class ElementEditor {
       };
     })
     return newItem;
+  }
+
+  addClassification(name: string, amount: number){
+    this.element.classification.push({
+      name,
+      amount,
+      id: `${Date.now()}`
+    })
+  }
+
+  addNewItems(classificationId: string, amount: number){
+    let selectedClassification = this.element.classification.find(clas=>clas.id===classificationId)
+    if(selectedClassification){
+      selectedClassification.amount += amount
+    }
   }
 
 }

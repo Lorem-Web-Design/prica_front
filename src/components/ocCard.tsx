@@ -13,7 +13,7 @@ type OCCard = {
 export default function OcCard({cardInfo}:OCCard){
     const cardReference = useRef<HTMLDivElement>(null);
     const navigate = useNavigate();
-    const [deleteOc, {data, error, loading}] = useMutation(DELETE_OC_BY_ID);
+    const [deleteOc, {data, error, loading}] = useMutation(DELETE_OC_BY_ID, {refetchQueries: ["GetOcs"]});
     //Toast
     const [toast, setToast] = useState(false);
     const [toastProps, setToastProps] = useState({

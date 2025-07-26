@@ -1,7 +1,7 @@
 import BottomStart from "../components/bottomStart";
 import Card from "../components/cards";
+import EppMenu from "../components/createEpp";
 import ProviderMenu from "../components/createProvider";
-import ProviderCard from "../components/createProvider";
 import Gallery from "../components/gallery";
 import GestionUsuariosCard from "../components/gestionUsuariosCard";
 import Grid from "../components/grid";
@@ -21,8 +21,9 @@ export default function Start() {
         {MENU_ITEMS.map((item) => (
           <Card name={item.name} icon={item.icon} route={item.path} key={item.name} />
         ))}
-        {/* <Gallery roles={["admin","compras"]}/> */}
+        <Gallery roles={["admin","compras"]}/>
         <ProviderMenu roles={["admin","compras"]}/>
+        <EppMenu roles={["admin","compras"]}/>
       </Grid>
       <BottomStart />
     </Layout>

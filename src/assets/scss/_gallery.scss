@@ -9,3 +9,10 @@
         cursor: pointer;
     }
 }
+
+.uploadedGalleryItem{
+    width: 200px;
+    height: 200px;
+    object-fit: contain;
+    border: solid 2px black;
+}

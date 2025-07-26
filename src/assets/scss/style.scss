@@ -17,6 +17,8 @@
 @use 'panels';
 @use 'gallery';
 @use 'contextMenu';
+@use 'fonts';
+@use 'print';
 
 @import url('https://fonts.googleapis.com/css2?family=Montserrat:ital,wght@0,100..900;1,100..900&display=swap');
 
@@ -29,7 +31,6 @@
 
 body{
   margin: 0;
-  background-color: #FDFCF9;
 }
 
 .body_background{
@@ -63,6 +64,25 @@ body{
 
 .txt_center{
   text-align: center;
+}
+
+.freyContainer{
+  border: solid red 2px;
+  padding: 5px;
+  p{
+    font-weight: bold;
+    font-size: 24px;
+    color: rgb(145, 65, 199);
+    &:hover{
+      font-size: 30px;
+      cursor: pointer;
+    }
+  }
+}
+
+.containerFreyPadre{
+  display: flex;
+  gap: 12px;
 }
 
 @keyframes colorWarning {

@@ -1,3 +1,4 @@
+import { OCAPI, OCFromQuery } from "../@types/oc.types";
 import { ProviderFromQuery } from "../@types/providerTypes";
 import OC_DELIVERY_METHODS from "../data/ocDeliverInfo.json"
 
@@ -7,9 +8,9 @@ type SetProvider = {
 };
 
 export default class OrdenDeCompra {
-  ocData: PricaOC;
+  ocData: OCFromQuery;
 
-  constructor(ocData: PricaOC) {
+  constructor(ocData: OCFromQuery) {
     this.ocData = ocData;
   }
 
@@ -27,7 +28,7 @@ export default class OrdenDeCompra {
 
   get stateCopy() {
     this.itemsTotalPriceCalculator();
-    return JSON.parse(JSON.stringify(this.ocData)) as PricaOC;
+    return JSON.parse(JSON.stringify(this.ocData)) as OCFromQuery;
   }
 
   itemsTotalPriceCalculator(){
@@ -52,7 +53,9 @@ export default class OrdenDeCompra {
       amount: item.authorizedAmount,
       id: item.material?._id ?? "",
       unitaryPrice: item.material?.unitaryPrice ?? 0,
-      totalPrice: this.toCurrency(item.material?.unitaryPrice ?? 0 * item.authorizedAmount)
+      totalPrice: this.toCurrency(item.material?.unitaryPrice ?? 0 * item.authorizedAmount),
+      category: item.material?.type,
+      classificationId: item.classificationId
     };
     this.ocData.items.push(parsedItem);
   }
@@ -74,8 +77,12 @@ export default class OrdenDeCompra {
     ocCopy["receiverId"] = this.ocData.receiver._id;
     //Parse items
     ocCopy["items"] = this.parseItems(ocCopy.items)
+    ocCopy["rq"] = this.ocData.rq._id
+    ocCopy["takerId"] = this.ocData.taker !== undefined ? this.ocData.taker._id : "";
     //Delete repeated keys
     delete ocCopy.receiver;
+    delete ocCopy._id;
+    delete ocCopy.taker;
     delete ocCopy.provider;
     return ocCopy;
   }
@@ -118,5 +125,17 @@ export default class OrdenDeCompra {
   static OCDeliveryInfo(deliveryProp: "deliveryMethods" | "deliveryConditions" | "paymentMethod", value: string){
     const PROP_INFO = OC_DELIVERY_METHODS[deliveryProp].find(prop=>prop.value === value);
     return PROP_INFO?.name;
+  }
+
+  get Subtotal(){
+   return this.ocData.items.reduce((acc, current)=>acc + (current.amount * current.unitaryPrice), 0)
+  }
+
+  get IVA(){
+    return this.Subtotal * 0.19
+  }
+
+  get Total(){
+    return this.Subtotal * 1.19 + (this.ocData.discount?.value ?? 0)
   }
 }

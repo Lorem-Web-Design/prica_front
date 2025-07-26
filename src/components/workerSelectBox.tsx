@@ -11,7 +11,7 @@ type SelectBox = {
     name: string;
     defaultOption: {label: string, value: string}
     isEmpty: boolean
-    value: string
+    value: string | undefined
     disabled?: boolean
   };
   export default function WorkerSelectBox({ onChange, label, name, defaultOption, isEmpty, value, disabled }: SelectBox) {

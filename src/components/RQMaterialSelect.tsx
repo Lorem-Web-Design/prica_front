@@ -12,7 +12,6 @@ type MaterialSelectBox = {
     value: string
     setState: React.Dispatch<React.SetStateAction<PricaMaterial>>
     setRqNewItem: (value: React.SetStateAction<RQItems>) => void
-    rqNewItem: RQItems
   };
 
 
@@ -21,12 +20,13 @@ type SelectType = SingleValue<{
     label: string;
 }>
 
-export default function RQMaterialSelect({ label, name, isEmpty, value, setState, setRqNewItem, rqNewItem }: MaterialSelectBox){
+export default function RQMaterialSelect({ label, name, isEmpty, value, setState, setRqNewItem }: MaterialSelectBox){
     const {data, loading, error} = useQuery(GET_RQ_ELEMENTS);
     const handleSelectedMaterial = (evt: React.ChangeEvent<HTMLSelectElement>) => {}
 
     if(data){
         let materialList = data.getElementsForRq as PricaMaterial[];
+        
         let selectPairs = materialList.map(material=>{return({
             value: material._id,
             label: material.name

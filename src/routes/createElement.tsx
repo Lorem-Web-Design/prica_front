@@ -10,6 +10,7 @@ import Title from "../components/title";
 import Toast from "../components/toast";
 import WorkerSelectBox from "../components/workerSelectBox";
 import CreateElementProvider, { CreateElementContext } from "../contexts/createElementContext";
+import UnitSelector from "../components/selector/unitSelector";
 
 type FormByType = {
   selectedType: "Material" | "Equipo" | "Dotacion" | "Epp" | "Herramienta";
@@ -80,7 +81,7 @@ function FormByType() {
           <InputBox
             onChange={handleChange}
             inputName="serial"
-            labelTag="Serial"
+            labelTag="Referencia"
             isEmpty={validInputs.includes("serial")}
             value={elementInfo.serial}
             type="text"
@@ -109,14 +110,7 @@ function FormByType() {
             value={`${elementInfo.amount}`}
             type="number"
           />
-          <InputBox
-            onChange={handleChange}
-            inputName="unit"
-            labelTag="Unidad"
-            isEmpty={validInputs.includes("unit")}
-            value={`${elementInfo.unit}`}
-            type="text"
-          />
+          <UnitSelector onChange={handleChange} value={elementInfo.unit} isEmpty={validInputs.includes("unit")}/>
           <WorkerSelectBox
             defaultOption={{ label: "Selecciona un colaborador...", value: "" }}
             name="currentOwner"

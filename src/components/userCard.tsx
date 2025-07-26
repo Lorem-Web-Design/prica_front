@@ -1,32 +1,34 @@
 import { useMutation } from "@apollo/client";
 import { useEffect, useRef, useState } from "react";
-import { Link, useNavigate } from "react-router-dom";
+import { useNavigate } from "react-router-dom";
+import { WorkerToApi } from "../@types/usersTypes";
 import { imagesSource } from "../api/datasources";
 import { DELETE_WORKER_BY_ID, EDIT_WORKER_BY_ID, UPDATE_USER_STATUS } from "../api/myMutations";
+import ActivateUser from "../assets/icon/activateUser";
+import DeactivateUser from "../assets/icon/deactivateUser";
 import EditIcon from "../assets/icon/edit";
 import EyeIcon from "../assets/icon/eye";
 import TrashCan from "../assets/icon/trashcan";
 import LOGO_BLUE from "../assets/images/prica_logo_blue.png";
 import LOGO_COLOR from "../assets/images/prica_logo_color.png";
-import CustomContextMenu from "./customContextMenu";
-import Toast from "./toast";
-import Modal from "./modal";
-import InputBox from "./inputElement";
+import EPP_LIFE_IN_DAYS from "../settings/eppLife.json";
 import checkForms from "../utils/checkForms";
-import { WorkerToApi } from "../@types/usersTypes";
+import CustomContextMenu from "./customContextMenu";
 import GalleryViewer from "./galleryViewer";
 import Grid from "./grid";
-import DeactivateUser from "../assets/icon/deactivateUser";
-import ActivateUser from "../assets/icon/activateUser";
+import InputBox from "./inputElement";
+import Modal from "./modal";
+import Toast from "./toast";
+import WorkerStateSelect from "./workerStateSelect";
 
-export default function UserCard({ name, cc, cargo, id, image, isActive }: User) {
+export default function UserCard({ name, cc, _id, image, isActive, eppHistory, occupation }: PricaWorker) {
   const cardReference = useRef<HTMLDivElement>(null);
   const navigate = useNavigate();
   const [deleteWorker, { data, error, loading }] = useMutation(DELETE_WORKER_BY_ID, {
-    refetchQueries: ['GetWorkers']
+    refetchQueries: ["GetWorkers"],
   });
   const [updateUserStatus, { data: statusData, error: statusError, loading: statusLoading }] = useMutation(UPDATE_USER_STATUS, {
-    refetchQueries: ['GetWorkers']
+    refetchQueries: ["GetWorkers"],
   });
   const [modal, setModal] = useState(false);
   const [isVisible, setIsVisible] = useState(false);
@@ -38,6 +40,9 @@ export default function UserCard({ name, cc, cargo, id, image, isActive }: User)
     footer: "Footer del toast",
     theme: "primary_theme",
   });
+
+  const eppInfo = eppTimer(eppHistory);
+
   useEffect(() => {
     if (loading) {
       setToast(true);
@@ -101,7 +106,7 @@ export default function UserCard({ name, cc, cargo, id, image, isActive }: User)
   return (
     <>
       <Modal modal={modal} setModal={setModal}>
-        <EditWorkerForm userInfo={{ name, cc, image, occupation: cargo, _id: id }} isActive={isVisible} />
+        <EditWorkerForm userInfo={{ name, cc, image, occupation, _id, isActive, eppHistory }} isActive={isVisible} />
       </Modal>
       <Toast
         title={toastProps.title}
@@ -111,19 +116,26 @@ export default function UserCard({ name, cc, cargo, id, image, isActive }: User)
         isActive={toast}
         setToast={setToast}
       />
-      <div className={`userCard_container`} onClick={() => navigate(`/worker/${id}`)} ref={cardReference}>
+      <div className={`userCard_container`} onClick={() => navigate(`/worker/${_id}/${"Material"}`)} ref={cardReference}>
         <CustomContextMenu cardReference={cardReference}>
           <ul>
-            <li onClick={() => navigate(`/worker/${id}`)}>
+            <li onClick={() => navigate(`/worker/${_id}/Material`)}>
               <div className="option">
                 <EyeIcon />
                 Ver
               </div>
             </li>
-            <li onClick={() => {
-              setModal(true)
-            }}>
-              <div className="option" onClick={()=>{setIsVisible(true)}}>
+            <li
+              onClick={() => {
+                setModal(true);
+              }}
+            >
+              <div
+                className="option"
+                onClick={() => {
+                  setIsVisible(true);
+                }}
+              >
                 <EditIcon />
                 Editar
               </div>
@@ -132,7 +144,7 @@ export default function UserCard({ name, cc, cargo, id, image, isActive }: User)
               onClick={() => {
                 const deleteConfirmed = confirm("¿Estás seguro que deseas eliminar este Colaborador?");
                 if (deleteConfirmed) {
-                  deleteWorker({ variables: { workerId: id } });
+                  deleteWorker({ variables: { workerId: _id } });
                 }
               }}
             >
@@ -141,23 +153,31 @@ export default function UserCard({ name, cc, cargo, id, image, isActive }: User)
                 Eliminar
               </div>
             </li>
-            <li  onClick={()=>{
-              updateUserStatus({variables: {
-                workerId: id,
-                action: "activate"
-              }})
-            }}>
+            <li
+              onClick={() => {
+                updateUserStatus({
+                  variables: {
+                    workerId: _id,
+                    action: "activate",
+                  },
+                });
+              }}
+            >
               <div className="option">
                 <ActivateUser />
                 Activar
               </div>
             </li>
-            <li onClick={()=>{
-              updateUserStatus({variables: {
-                workerId: id,
-                action: "deactivate"
-              }})
-            }}>
+            <li
+              onClick={() => {
+                updateUserStatus({
+                  variables: {
+                    workerId: _id,
+                    action: "deactivate",
+                  },
+                });
+              }}
+            >
               <div className="option">
                 <DeactivateUser />
                 Desactivar
@@ -189,10 +209,13 @@ export default function UserCard({ name, cc, cargo, id, image, isActive }: User)
             <div className="userCard_userCc">
               <p>C.C: {cc}</p>
               <p className={`${!isActive ? "red" : "green"} txt_center`}>{`${!isActive ? "Inactivo" : "Activo"}`}</p>
+              <div className="txt_center">
+                EPP: {eppInfo.length > 0 ? <span className="red">REVISAR</span> : <span className="green">AL DÍA</span>}
+              </div>
             </div>
           </div>
           <div className="userCard_cargo">
-            <p>{cargo}</p>
+            <p>{occupation}</p>
           </div>
           <div className="userCard_background">
             <img src={LOGO_BLUE} alt="logo" draggable={false} />
@@ -205,7 +228,7 @@ export default function UserCard({ name, cc, cargo, id, image, isActive }: User)
 
 type EditWorkerForm = {
   userInfo: WorkerToApi;
-  isActive: boolean
+  isActive: boolean;
 };
 
 function EditWorkerForm({ userInfo, isActive }: EditWorkerForm) {
@@ -216,9 +239,10 @@ function EditWorkerForm({ userInfo, isActive }: EditWorkerForm) {
     cc: userInfo.cc,
     image: userInfo.image,
     occupation: userInfo.occupation,
-    
+    isActive: userInfo.isActive,
+    eppHistory: userInfo.eppHistory
   });
-  const [editWorker, {loading, error, data}] = useMutation(EDIT_WORKER_BY_ID, {refetchQueries: ['GetWorkers']})
+  const [editWorker, { loading, error, data }] = useMutation(EDIT_WORKER_BY_ID, { refetchQueries: ["GetWorkers"] });
 
   //Toast
   const [toast, setToast] = useState(false);
@@ -240,8 +264,7 @@ function EditWorkerForm({ userInfo, isActive }: EditWorkerForm) {
   };
 
   const handleSubmit = (evt: React.FormEvent<HTMLFormElement>) => {
-    evt.preventDefault()
-    console.log("Submit.")
+    evt.preventDefault();
     const checks = new checkForms(userData);
     const checkedInputs = checks.checkEmpty(
       { name: "name", type: "string" },
@@ -251,22 +274,23 @@ function EditWorkerForm({ userInfo, isActive }: EditWorkerForm) {
     );
     setValidInputs(checkedInputs);
     if (checkedInputs.length === 0) {
-      userData.cc = parseFloat(`${userData.cc}`)
-        editWorker({
-          variables: {
-            info: userData,
-            workerId: userInfo._id,
-          },
-        });   
-      } else {
-        setToastProps({
-          title: "Error en la creación",
-          body: "Verifica que todos los campos esten diligenciasdos",
-          footer: "Error: Campos incompletos",
-          theme: "error_theme",
-        });
-        setToast(true);
-      }
+      userData.cc = parseFloat(`${userData.cc}`);
+      userData.isActive = userData.isActive === "active" ? true : false;
+      editWorker({
+        variables: {
+          info: userData,
+          workerId: userInfo._id,
+        },
+      });
+    } else {
+      setToastProps({
+        title: "Error en la creación",
+        body: "Verifica que todos los campos esten diligenciasdos",
+        footer: "Error: Campos incompletos",
+        theme: "error_theme",
+      });
+      setToast(true);
+    }
   };
   const updateImage = (image: string) => {
     setUserData((prev) => {
@@ -277,40 +301,40 @@ function EditWorkerForm({ userInfo, isActive }: EditWorkerForm) {
     });
     setToast(true);
     setToastProps({
-        title: "Imagen seleccionada",
-    body: "La imagen ha sido seleccionada",
-    footer: "SUCCESS",
-    theme: "success_theme",
-    })
+      title: "Imagen seleccionada",
+      body: "La imagen ha sido seleccionada",
+      footer: "SUCCESS",
+      theme: "success_theme",
+    });
   };
 
   useEffect(() => {
     if (data) {
-        setToastProps({
-            title: "Edición del elemento",
-            body: "La información ha sido actualizada, actualice la página para ver los cambios",
-            footer: "Exito",
-            theme: "success_theme",
-          });
-          setToast(true);
+      setToastProps({
+        title: "Edición del elemento",
+        body: "La información ha sido actualizada, actualice la página para ver los cambios",
+        footer: "Exito",
+        theme: "success_theme",
+      });
+      setToast(true);
     }
     if (error) {
-        setToastProps({
-            title: "Edición del elemento",
-            body: "La información no ha podido actualizarse",
-            footer: "ERROR",
-            theme: "error_theme",
-          });
-          setToast(true);
+      setToastProps({
+        title: "Edición del elemento",
+        body: "La información no ha podido actualizarse",
+        footer: "ERROR",
+        theme: "error_theme",
+      });
+      setToast(true);
     }
     if (loading) {
-        setToastProps({
-            title: "Edición del elemento",
-            body: "La información está siendo guardada",
-            footer: "Loading...",
-            theme: "primary_theme",
-          });
-          setToast(true);
+      setToastProps({
+        title: "Edición del elemento",
+        body: "La información está siendo guardada",
+        footer: "Loading...",
+        theme: "primary_theme",
+      });
+      setToast(true);
     }
   }, [loading, error, data]);
 
@@ -325,7 +349,7 @@ function EditWorkerForm({ userInfo, isActive }: EditWorkerForm) {
         setToast={setToast}
       />
       <Modal modal={imageModal} setModal={setImageModal}>
-        <GalleryViewer action={updateImage} isActive={isActive}/>
+        <GalleryViewer action={updateImage} isActive={isActive} />
       </Modal>
       <form onSubmit={handleSubmit}>
         <Grid gap={12} def={1} sm={1} md={2} lg={3}>
@@ -362,6 +386,13 @@ function EditWorkerForm({ userInfo, isActive }: EditWorkerForm) {
               value={`${userData.occupation}`}
               type="text"
             />
+            <WorkerStateSelect
+              isEmpty={false}
+              label="Estado del colaborador"
+              name="isActive"
+              onChange={handleChange}
+              value={`${userData.isActive ? "active" : "inactive"}`}
+            />
           </div>
         </Grid>
         <div style={{ paddingTop: 12 }}>
@@ -372,4 +403,28 @@ function EditWorkerForm({ userInfo, isActive }: EditWorkerForm) {
       </form>
     </>
   );
+}
+
+function eppTimer(eppHistory: PricaWorker["eppHistory"]) {
+  let nextToExpire: any = [];
+  for (let i = 0; i < eppHistory.length; i++) {
+    let currentEpp = eppHistory[i];
+    let currentDate = new Date();
+    let eppDate = new Date(currentEpp.date);
+    //@ts-ignore
+    let timeElapsed = Math.abs(currentDate - eppDate);
+
+    if (currentEpp.eppId) {
+      for (let j = 0; j < currentEpp.eppId.classification.length; j++) {
+        let currentEppClas = currentEpp.eppId?.classification[j];
+        if (EPP_LIFE_IN_DAYS.eppLife * 24 * 60 * 60 * 1000 <= timeElapsed) {
+          nextToExpire.push({
+            epp: currentEpp.eppId.name,
+            classificationName: currentEppClas.name,
+          });
+        }
+      }
+    }
+  }
+  return nextToExpire;
 }

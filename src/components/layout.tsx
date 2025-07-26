@@ -1,17 +1,11 @@
 import { PropsWithChildren, useEffect, useState } from "react";
-import PRICA_LOGO from "../assets/images/prica_logo.png";
-import ORANGE from "../assets/images/orange.png";
 import { Link, useLocation } from "react-router-dom";
-import DropDown from "./dropdown";
+import ORANGE from "../assets/images/orange.png";
+import PRICA_LOGO from "../assets/images/prica_logo.png";
 import { useAuth } from "../customHooks/centers/auth/useAuth";
-import imageUploader from "../services/imageUploader";
-import { imagesSource } from "../api/datasources";
-import { useQuery } from "@apollo/client";
-import { GET_PENDING_RQS } from "../api/myQueries";
-import BellIcon from "../assets/icon/bell";
+import DropDown from "./dropdown";
 
 export default function Layout({children}: PropsWithChildren) {
-  const [isActive, setIsActive] = useState(false);
   const [isVisible, setIsVisible] = useState(true);
   const [username, setUsername] = useState('');
   const [image, setImage] = useState('');

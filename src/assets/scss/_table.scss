@@ -25,6 +25,16 @@ td {
   tr {
     text-align: center;
   }
+
+  thead{
+    tr{
+      th{
+        background-color: colors.$primary_blue;
+        color: white;
+        font-weight: bold;
+      }
+    }
+  }
 }
 
 .ocTable {
@@ -53,6 +63,9 @@ td {
       font-weight: bold;
       color: colors.$primary_blue;
     }
+    img{
+      height: 100px;
+    }
   }
 
   .ocProvider {
@@ -63,6 +76,10 @@ td {
     border: solid rgb(173, 173, 173) 2px;
   }
 
+  .borderGrayThin {
+    border: solid rgb(173, 173, 173) 0.5px;
+  }
+
   .generalInfo {
     border: solid rgb(173, 173, 173) 2px;
   }
@@ -71,6 +88,14 @@ td {
     tr {
       td {
         border: solid rgb(173, 173, 173) 2px;
+      }
+    }
+  }
+
+  .remisionBody {
+    tr {
+      td {
+        border: solid rgb(173, 173, 173) 0.5px;
       }
     }
   }
@@ -93,6 +118,17 @@ td {
           ;
         }
       }
+    }
+  }
+
+  .ocTaker{
+    .input_container {
+      padding: 0;
+      display: block;
+    }
+    .editable_input {
+      border: none;
+      font-size: 16px
     }
   }
 }
@@ -141,4 +177,14 @@ td {
 
 .colorWarning {
   animation: colorWarning 1s infinite;
+}
+
+.field{
+  font-size: 12px;
+  border-bottom: solid rgb(173, 173, 173) 0.5px !important;
+  font-weight: bold;
+  color: #004A87;
+}
+.borderBottom{
+  border-bottom: solid rgb(173, 173, 173) 0.5px !important;
 }

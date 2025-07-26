@@ -5,6 +5,7 @@ import ELEMENT_IMAGE from "../assets/images/no_image.jpg";
 import { useEffect, useState } from "react";
 import imageUploader from "../services/imageUploader";
 import Toast from "./toast";
+import multipleImageUploader from "../services/multipleImageUploader";
 
 type ImageUploader = {
   setImageUrl: React.Dispatch<React.SetStateAction<string | null>>
@@ -27,7 +28,6 @@ export default function ImageUploader({setImageUrl, setSaveImageTrigger, saveIma
 
   const handleImage = (evt: React.ChangeEvent<HTMLInputElement>) => {
     const file = evt.target.files;
-    console.log(file?.length)
     if (file !== null) {
       if(file.length > 0){
         setVisualImage(URL.createObjectURL(file[0]));
@@ -69,12 +69,13 @@ export default function ImageUploader({setImageUrl, setSaveImageTrigger, saveIma
     }
     }
     else{
+      setImageUrl("images/default.jpg")
       setToast(true);
       setToastProps({
-        title: "Error cargando imagen",
-        body: "No se ha podido cargar tu imagen, verifica la extensión del archivo, extensiones permitidas: 'JPG', 'JPEG', 'PNG'",
+        title: "Elemento sin imagen",
+        body: "No se ha elegido una imagen para este elemento",
         footer: "ERROR_EXTENSION",
-        theme: "error_theme",
+        theme: "success_theme",
       });
     }
     

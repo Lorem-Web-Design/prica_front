@@ -8,6 +8,8 @@ export interface PricaProvider {
     email: string
 }
 
+
+
 export interface ProviderFromQuery extends PricaProvider { 
     _id: string
 }

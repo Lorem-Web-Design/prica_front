@@ -20,14 +20,35 @@
     "_id": "66e091a805b2a9226cfaf103"
   },
   "items":[],
-  "date": "2024-09-10",
+  "date": "",
+  "request": "",
   "observation": "",
   "paymentMethod": "Anticipado",
   "deliverMethod": "Terrestre",
   "deliverConditions": "Suministro",
-  "deliverAddress": "CLL 35 CRA 35",
-  "deliverDate": "2024-09-10",
+  "deliverAddress": "",
+  "deliverDate": "",
   "ocNumber": 0,
+  "discount": {
+    "name": "",
+    "value": 0
+  },
+  "state": "initialized",
   "isAlive": true,
-  "project": ""
+  "taker":{
+    "name": "",
+    "_id": "",
+    "occupation": "",
+    "cc": ""
+  },
+  "project": "",
+  "rq": {
+    "_id": "",
+    "rq": "",
+    "ppto": "",
+    "petitioner": {
+      "name": "",
+      "_id":""
+    }
+  }
 }
