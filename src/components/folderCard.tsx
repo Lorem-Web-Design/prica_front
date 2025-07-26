@@ -9,8 +9,8 @@ import InputBox from "./inputElement";
 import checkForms from "../utils/checkForms";
 import CustomContextMenu from "./customContextMenu";
 import TrashCan from "../assets/icon/trashcan";
-import EditICon from "../assets/icon/edit";
-import EditIcon from "../assets/icon/edit";
+import EditICon from "../assets/icon/sitemap";
+import EditIcon from "../assets/icon/sitemap";
 
 type Card = {
   icon: string;
@@ -19,8 +19,9 @@ type Card = {
   ID: string;
   isParent:boolean
   parentId: string
+  hide?: boolean
 };
-export default function FolderCard({ icon, name, route, ID, isParent, parentId }: Card) {
+export default function FolderCard({ icon, name, route, ID, isParent, parentId, hide }: Card) {
   const navigate = useNavigate();
   const [modal, setModal] = useState(false);
   const cardReference = useRef<HTMLDivElement>(null);
@@ -88,7 +89,7 @@ export default function FolderCard({ icon, name, route, ID, isParent, parentId }
       />
 
       <div
-        className="card_container select_none"
+        className={`card_container select_none ${hide ? "hide" : ''}`}
         onClick={() => {
           navigate(`${route}`);
         }}
@@ -214,6 +215,16 @@ function EditFolderForm({ folderInfo, ID }: CreateFolderForm) {
           onChange={handleChange}
           value={folderData.name}
           type="text"
+        />
+        <InputBox
+          inputName="name"
+          isEmpty={validInputs.includes("parentId")}
+          labelTag="Nombre de bodega"
+          onChange={handleChange}
+          value={folderData.parentId}
+          type="text"
+          disabled={true}
+          className="hide"
         />
         <div className="pt_def_12"></div>
         <button className="mediumBottom" type="submit">

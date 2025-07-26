@@ -10,8 +10,18 @@ $primary_blue: #004A87;
     font-weight: 600;
 }
 
+.blue{
+    color: $primary_blue;
+    font-weight: 600;
+}
+
 .red{
     color: red;
+    font-weight: 600;
+}
+
+.yellow{
+    color: rgb(255, 166, 0);
     font-weight: 600;
 }
 

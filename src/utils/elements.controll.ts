@@ -29,7 +29,6 @@ export default class ElementControll {
 
   searchByCategory(cat: string, query: string) {
     let filterByName = this.search("name", query);
-    console.log(filterByName);
     let results: ElementFromQuery[] = [];
 
     if(cat === "Todos"){

@@ -1,14 +1,12 @@
-import { Link, useNavigate } from "react-router-dom"
-import RQControll from "../utils/rq.controll"
-import CustomContextMenu from "./customContextMenu"
-import { useEffect, useRef, useState } from "react"
-import EditIcon from "../assets/icon/edit"
-import TrashCan from "../assets/icon/trashcan"
-import EyeIcon from "../assets/icon/eye"
 import { useMutation } from "@apollo/client"
+import { useEffect, useRef, useState } from "react"
+import { useNavigate } from "react-router-dom"
 import { DELETE_RQ_BY_ID } from "../api/myMutations"
-import Toast from "./toast"
+import EyeIcon from "../assets/icon/eye"
+import TrashCan from "../assets/icon/trashcan"
 import { useAuth } from "../customHooks/centers/auth/useAuth"
+import CustomContextMenu from "./customContextMenu"
+import Toast from "./toast"
 
 type RQCard = {
     cardInfo: RQFromQuery
@@ -70,7 +68,6 @@ export default function RqCard({cardInfo}:RQCard){
       }
       
       if(user.role === "dir_proyectos" || user.role === "admin"){
-        console.log("Director")
         setIsVisible(true)
       }
     },[user.role])
@@ -78,7 +75,7 @@ export default function RqCard({cardInfo}:RQCard){
     return (
         <>
         <Toast title={toastProps.title} body={toastProps.body} theme={toastProps.theme} footer={toastProps.footer} isActive={toast} setToast={setToast} />
-        <div className={`rqCardContainer ${isVisible ? "" : "hide"}`} onClick={()=>navigate(`/requisicion/viewer/${cardInfo._id}`)} ref={cardReference}>
+        <div className={`rqCardContainer ${isVisible ? "" : "hide"} ${cardInfo.hide ? "hide" : ""}`} onClick={()=>navigate(`/requisicion/viewer/${cardInfo._id}`)} ref={cardReference}>
             <CustomContextMenu cardReference={cardReference}>
             <ul>
             <li onClick={()=>navigate(`/requisicion/viewer/${cardInfo._id}`)}>
@@ -106,7 +103,7 @@ export default function RqCard({cardInfo}:RQCard){
             <p className="rqDate">Fecha de creación: {cardInfo.date}</p>
             <p className="rqDate">Proyecto: {cardInfo.project.name}</p>
             <p className="rqPetitioner">Solicitante: {cardInfo.petitioner.name}</p>
-            <p className={`${cardInfo.isApproved ? "green" : "red"}`}>{`${cardInfo.isApproved ? "Aprobado" : "Pendiente"}`}</p>
+            {cardInfo.isEnded ? <span className="green">FINALIZADA</span> : cardInfo.haveOC ? <span className="blue">EN PROCESO DE COMPRA</span> : <p className={`${cardInfo.isApproved ? "green" : "yellow"}`}>{`${cardInfo.isApproved ? "APROBADO" : "PENDIENTE"}`}</p>}
         </div>
         </>
     )

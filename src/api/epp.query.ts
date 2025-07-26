@@ -48,6 +48,12 @@ export const GET_EPP_LIST  = gql`query GetEpps {
       name
     }
     classificationName
+    stock {
+      location
+      owner
+      amount
+      classificationId
+    }
   }
 }`
 

@@ -39,7 +39,8 @@ export default class RQControll {
       rqItems: this.parseItems(),
       petitioner: this.rq.petitioner._id,
       isApproved: this.rq.isApproved,
-      haveOC: this.rq.haveOC
+      haveOC: this.rq.haveOC,
+      isEnded: this.rq.isEnded
     };
     return rqJSONToAPI;
   }
@@ -66,5 +67,9 @@ export default class RQControll {
       currentItem.requiredAmount = Number(currentItem.requiredAmount)
       currentItem.pendingAmount = Number(currentItem.pendingAmount)
     }
+  }
+
+  get isItemsFilled(){
+    return this.rq.rqItems.every(item=>item.receivedAmount > 0)
   }
 }

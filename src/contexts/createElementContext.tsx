@@ -1,14 +1,12 @@
 import { useMutation } from "@apollo/client";
 import { createContext, PropsWithChildren, useEffect, useState } from "react";
+import { ElementFromQuery } from "../@types/elementTypes";
 import { CREATE_ELEMENT } from "../api/myMutations";
 import ELEMENT_IMAGE from "../assets/images/no_image.jpg";
+import Toast from "../components/toast";
 import AS_QUERY_ELEMENT from "../data/mock.element.json";
-import ELEMENT_MOCK_API from "../data/mock.element_raw.json";
-import imageUploader from "../services/imageUploader";
 import checkForms from "../utils/checkForms";
 import ElementEditor from "../utils/elementEditor.controll";
-import { ElementFromQuery, ElementToApi } from "../@types/elementTypes";
-import Toast from "../components/toast";
 
 type ContextInfo = {
   elementInfo: ElementFromQuery;
@@ -60,9 +58,9 @@ const ContextDefaultValue: ContextInfo = {
 };
 
 export const CreateElementContext = createContext(ContextDefaultValue);
+const elementEditor = new ElementEditor(AS_QUERY_ELEMENT as ElementFromQuery);
 
 export default function CreateElementProvider({ children }: PropsWithChildren) {
-  const elementEditor = new ElementEditor(AS_QUERY_ELEMENT as ElementFromQuery);
   // Información de los elementos
   const [elementInfo, setElementInfo] = useState<ElementFromQuery>(elementEditor.stateCopy);
   // Determina que formulario se va a mostrar dependiendo de la categoría del elemento seleccionado

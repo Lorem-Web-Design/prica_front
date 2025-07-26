@@ -136,6 +136,6 @@ export default class OrdenDeCompra {
   }
 
   get Total(){
-    return this.Subtotal * 1.19 + (this.ocData.discount?.value ?? 0)
+    return this.Subtotal * 1.19 - (this.ocData.discount?.value ?? 0)
   }
 }

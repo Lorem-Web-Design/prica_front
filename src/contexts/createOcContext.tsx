@@ -62,9 +62,9 @@ export default function CreateOcProvider({ children }: PropsWithChildren) {
   }, refetchQueries: ["GetOcs"]});
   const {loading: loadingRq, error: rqError, data: rqData} = useQuery(GET_RQ_BY_ID, {variables: {rqId}})
 
-  const [incrementCounter] = useMutation(INCREMENT_OC_COUNTER);
+  const [incrementCounter, {loading: loadingCounter, error: counterError, data: counterData}] = useMutation(INCREMENT_OC_COUNTER);
 
-  const [triggerHaveOc] = useMutation(TRIGGER_HAVE_OC, {variables: {rqId: rqId, approveState: "true"}});
+  const [triggerHaveOc, {loading: loadingTrigger, error: triggerError, data: triggerData}] = useMutation(TRIGGER_HAVE_OC, {variables: {rqId: rqId, approveState: "true"}});
   
   const changeDate = (evt:React.ChangeEvent<HTMLInputElement>) => {
     OC.date = evt.target.value;
@@ -82,9 +82,8 @@ export default function CreateOcProvider({ children }: PropsWithChildren) {
   }
 
   const createOC = () => {
-    incrementCounter()
     triggerHaveOc()
-    storeOC()
+    incrementCounter()
   }
 
   //Notifications on oc creation status
@@ -146,6 +145,12 @@ export default function CreateOcProvider({ children }: PropsWithChildren) {
       setRqInfo(rqData.getRqById);
     }
   }, [rqData]);
+
+  useEffect(()=>{
+    if(triggerData && counterData){
+      storeOC()
+    }
+  },[triggerData, counterData])
 
   return (
     <CreateOcContext.Provider

@@ -42,7 +42,7 @@ export default function Subfolder() {
         <div className="pt_def_48"></div>
         {/* Barra de meníu inferior - shortcuts */}
         <Grid gap={12} sm={2} md={3} lg={6} def={1} className="center_def">
-          {myData.map(({ name, image, _id }) => (
+          {myData.map(({ name, image, _id, parentId }) => (
             <FolderCard
               name={name}
               icon={image}
@@ -50,7 +50,7 @@ export default function Subfolder() {
               key={_id}
               ID={_id} 
               isParent={false} 
-              parentId={""}            
+              parentId={parentId}            
               />
           ))}
         </Grid>

@@ -59,7 +59,7 @@ function GeneralRQInfo() {
   const { rqControll, setRqInfo, rqOption, handleSubmit, handleChange, rqInfo, handleSelects, handleNewMaterial, elementControll, saveNewMaterial, newElement, validInputs } = useContext(CreateRqContext);
   const [rqNewItem, setRqNewItem] = useState<RQItems>(RQ_ITEM_MOCK);
   const [selectedMaterial, setSelectedMaterial] = useState<ElementFromQuery>(ELEMENT_FROM_QUERY_MOCK as ElementFromQuery);
-  const [selectedEppId, setSelectedEppId] = useState("")
+  const [selectedEppId, setSelectedEppId] = useState("");
   const folderControll = new FolderControll({
       image: "/assets/icons/mmcndmgr.dll_14_30612-1.png",
       isParent: false,
@@ -81,7 +81,8 @@ function GeneralRQInfo() {
   const addNewItem = (evt: React.FormEvent<HTMLFormElement>) => {
     evt.preventDefault();
     let newItem: RQItemsFromQuery;
-    if(selectedMaterial.category === "EPP" || selectedMaterial.category === "Dotacion"){
+    let categoryName = selectedMaterial.classification.find(item=>item.id === selectedEppId);
+      console.log(categoryName);
       newItem = {
         ...rqNewItem,
         materialId: selectedMaterial._id,
@@ -94,30 +95,11 @@ function GeneralRQInfo() {
           _id: selectedMaterial._id,
           amount: selectedMaterial.amount,
           unitaryPrice: 0,
-          description: "",
-          serial: "",
+          description: selectedMaterial.description === "" ? "SIN DEFINIR" : selectedMaterial.description,
+          serial: categoryName?.name || "SIN DEFINIR",
           classification: []
         }
       };
-    }
-    else{
-      newItem = {
-        ...rqNewItem,
-        materialId: selectedMaterial._id,
-        materialCategory: selectedMaterial.category,
-        material: {
-          unit: selectedMaterial.unit,
-          name: selectedMaterial.name,
-          type: selectedMaterial.category,
-          _id: selectedMaterial._id,
-          amount: selectedMaterial.amount,
-          unitaryPrice: 0,
-          serial: selectedMaterial.serial,
-          classification: [],
-          description: selectedMaterial.description
-        }
-      };
-    }
     rqControll.rq.rqItems.push(JSON.parse(JSON.stringify(newItem)));
     setRqInfo(rqControll.stateCopy);
   };
@@ -295,7 +277,7 @@ function RQItems() {
           <tr key={index}>
             <td>{index + 1}</td>
             <td style={{textTransform: "uppercase"}}>{item.material?.serial}</td>
-            <td>{`${item.material?.description}`}</td>
+            <td>{`${item.material?.name}`}</td>
             <td>{item.material?.unit}</td>
             <td>{item.requiredAmount}</td>
             <td>{item.authorizedAmount}</td>

@@ -113,6 +113,7 @@ export default function CreateRqProvider({ children }: PropsWithChildren) {
   //Querys and mutations
   const [storeRQ, { loading, data, error }] = useMutation(CREATE_RQ, {
     variables: { rqData: rqInfoToAPI },
+    refetchQueries:  ["GetRqs"]
   });
 
   const [storeMaterials, { loading: loadingMaterials, data: materialData, error: materialError }] = useMutation(CREATE_ELEMENT);

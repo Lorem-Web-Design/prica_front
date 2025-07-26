@@ -141,7 +141,7 @@ function EPPList() {
             <div key={index} className="eppSingle">
             <h5>{eppInfo.eppId?.name}</h5>
             <div className="eppDeliverInfo">
-              <p>Fecha: {`${new Date(eppInfo.date).toLocaleDateString()}`}</p>
+              <p>Fecha: {`${new Date(eppInfo.date).toLocaleDateString('en-US', { timeZone: 'UTC' })}`}</p>
               <p>
                 {eppInfo.eppId?.classificationName}: {eppInfo.eppId?.classification[0].name}
               </p>

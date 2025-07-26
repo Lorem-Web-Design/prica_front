@@ -124,6 +124,17 @@ export const CREATE_WORKER = gql`mutation AddWorker($workerInfo: WorkerInput!) {
     }
   }`
 
+export const END_RQ = gql`mutation Mutation($endState: String!, $rqId: String!) {
+  isEnded(endState: $endState, rqId: $rqId) {
+    code
+    success
+    message
+    rq {
+      _id
+    }
+  }
+}`
+
   export const ADD_FOLDER = gql`mutation AddFolder($folderData: FolderInput!) {
     addFolder(folderData: $folderData) {
       code

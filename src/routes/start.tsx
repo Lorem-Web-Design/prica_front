@@ -23,7 +23,7 @@ export default function Start() {
         ))}
         <Gallery roles={["admin","compras"]}/>
         <ProviderMenu roles={["admin","compras"]}/>
-        <EppMenu roles={["admin","compras"]}/>
+        <EppMenu roles={["admin","compras", "coord_sst"]}/>
       </Grid>
       <BottomStart />
     </Layout>

@@ -35,4 +35,5 @@ export type VisibleAdmin = {
   name: string;
   role: string;
   _id: string;
+  hide?: boolean
 };

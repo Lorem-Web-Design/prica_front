@@ -3,7 +3,7 @@ import { useEffect, useRef, useState } from "react";
 import { Link, useNavigate } from "react-router-dom";
 import { imagesSource } from "../api/datasources";
 import { DELETE_WORKER_BY_ID, EDIT_USER, EDIT_WORKER_BY_ID } from "../api/myMutations";
-import EditIcon from "../assets/icon/edit";
+import EditIcon from "../assets/icon/sitemap";
 import EyeIcon from "../assets/icon/eye";
 import TrashCan from "../assets/icon/trashcan";
 import LOGO_BLUE from "../assets/images/prica_logo_blue.png";
@@ -19,7 +19,7 @@ import GalleryViewer from "./galleryViewer";
 import Grid from "./grid";
 import { DELETE_ADMINS } from "../api/myQueries";
 
-export default function AdminCard({ name, cc, role, _id, image }: VisibleAdmin) {
+export default function AdminCard({ name, cc, role, _id, image, hide }: VisibleAdmin) {
   const cardReference = useRef<HTMLDivElement>(null);
   const [deleteWorker, { data, error, loading }] = useMutation(DELETE_ADMINS);
   const [modal, setModal] = useState(false);
@@ -66,7 +66,7 @@ export default function AdminCard({ name, cc, role, _id, image }: VisibleAdmin) 
   return (
     <>
       <Modal modal={modal} setModal={setModal}>
-        <EditAdminForm userInfo={{ name, cc, image, role, _id}} isActive={isActive}/>
+        <EditAdminForm userInfo={{ name, cc, image, role, _id }} isActive={isActive} />
       </Modal>
       <Toast
         title={toastProps.title}
@@ -76,11 +76,16 @@ export default function AdminCard({ name, cc, role, _id, image }: VisibleAdmin) 
         isActive={toast}
         setToast={setToast}
       />
-      <div className="userCard_container" ref={cardReference}>
+      <div className={`userCard_container ${hide ? "hide" : ''}`} ref={cardReference}>
         <CustomContextMenu cardReference={cardReference}>
           <ul>
             <li onClick={() => setModal(true)}>
-              <div className="option" onClick={()=>{setIsActive(true)}}>
+              <div
+                className="option"
+                onClick={() => {
+                  setIsActive(true);
+                }}
+              >
                 <EditIcon />
                 Editar
               </div>
@@ -89,7 +94,7 @@ export default function AdminCard({ name, cc, role, _id, image }: VisibleAdmin) 
               onClick={() => {
                 const deleteConfirmed = confirm("¿Estás seguro que deseas eliminar este administrador?");
                 if (deleteConfirmed) {
-                  deleteWorker({ variables: { userId: _id} });
+                  deleteWorker({ variables: { userId: _id } });
                 }
               }}
             >
@@ -126,7 +131,7 @@ export default function AdminCard({ name, cc, role, _id, image }: VisibleAdmin) 
             </div>
           </div>
           <div className="userCard_cargo">
-            <p>{role}</p>
+            <p>{roleParser(role)}</p>
           </div>
           <div className="userCard_background">
             <img src={LOGO_BLUE} alt="logo" draggable={false} />
@@ -139,7 +144,7 @@ export default function AdminCard({ name, cc, role, _id, image }: VisibleAdmin) 
 
 type EditAdminForm = {
   userInfo: VisibleAdmin;
-  isActive: boolean
+  isActive: boolean;
 };
 
 function EditAdminForm({ userInfo, isActive }: EditAdminForm) {
@@ -151,9 +156,9 @@ function EditAdminForm({ userInfo, isActive }: EditAdminForm) {
     image: userInfo.image,
     role: userInfo.role,
     password: "",
-    confirmPassword: ""
+    confirmPassword: "",
   });
-  const [editWorker, {loading, error, data}] = useMutation(EDIT_USER, {refetchQueries: ["GetUsers"]})
+  const [editWorker, { loading, error, data }] = useMutation(EDIT_USER, { refetchQueries: ["GetUsers"] });
 
   //Toast
   const [toast, setToast] = useState(false);
@@ -175,7 +180,7 @@ function EditAdminForm({ userInfo, isActive }: EditAdminForm) {
   };
 
   const handleSubmit = (evt: React.FormEvent<HTMLFormElement>) => {
-    evt.preventDefault()
+    evt.preventDefault();
     const checks = new checkForms(userData);
     const checkedInputs = checks.checkEmpty(
       { name: "name", type: "string" },
@@ -187,28 +192,28 @@ function EditAdminForm({ userInfo, isActive }: EditAdminForm) {
     setValidInputs(checkedInputs);
     let matchPassword = userData.password === userData.confirmPassword;
     if (checkedInputs.length === 0 && matchPassword) {
-      userData.cc = parseFloat(`${userData.cc}`)
-        editWorker({
-          variables: {
-            info: {
-              name: userData.name,
-              role: userData.role,
-              password: userData.password,
-              image: userData.image,
-              cc: userData.cc
-            },
-            userId: userInfo._id,
+      userData.cc = parseFloat(`${userData.cc}`);
+      editWorker({
+        variables: {
+          info: {
+            name: userData.name,
+            role: userData.role,
+            password: userData.password,
+            image: userData.image,
+            cc: userData.cc,
           },
-        });   
-      } else {
-        setToastProps({
-          title: "Error en la creación",
-          body: "Verifica que todos los campos esten diligenciasdos y que las contraseñas ingresadas coincidan",
-          footer: "Error: Campos incompletos",
-          theme: "error_theme",
-        });
-        setToast(true);
-      }
+          userId: userInfo._id,
+        },
+      });
+    } else {
+      setToastProps({
+        title: "Error en la creación",
+        body: "Verifica que todos los campos esten diligenciasdos y que las contraseñas ingresadas coincidan",
+        footer: "Error: Campos incompletos",
+        theme: "error_theme",
+      });
+      setToast(true);
+    }
   };
   const updateImage = (image: string) => {
     setUserData((prev) => {
@@ -219,43 +224,42 @@ function EditAdminForm({ userInfo, isActive }: EditAdminForm) {
     });
     setToast(true);
     setToastProps({
-        title: "Imagen seleccionada",
-    body: "La imagen ha sido seleccionada",
-    footer: "SUCCESS",
-    theme: "success_theme",
-    })
+      title: "Imagen seleccionada",
+      body: "La imagen ha sido seleccionada",
+      footer: "SUCCESS",
+      theme: "success_theme",
+    });
   };
 
   useEffect(() => {
     if (data) {
-        setToastProps({
-            title: "Edición del elemento",
-            body: "La información ha sido actualizada, actualice la página para ver los cambios",
-            footer: "Exito",
-            theme: "success_theme",
-          });
-          setToast(true);
+      setToastProps({
+        title: "Edición del elemento",
+        body: "La información ha sido actualizada, actualice la página para ver los cambios",
+        footer: "Exito",
+        theme: "success_theme",
+      });
+      setToast(true);
     }
     if (error) {
-        setToastProps({
-            title: "Edición del elemento",
-            body: "La información no ha podido actualizarse",
-            footer: "ERROR",
-            theme: "error_theme",
-          });
-          setToast(true);
+      setToastProps({
+        title: "Edición del elemento",
+        body: "La información no ha podido actualizarse",
+        footer: "ERROR",
+        theme: "error_theme",
+      });
+      setToast(true);
     }
     if (loading) {
-        setToastProps({
-            title: "Edición del elemento",
-            body: "La información está siendo guardada",
-            footer: "Loading...",
-            theme: "primary_theme",
-          });
-          setToast(true);
+      setToastProps({
+        title: "Edición del elemento",
+        body: "La información está siendo guardada",
+        footer: "Loading...",
+        theme: "primary_theme",
+      });
+      setToast(true);
     }
   }, [loading, error, data]);
-
 
   return (
     <>
@@ -268,7 +272,7 @@ function EditAdminForm({ userInfo, isActive }: EditAdminForm) {
         setToast={setToast}
       />
       <Modal modal={imageModal} setModal={setImageModal}>
-        <GalleryViewer action={updateImage} isActive={isActive}/>
+        <GalleryViewer action={updateImage} isActive={isActive} />
       </Modal>
       <form onSubmit={handleSubmit}>
         <Grid gap={12} def={1} sm={1} md={2} lg={3}>
@@ -323,4 +327,32 @@ function EditAdminForm({ userInfo, isActive }: EditAdminForm) {
       </form>
     </>
   );
+}
+
+function roleParser(role: string): string {
+  let roleParsed: string = "";
+  switch (role) {
+    case "admin":
+      roleParsed = "Administrador";
+      break;
+    case "gerente":
+      roleParsed = "Gerente";
+      break;
+    case "ing_proyectos":
+      roleParsed = "Ingeniero de Proyectos";
+      break;
+    case "dir_proyectos":
+      roleParsed = "Director de Proyectos";
+      break;
+    case "coord_sst":
+      roleParsed = "SST";
+      break;
+    case "compras":
+      roleParsed = "Compras";
+      break;
+    case "super":
+      roleParsed = "Superuser";
+      break;
+  }
+  return roleParsed;
 }

@@ -4,5 +4,6 @@
     "classificationId": "",
     "amount": 0,
     "folder": "",
-    "date": ""
+    "date": "",
+    "movementMaker": ""
   }

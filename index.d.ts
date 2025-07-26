@@ -63,6 +63,7 @@ type Bodega = {
   name: string;
   parentId: string;
   _id: string;
+  hide?: boolean
 };
 
 type PricaWorker = {
@@ -73,6 +74,7 @@ type PricaWorker = {
   _id: string;
   isActive: boolean;
   eppHistory: EppInfo[]
+  hide?: boolean
 };
 
 type EppInfo = {
@@ -84,12 +86,20 @@ type EppInfo = {
       amount: number;
       id: string;
       name: string;
-    }[];
+    }[] 
     classificationName: string;
     icons: string;
     name: string;
     _id: string;
-  };
+  }
+}
+
+type EppInfoApi = {
+  amount: number,
+  date: string
+  folder: string 
+  eppId: string
+    classificationId: string;
 }
 
 type PricaWorkerToApi = {
@@ -304,6 +314,7 @@ type AddState<T> = T & {
 
 type RQFromQuery = {
   date: string;
+  hide?: boolean
   project: {
     name: string;
     _id: string;
@@ -318,6 +329,7 @@ type RQFromQuery = {
   _id?: string;
   haveOC: boolean
   isApproved: boolean;
+  isEnded: boolean
 };
 
 type RQItemsFromQuery = {

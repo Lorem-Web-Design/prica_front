@@ -8,6 +8,7 @@ export const GET_PARENTFOLDERS = gql`
       isParent
       parentId
       image
+      hide
     }
   }
 `;
@@ -40,11 +41,15 @@ export const GET_WORKERS = gql`
     getWorkers {
       name
       cc
+      hide
       occupation
       image
       _id
       isActive
       eppHistory {
+        folder{
+          _id
+        }
       eppId {
         name
         classificationName
@@ -71,6 +76,7 @@ export const GET_ADMINS = gql`
     role
     image
     _id
+    hide
   }
 }
 `;
@@ -105,10 +111,18 @@ export const GET_ELEMENTS = gql`
     getElements {
       name
       description
+      classification {
+        name
+        amount
+        id
+      }
+      classificationName
       code
       serial
       image
       amount
+      provider
+      hide
       unit
       category
       history {
@@ -143,6 +157,32 @@ export const GET_ELEMENTS = gql`
       }
       onDelivery
       _id
+      remision {
+      amount
+      giverFolder {
+        name
+        _id
+      }
+      giver {
+        name
+        _id
+      }
+      taker {
+        name
+        _id
+      }
+      takerFolder {
+        name
+        _id
+      }
+    }
+      stock {
+      location
+      owner
+      amount
+      classificationId
+      
+    }
     }
   }
 `;
@@ -259,6 +299,12 @@ export const GET_ELEMENT_BY_ID = gql`query GetElementById($getElementById: Strin
     provider
     lastMovement
     unit
+    stock {
+      location
+      owner
+      amount
+      classificationId
+    }
   }
 }
 `;
@@ -476,6 +522,7 @@ export const GET_RQS = gql`
         _id
       }
       isApproved
+      isEnded
       haveOC
       _id
     }
@@ -519,6 +566,7 @@ export const GET_RQ_BY_ID = gql`query GetRqById($rqId: String!) {
       _id
     }
     isApproved
+    isEnded
     _id
     haveOC
   }
@@ -888,5 +936,14 @@ export const GET_ELEMENTS_BY_CATEGORY = gql`query GetElementByCategory($category
       id
     }
     classificationName
+  }
+}`
+
+export const GET_USER_BY_ROLES = gql`query GetUserByRole($role: String!) {
+  getUserByRole(role: $role) {
+    _id
+    name
+    cc
+    role
   }
 }`

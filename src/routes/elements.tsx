@@ -4,7 +4,7 @@ import { Link, useNavigate } from "react-router-dom";
 import { ElementFromQuery } from "../@types/elementTypes";
 import { excelSource } from "../api/datasources";
 import { CREATE_REMISION } from "../api/myMutations";
-import { GET_ELEMENTS } from "../api/myQueries";
+import { GET_ELEMENTS, GET_REMISIONS } from "../api/myQueries";
 import BodegaSelectBox from "../components/bodegaSelectBox";
 import BottomStart from "../components/bottomStart";
 import ElementCard from "../components/elementCard";
@@ -23,6 +23,7 @@ import REMISION_FROM_QUERY from "../data/mock.multipleRemisionFromQuery.json";
 import FILTROS from "../settings/filters.json";
 import ElementControll from "../utils/elements.controll";
 import Remision from "../utils/remision.controller";
+import NewElementCard from "../components/newElemementCard";
 
 const Element = new ElementControll([AS_QUERY_ELEMENT] as ElementFromQuery[]);
 
@@ -108,7 +109,7 @@ export default function Elementos() {
       <div className="pt_def_12"></div>
       <Pagination itemsPerPage={24}>
         {elementLoaded.map((element) => {
-          return <ElementCard info={element} key={element._id} />;
+          return <NewElementCard cardInfo={element} key={element._id} />;
         })}
       </Pagination>
       <div className="pt_def_12"></div>
@@ -137,7 +138,7 @@ function RemisionCreator() {
   const [currentElement, setCurrentElement] = useState({ name: "", _id: "" });
   const [amount, setAmount] = useState(0);
   const [saveRemision, { data, loading, error }] = useMutation(CREATE_REMISION, {
-    refetchQueries: ["GetRemision"],
+    refetchQueries: [{query: GET_REMISIONS}],
   });
 
   const handleAmount = (evt: React.ChangeEvent<HTMLInputElement | HTMLSelectElement>) => {

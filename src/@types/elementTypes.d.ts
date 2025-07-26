@@ -70,10 +70,17 @@ export type ElementFromQuery = {
   onDelivery: boolean;
   category: Categories;
   amount: number,
+  hide?: boolean
   provider: string,
   _id: string;
   classification: Classification[],
   classificationName: string
+  stock?: {
+    amount: number,
+    classificationId: string,
+    owner: string,
+    location: string
+  }[]
 }
 
 type Classification = {

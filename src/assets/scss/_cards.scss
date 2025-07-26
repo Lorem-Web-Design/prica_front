@@ -99,3 +99,13 @@
         text-decoration: none;
     }
 }
+
+.newElementContainer{
+    display: flex;
+    gap: 12px;
+    .newElementImage{
+        img{
+            max-width: 100px;
+        }
+    }
+}

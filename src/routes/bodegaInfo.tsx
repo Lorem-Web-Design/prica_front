@@ -46,13 +46,12 @@ export default function BodegaInfo() {
           <div className="navigation_menu">
             {userMenu.map((item, index) => {
               return (
-                <div
+                <a
                   className={`navigation_tab ${item.isActive ? "active" : ""}`}
                   onClick={() => handleClick(index)} key={index}
                 >
                   <span>{item.name}</span>
-                  <div className="border_bottom"></div>
-                </div>
+                </a>
               );
             })}
           </div>

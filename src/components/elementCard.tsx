@@ -68,7 +68,7 @@ export default function ElementCard(element:ElementCardInfo){
     return (
         <>
         <Toast title={toastProps.title} body={toastProps.body} theme={toastProps.theme} footer={toastProps.footer} isActive={toast} setToast={setToast} />
-        <div className="elementCard_container" onClick={()=>navigate(`/elemento/${element.info._id}`)} ref={cardReference}>
+        <div className={`elementCard_container ${element.info.hide ? "hide" : ''}`} onClick={()=>navigate(`/elemento/${element.info._id}`)} ref={cardReference}>
         <CustomContextMenu cardReference={cardReference}>
             <ul>
             <li onClick={()=>navigate(`/elemento/${element.info._id}`)}>

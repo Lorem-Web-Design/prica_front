@@ -1,12 +1,7 @@
-import {
-  ApolloCache,
-  ApolloError,
-  useMutation,
-  useQuery,
-} from "@apollo/client";
+import { ApolloCache, ApolloError, useMutation, useQuery } from "@apollo/client";
 import { useCallback, useContext, useEffect, useRef, useState } from "react";
 import { useParams } from "react-router-dom";
-import { APPROVE_RQ, UPDATE_RQ_BY_ID } from "../api/myMutations";
+import { APPROVE_RQ, END_RQ, UPDATE_RQ_BY_ID } from "../api/myMutations";
 import { GET_RQ_BY_ID } from "../api/myQueries";
 import PRC_LOGO from "../assets/images/prica_full_color_logo.png";
 import BottomStart from "../components/bottomStart";
@@ -22,10 +17,12 @@ import RQControll from "../utils/rq.controll";
 import { ROLES } from "../../enums";
 import { Link } from "react-router-dom";
 import { useReactToPrint } from "react-to-print";
+import useUser from "../customHooks/users/useUser";
 
 const rqControll = new RQControll(RQ_MOCK);
 
 export default function RQViewer() {
+  const {role} = useUser()
   const { rqId } = useParams();
   const [rqInfo, setRqInfo] = useState(rqControll.stateCopy);
   const { loading, error, data } = useQuery(GET_RQ_BY_ID, {
@@ -43,20 +40,10 @@ export default function RQViewer() {
     <NotiProvider>
       <Layout>
         {/* Titulo de la página actual */}
-        <Title
-          title="Requisición"
-          description="Crea la requisición para nuevos elementos:"
-        />
+        <Title title="Requisición" description="Crea la requisición para nuevos elementos:" />
         <div className="pt_def_48"></div>
         {/* Barra de meníu inferior - shortcuts */}
-        <Grid
-          gap={12}
-          sm={9}
-          md={9}
-          lg={9}
-          def={9}
-          className="rqContainer rqBorder"
-        >
+        <Grid gap={12} sm={9} md={9} lg={9} def={9} className="rqContainer rqBorder">
           <div className="col_span_def_2 rqLogoContainer">
             <div className="reqLogo">
               <img src={PRC_LOGO} alt="PRICA SAS" />
@@ -65,9 +52,7 @@ export default function RQViewer() {
           <div className="col_span_def_5 rqFlexYCentered">
             <div className="reqTitles">
               <p className="rqCenteredText">PROCESO DE COMPRAS</p>
-              <p className="rqCenteredText">
-                FORMATO REQUISICION DE MATERIALES Y HERRAMIENTAS
-              </p>
+              <p className="rqCenteredText">FORMATO REQUISICION DE MATERIALES Y HERRAMIENTAS</p>
               <p className="rqCenteredText">PARTE OPERATIVA</p>
             </div>
           </div>
@@ -87,14 +72,7 @@ export default function RQViewer() {
           </div>
         </Grid>
         <div className="pt_def_16"></div>
-        <Grid
-          gap={12}
-          sm={9}
-          md={9}
-          lg={9}
-          def={9}
-          className="rqInfoContainer rqBorder"
-        >
+        <Grid gap={12} sm={9} md={9} lg={9} def={9} className="rqInfoContainer rqBorder">
           <div className="col_span_def_2">
             <p>Fecha</p>
             <p>Proyecto</p>
@@ -116,28 +94,22 @@ export default function RQViewer() {
         {/* Información de RQ */}
         <Grid gap={12} sm={1} md={1} lg={1} def={1} className="rqInfoContainer">
           <div className="tableOverflow">
-          <table className="rqTable">
-            <thead>
-              <tr>
-                <th>Código</th>
-                <th>Referencia</th>
-                <th>Descripción</th>
-                <th>Unidad</th>
-                <th>Cantidad solicitada</th>
-                <th>Cantidad Autorizada</th>
-                <th>Cantidad recibida en obra</th>
-                <th>Cantidad pendientes</th>
-                <th>Observaciones</th>
-              </tr>
-            </thead>
-            <RQItems
-                rqControll={rqControll}
-                rqInfo={rqInfo}
-                setRqInfo={setRqInfo}
-                loading={loading}
-                error={error}
-              />
-          </table>
+            <table className="rqTable">
+              <thead>
+                <tr>
+                  <th>Código</th>
+                  <th>Referencia</th>
+                  <th>Descripción</th>
+                  <th>Unidad</th>
+                  <th>Cantidad solicitada</th>
+                  <th>Cantidad Autorizada</th>
+                  <th>Cantidad recibida en obra</th>
+                  <th>Cantidad pendientes</th>
+                  <th>Observaciones</th>
+                </tr>
+              </thead>
+              <RQItems rqControll={rqControll} rqInfo={rqInfo} setRqInfo={setRqInfo} loading={loading} error={error} />
+            </table>
           </div>
         </Grid>
         <div className="pt_def_16"></div>
@@ -153,20 +125,23 @@ export default function RQViewer() {
             <p>CARGO</p>
           </div>
           <div>
-            <p>GERENTE</p>
+            <p>{role}</p>
           </div>
         </Grid>
         <div className="pt_def_16"></div>
         {/* Boton crear oc */}
         <Grid gap={12} sm={2} md={2} lg={3} def={1} className="rqInfoContainer">
-          <ApproveRQButton
-            rqId={rqId || ""}
-            approvedStatus={rqInfo.isApproved}
-            haveOC={rqInfo.haveOC}
-            rqControll={rqControll}
-          />
-          <CreateOCButton approvedStatus={rqInfo.isApproved} rqId={rqId || ""} haveOc={rqInfo.haveOC}/>
-          <button onClick={()=>{window.print()}} className="smallButton pricaTheme defaultButton">Imprimir</button>
+          <ApproveRQButton rqId={rqId || ""} approvedStatus={rqInfo.isApproved} haveOC={rqInfo.haveOC} rqControll={rqControll} />
+          <CreateOCButton approvedStatus={rqInfo.isApproved} rqId={rqId || ""} haveOc={rqInfo.haveOC} />
+          <button
+            onClick={() => {
+              window.print();
+            }}
+            className="smallButton pricaTheme defaultButton"
+          >
+            Imprimir
+          </button>
+          {rqControll.isItemsFilled && !rqControll.rq.isEnded ? <EndRQButton rqId={rqId || ""} /> : <></>}
         </Grid>
         <BottomStart />
       </Layout>
@@ -175,31 +150,31 @@ export default function RQViewer() {
 }
 
 type RQITemsTypes = {
-  rqControll: RQControll
+  rqControll: RQControll;
   loading: boolean;
-  rqInfo:RQFromQuery, 
-  setRqInfo: React.Dispatch<React.SetStateAction<RQFromQuery>>,
+  rqInfo: RQFromQuery;
+  setRqInfo: React.Dispatch<React.SetStateAction<RQFromQuery>>;
   error: ApolloError | undefined;
 };
 
 function RQItems({ rqControll, error, loading, rqInfo, setRqInfo }: RQITemsTypes) {
-  const {setToastProps, toastProps, toast, setToast} = useContext(NotiContext)
+  const { setToastProps, toastProps, toast, setToast } = useContext(NotiContext);
   const handleChange = (evt: React.ChangeEvent<HTMLInputElement>) => {
     const materialId = evt.target.name;
     const amount = parseFloat(evt.target.value);
-    rqControll.editAmount({materialId, amount});
-    setRqInfo(rqControll.stateCopy)
-    }
-    
+    rqControll.editAmount({ materialId, amount });
+    setRqInfo(rqControll.stateCopy);
+  };
+
   useEffect(() => {
-    if(rqControll.rq.haveOC && rqControll.rq.isApproved){
+    if (rqControll.rq.haveOC && rqControll.rq.isApproved) {
       setToast(true);
       setToastProps({
         title: "Información",
         body: "Esta RQ ya ha sido aprobada y posee una Orden de Compra en curso",
         theme: "success_theme",
         footer: "INFO",
-      })
+      });
     }
   }, [loading]);
 
@@ -219,23 +194,32 @@ function RQItems({ rqControll, error, loading, rqInfo, setRqInfo }: RQITemsTypes
 
   return (
     <>
-    <Toast
-          body={toastProps.body}
-          isActive={toast}
-          setToast={setToast}
-          theme={toastProps.theme}
-          title={toastProps.title}
-          footer={toastProps.footer}
-        />
+      <Toast
+        body={toastProps.body}
+        isActive={toast}
+        setToast={setToast}
+        theme={toastProps.theme}
+        title={toastProps.title}
+        footer={toastProps.footer}
+      />
       {rqInfo.rqItems.map((item, index) => {
         return (
           <tr key={index}>
             <td>{index + 1}</td>
-            <td style={{textTransform: "uppercase"}}>{item.material?.serial || "---"}</td>
+            <td style={{ textTransform: "uppercase" }}>{item.material?.serial || "---"}</td>
             <td>{item.material?.name || "MATERIAL ELIMINADO"}</td>
             <td>{item.material?.unit || "---"}</td>
             <td>{item.requiredAmount}</td>
-            <td><input type="text" className="observation" name={item.materialId} value={item.authorizedAmount} onChange={handleChange} disabled={rqInfo.haveOC ? true : false}/></td>
+            <td>
+              <input
+                type="text"
+                className="observation"
+                name={item.materialId}
+                value={item.authorizedAmount}
+                onChange={handleChange}
+                disabled={rqInfo.haveOC ? true : false}
+              />
+            </td>
             <td>{item.receivedAmount}</td>
             <td>{item.pendingAmount}</td>
             <td>{item.observation}</td>
@@ -250,33 +234,31 @@ type ApproveRQButton = {
   rqId: string;
   approvedStatus: boolean;
   haveOC: boolean;
-  rqControll: RQControll
+  rqControll: RQControll;
 };
 
 function ApproveRQButton({ rqId, approvedStatus, haveOC, rqControll }: ApproveRQButton) {
   const { user } = useAuth();
   const [apprState, setApprState] = useState(`${approvedStatus}`);
-  const { setToast, toast, toastProps, setToastProps } =
-    useContext(NotiContext);
+  const { setToast, toast, toastProps, setToastProps } = useContext(NotiContext);
   const [updateRQ, { loading, error, data }] = useMutation(UPDATE_RQ_BY_ID, {
-    refetchQueries: [{
-      query: GET_RQ_BY_ID,
-      variables: {
-        rqId
-      }
-    }]
+    refetchQueries: [
+      {
+        query: GET_RQ_BY_ID,
+        variables: {
+          rqId,
+        },
+      },
+    ],
   });
 
-  let isVisible =
-    user.role === ROLES["DIRECTOR_PROYECTOS"] ||
-    user.role === ROLES["ADMINISTRADOR"]
-
+  let isVisible = user.role === ROLES["DIRECTOR_PROYECTOS"] || user.role === ROLES["ADMINISTRADOR"];
 
   const approveRq = async (appr: string) => {
     setApprState(appr);
     rqControll.rq.isApproved = appr === "true";
     updateRQ({
-      variables: { info: rqControll.rqToAPI, rqId: rqId }
+      variables: { info: rqControll.rqToAPI, rqId: rqId },
     });
   };
 
@@ -323,10 +305,7 @@ function ApproveRQButton({ rqId, approvedStatus, haveOC, rqControll }: ApproveRQ
           footer={toastProps.footer}
         />
         <div className={`${isVisible && !haveOC ? "" : "hide"}`}>
-          <button
-            className={`smallButton error_theme`}
-            onClick={() => approveRq("false")}
-          >
+          <button className={`smallButton error_theme`} onClick={() => approveRq("false")}>
             Rechazar RQ
           </button>
         </div>
@@ -345,10 +324,7 @@ function ApproveRQButton({ rqId, approvedStatus, haveOC, rqControll }: ApproveRQ
         footer={toastProps.footer}
       />
       <div className={`${isVisible ? "" : "hide"}`} style={{ width: "100%" }}>
-        <button
-          className={`smallButton successTheme`}
-          onClick={() => approveRq("true")}
-        >
+        <button className={`smallButton successTheme`} onClick={() => approveRq("true")}>
           Aprobar
         </button>
       </div>
@@ -358,18 +334,92 @@ function ApproveRQButton({ rqId, approvedStatus, haveOC, rqControll }: ApproveRQ
 
 type CreateOCButton = {
   approvedStatus: boolean;
-  rqId: string
-  haveOc: boolean
-}
+  rqId: string;
+  haveOc: boolean;
+};
 
-function CreateOCButton({approvedStatus, rqId, haveOc}: CreateOCButton) {
+function CreateOCButton({ approvedStatus, rqId, haveOc }: CreateOCButton) {
   const { user } = useAuth();
-  let isVisible =
-    (user.role === ROLES["COMPRAS"] || user.role === ROLES["ADMINISTRADOR"]) && approvedStatus;
+  let isVisible = (user.role === ROLES["COMPRAS"] || user.role === ROLES["ADMINISTRADOR"]) && approvedStatus;
   return (
-      <Link to={`/oc/editor/rq/${rqId}`}  className={`${isVisible ? "" : "hide"} smallButton pricaTheme defaultButton`}>
+    <Link to={`/oc/editor/rq/${rqId}`} className={`${isVisible ? "" : "hide"} smallButton pricaTheme defaultButton`}>
       Crear OC
     </Link>
-    
+  );
+}
+
+function EndRQButton({ rqId }: { rqId: string }) {
+  const { user } = useAuth();
+  const { setToast, toast, toastProps, setToastProps } = useContext(NotiContext);
+  const [endRq, { loading, error, data }] = useMutation(END_RQ, {
+    refetchQueries: [
+      {
+        query: GET_RQ_BY_ID,
+        variables: {
+          rqId,
+        },
+      },
+    ],
+  });
+
+  let isVisible = user.role === ROLES["COMPRAS"] || user.role === ROLES["ADMINISTRADOR"];
+
+  useEffect(() => {
+    if (data) {
+      setToast(true);
+      setToastProps({
+        title: "Finalizando RQ",
+        body: "Las acciones realizadas han sido guardadas exitosamente",
+        theme: "primary_theme",
+        footer: "SUCCESS",
+      });
+    }
+    if (loading) {
+      setToast(true);
+      setToastProps({
+        title: "Finalizando RQ...",
+        body: "La RQ está siendo aprobada",
+        theme: "primary_theme",
+        footer: "SUCCESS",
+      });
+    }
+    if (error) {
+      console.log(error.message);
+      setToast(true);
+      setToastProps({
+        title: "Error finalizando RQ...",
+        body: `${error.message}`,
+        theme: "error_theme",
+        footer: `${error.cause}`,
+      });
+    }
+  }, [data, loading, error]);
+
+  return (
+    <>
+      <Toast
+        body={toastProps.body}
+        isActive={toast}
+        setToast={setToast}
+        theme={toastProps.theme}
+        title={toastProps.title}
+        footer={toastProps.footer}
+      />
+      <div className={`${isVisible ? "" : "hide"}`} style={{ width: "100%" }}>
+        <button
+          className={`smallButton pricaTheme defaultButton`}
+          onClick={() =>
+            endRq({
+              variables: {
+                endState: "true",
+                rqId
+              },
+            })
+          }
+        >
+          Finalizar RQ
+        </button>
+      </div>
+    </>
   );
 }

@@ -8,7 +8,7 @@ import CustomContextMenu from "./customContextMenu";
 import Toast from "./toast";
 import { PricaProvider, ProviderFromQuery } from "../@types/providerTypes";
 import CustomContextMenuV2 from "./customContextMenuV2";
-import EditIcon from "../assets/icon/edit";
+import EditIcon from "../assets/icon/sitemap";
 import Modal from "./modal";
 import checkForms from "../utils/checkForms";
 import InputBox from "./inputElement";

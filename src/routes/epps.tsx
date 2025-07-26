@@ -71,13 +71,14 @@ export default function EppPage() {
       </form>
       <div className="pt_def_12"></div>
       <Grid gap={12} sm={2} md={2} lg={12} def={1}>
-        {FILTROS.categories.map((categoria) => {
+        {FILTROS.categories.map((categoria, index) => {
           return (
             <div
               className={`mediumBottom ${selectedCategory === categoria.slug ? "active" : ""}`}
               onClick={() => {
                 setSelectedCategory(categoria.slug);
               }}
+              key={index}
             >
               {categoria.slug}
             </div>
@@ -87,8 +88,8 @@ export default function EppPage() {
       <div className="pt_def_12"></div>
       {/* <Paginator list={elementLoaded} /> */}
       <Pagination itemsPerPage={12}>
-        {elementLoaded.map(element=>{
-         return <EppCard cardInfo={element} key={element._id}/>
+        {elementLoaded.map((element)=>{
+         return <EppCard cardInfo={element as unknown as ElementFromQuery} key={element._id}/>
         })}
       </Pagination>
       <div className="pt_def_12"></div>

@@ -3,7 +3,7 @@ import { useEffect, useState } from "react";
 import { useParams } from "react-router-dom";
 import { ElementFromQuery, RawRemision } from "../@types/elementTypes";
 import { imagesSource } from "../api/datasources";
-import { EDIT_ELEMENT, GET_ELEMENT_BY_ID } from "../api/myQueries";
+import { EDIT_ELEMENT, GET_ELEMENT_BY_ID, GET_ELEMENTS } from "../api/myQueries";
 import FROM_QUERY_ELEMENT from "../data/mock.element.json";
 import checkForms from "../utils/checkForms";
 import ElementEditor from "../utils/elementEditor.controll";
@@ -38,6 +38,13 @@ export default function ElementById({ elementEditor }: { elementEditor: ElementE
       info: elementEditor.toApi,
       editElementId: id,
     },
+    refetchQueries: [
+      {
+        query: GET_ELEMENT_BY_ID,
+        variables: { getElementById: id },
+      },
+      "GetElements"
+    ],
   });
 
   const [toast, setToast] = useState(false);

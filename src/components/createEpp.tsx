@@ -244,7 +244,9 @@ function CreateEppForm() {
 }
 
 function EPPsList() {
+  const {id} = useUser();
   const [selectedEpp, setSelectedEpp] = useState(MOCK_EPP as ElementFromQuery);
+  const EppEditor = new ElementEditor(selectedEpp);
   const [movementInfo, setMovementInfo] = useState(MOCK_MOVEMENT_INFO);
   const [assignEpp, { loading, error, data }] = useMutation(ASSIGN_EPP, {refetchQueries: ["GetEpps", {
     variables: {
@@ -275,20 +277,20 @@ function EPPsList() {
   const handleSubmit = (evt: React.FormEvent<HTMLFormElement>) => {
     evt.preventDefault();
     movementInfo.eppId = selectedEpp._id;
+    movementInfo.movementMaker = id;
     movementInfo.amount = parseFloat(`${movementInfo.amount}`);
 
     const classificationInfo = selectedEpp.classification.find((element) => element.id === movementInfo.classificationId);
 
-    const availableClass = classificationInfo?.amount;
-
-    if (movementInfo.amount > (availableClass || 0)) {
-      alert("No hay las existencias solicitadas");
-    } else {
+    //Check if user can move the element
+    if(EppEditor.userCanDistribute(id, movementInfo.amount)){
       assignEpp({
         variables: {
           movementInfo,
         },
       });
+    }else{
+      alert("Este usuario no puede realizar este movimiento debido a que no está autorizado o no tiene las existencias necesarias")
     }
   };
 

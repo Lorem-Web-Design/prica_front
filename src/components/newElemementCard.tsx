@@ -1,8 +1,8 @@
 import { useMutation } from "@apollo/client";
 import { useEffect, useRef, useState } from "react";
 import { ElementFromQuery } from "../@types/elementTypes";
-import { DELETE_ELEMENT } from "../api/myMutations";
-import { EDIT_ELEMENT } from "../api/myQueries";
+import { CREATE_REMISION, DELETE_ELEMENT } from "../api/myMutations";
+import { EDIT_ELEMENT, GET_ELEMENT_BY_ID, GET_REMISIONS } from "../api/myQueries";
 import EditIcon from "../assets/icon/edit";
 import Sitemap from "../assets/icon/sitemap";
 import TrashCan from "../assets/icon/trashcan";
@@ -10,23 +10,31 @@ import checkForms from "../utils/checkForms";
 import ElementEditor from "../utils/elementEditor.controll";
 import BodegaSelectBox from "./bodegaSelectBox";
 import CustomContextMenu from "./customContextMenu";
-import EppCategroySelect from "./eppCategorySelect";
-import EppClassificationSelect from "./eppClassificationSelect";
+import ElementClassificationSelect from "./eppClassificationSelect";
 import InputBox from "./inputElement";
 import Modal from "./modal";
 import Toast from "./toast";
 import UserByRoleSelectBox from "./userByRoleSelectBox";
+import { imagesSource } from "../api/datasources";
+import EyeIcon from "../assets/icon/eye";
+import { useNavigate } from "react-router-dom";
+import ElementsCategroySelect from "./ElementsCategorySelec";
+import REMISION_FROM_QUERY from "../data/mock.multipleRemisionFromQuery.json";
+import Remision from "../utils/remision.controller";
+import useUser from "../customHooks/users/useUser";
 
 type RemisionCard = {
   cardInfo: ElementFromQuery;
 };
 
-export default function EppCard({ cardInfo }: RemisionCard) {
+export default function NewElementCard({ cardInfo }: RemisionCard) {
+const elementEditor = new ElementEditor(cardInfo);
   const cardReference = useRef<HTMLDivElement>(null);
-  const [deleteEpp, { data, error, loading }] = useMutation(DELETE_ELEMENT);
+  const [deleteElement, { data, error, loading }] = useMutation(DELETE_ELEMENT);
   const [modal, setModal] = useState(false);
   const [distributeModal, setDistributeModal] = useState(false);
-  const eppEditor = new ElementEditor(cardInfo);
+  
+  const navigate = useNavigate();
   //Toast
   const [toast, setToast] = useState(false);
   const [toastProps, setToastProps] = useState({
@@ -76,7 +84,7 @@ export default function EppCard({ cardInfo }: RemisionCard) {
         setToast={setToast}
       />
       <Modal modal={modal} setModal={setModal}>
-        <EditEppForm eppEditor={eppEditor} />
+        <EditElementForm elementEditor={elementEditor} />
       </Modal>
       <Modal modal={distributeModal} setModal={setDistributeModal}>
         <DistributeForm cardInfo={cardInfo} />
@@ -84,6 +92,14 @@ export default function EppCard({ cardInfo }: RemisionCard) {
       <div className="rqCardContainer" ref={cardReference}>
         <CustomContextMenu cardReference={cardReference}>
           <ul>
+          <li
+              onClick={()=>navigate(`/elemento/${cardInfo._id}`)}
+            >
+              <div className="option">
+                <EyeIcon />
+                Ver
+              </div>
+            </li>
             <li
               onClick={() => {
                 setModal(true);
@@ -108,7 +124,7 @@ export default function EppCard({ cardInfo }: RemisionCard) {
               onClick={() => {
                 const deleteConfirmed = confirm("¿Estás seguro que deseas eliminar este elemento?");
                 if (deleteConfirmed) {
-                  deleteEpp({ variables: { deleteElementById: cardInfo._id }, refetchQueries: ["GetEpps"] });
+                  deleteElement({ variables: { deleteElementById: cardInfo._id }, refetchQueries: ["GetElements"] });
                 }
               }}
             >
@@ -119,7 +135,12 @@ export default function EppCard({ cardInfo }: RemisionCard) {
             </li>
           </ul>
         </CustomContextMenu>
-        <p className="rqTitle">{cardInfo.name}</p>
+        <div className="newElementContainer">
+        <div className="newElementImage">
+          <img src={`${imagesSource()}/${cardInfo.image}`} alt={cardInfo.name} />
+        </div>
+        <div className="newElementInfo">
+            <p className="rqTitle">{cardInfo.name}</p>
         <p className="rqDate">Clasificación: {cardInfo.classificationName}</p>
         <p className="rqDate">
           Cantidad:
@@ -130,21 +151,23 @@ export default function EppCard({ cardInfo }: RemisionCard) {
           ))}
         </p>
         <p className="rqDate">Categoría: {cardInfo.category}</p>
-        <p className="rqDate">Proyecto: {cardInfo.category}</p>
+        <p className="rqDate">Proyecto: {cardInfo.takerFolder.name}</p>
+        </div>
+        </div>
       </div>
     </>
   );
 }
 
-function EditEppForm({eppEditor} : {eppEditor: ElementEditor}) {
-  
-  const [editEpp, { loading, error, data }] = useMutation(EDIT_ELEMENT, {
-    refetchQueries: ["GetEpps"],
+function EditElementForm({ elementEditor }: { elementEditor: ElementEditor }) {
+    
+  const [editElement, { loading, error, data }] = useMutation(EDIT_ELEMENT, {
+    refetchQueries: ["GetElements", {query: GET_ELEMENT_BY_ID, variables: {id: elementEditor.element._id}}],
     variables: {
-      editElementId: eppEditor.element._id,
+        editElementId: elementEditor.element._id,
     },
   });
-  const [selectedEpp, setSelectedEpp] = useState<ElementFromQuery>(eppEditor.element);
+  const [selectedElement, setSelectedElement] = useState<ElementFromQuery>(elementEditor.element);
   // Realiza chequeo de los inputs válidos
   const [validInputs, setValidInputs] = useState<string[]>([]);
   //Toast
@@ -155,7 +178,7 @@ function EditEppForm({eppEditor} : {eppEditor: ElementEditor}) {
     footer: "Footer del toast",
     theme: "primary_theme",
   });
-  const [epp, setEpp] = useState(eppEditor.stateCopy);
+  const [element, setElement] = useState(elementEditor.stateCopy);
   const [currentClassification, setCurrentClassification] = useState("");
   const [currentAmount, setCurrentAmount] = useState(0);
   const [singleClassification, setSingleClassification] = useState("");
@@ -163,14 +186,14 @@ function EditEppForm({eppEditor} : {eppEditor: ElementEditor}) {
 
   const handleSubmit = (evt: React.FormEvent<HTMLFormElement>) => {
     evt.preventDefault();
-    const checks = new checkForms(epp);
+    const checks = new checkForms(element);
     const checkedInputs = checks.checkEmpty({ name: "name", type: "string" }, { name: "classificationName", type: "string" });
     setValidInputs(checkedInputs);
-    if (checkedInputs.length === 0 && epp.classification.length > 0) {
-      editEpp({
+    if (checkedInputs.length === 0 && element.classification.length > 0) {
+      editElement({
         variables: {
-          editElementId: eppEditor.element._id,
-          info: eppEditor.toApi,
+          editElementId: elementEditor.element._id,
+          info: elementEditor.toApi,
         },
       });
     }
@@ -179,18 +202,18 @@ function EditEppForm({eppEditor} : {eppEditor: ElementEditor}) {
     const name = evt.target.name;
     const value = evt.target.value;
     //@ts-ignore
-    eppEditor.element[name] = value;
-    setEpp(eppEditor.stateCopy);
+    elementEditor.element[name] = value;
+    setElement(elementEditor.stateCopy);
   };
 
   const addItems = () => {
-    eppEditor.addNewItems(currentClassification, currentAmount);
-    setEpp(eppEditor.stateCopy);
+    elementEditor.addNewItems(currentClassification, currentAmount);
+    setElement(elementEditor.stateCopy);
   };
 
   const addClassification = () => {
-    eppEditor.addClassification(singleClassification, singleClassificationAmount);
-    setEpp(eppEditor.stateCopy);
+    elementEditor.addClassification(singleClassification, singleClassificationAmount);
+    setElement(elementEditor.stateCopy);
   };
 
   const handleCurrentClassification = (evt: React.ChangeEvent<HTMLInputElement | HTMLSelectElement>) => {
@@ -212,8 +235,8 @@ function EditEppForm({eppEditor} : {eppEditor: ElementEditor}) {
   useEffect(() => {
     if (loading) {
       setToastProps({
-        title: "Creación de EPP",
-        body: "Se está procesando la creación del EPP, espere...",
+        title: "Actualización de Elemento",
+        body: "Se está procesando la actualización del elemento, espere...",
         footer: "Exito",
         theme: "primary_theme",
       });
@@ -221,8 +244,8 @@ function EditEppForm({eppEditor} : {eppEditor: ElementEditor}) {
     }
     if (data) {
       setToastProps({
-        title: "Creación de EPP",
-        body: "EPP creado con éxito",
+        title: "Actualización de Elemento",
+        body: "Elemento actualizado con éxito",
         footer: "Exito",
         theme: "success_theme",
       });
@@ -230,8 +253,8 @@ function EditEppForm({eppEditor} : {eppEditor: ElementEditor}) {
     }
     if (error) {
       setToastProps({
-        title: "Creación de EPP",
-        body: "Error creando el EPP",
+        title: "Actualización de Elemento",
+        body: "Error actualizando el Elemento",
         footer: "Exito",
         theme: "error_theme",
       });
@@ -250,16 +273,23 @@ function EditEppForm({eppEditor} : {eppEditor: ElementEditor}) {
         footer={toastProps.footer}
       />
       <form onSubmit={handleSubmit}>
-        <InputBox inputName="name" isEmpty={validInputs.includes("name")} labelTag="Nombre" onChange={handleChange} value={epp.name} type="text" />
+        <InputBox
+          inputName="name"
+          isEmpty={validInputs.includes("name")}
+          labelTag="Nombre"
+          onChange={handleChange}
+          value={element.name}
+          type="text"
+        />
         <InputBox
           inputName="classificationName"
           isEmpty={validInputs.includes("classificationName")}
           labelTag="Nombre clasificación (ejemplo: Tallas)"
           onChange={handleChange}
-          value={epp.classificationName}
+          value={element.classificationName}
           type="text"
         />
-        <EppCategroySelect handleChange={handleChange} value={epp.category} />
+        <ElementsCategroySelect handleChange={handleChange} value={element.category} />
         <BodegaSelectBox
           defaultOption={{
             label: "Selecciona una bodega...",
@@ -269,7 +299,7 @@ function EditEppForm({eppEditor} : {eppEditor: ElementEditor}) {
           label="Bodega"
           onChange={handleChange}
           isEmpty={false}
-          value={epp.takerFolder._id}
+          value={element.takerFolder._id}
           disabled={false}
           className="defaultButton"
         />
@@ -282,12 +312,12 @@ function EditEppForm({eppEditor} : {eppEditor: ElementEditor}) {
           label="Persona a cargo"
           onChange={handleChange}
           isEmpty={validInputs.includes("currentOwner")}
-          value={epp.currentOwner._id}
+          value={element.currentOwner._id}
           disabled={false}
         />
         <div className="containerWithChips">
           <div className="classificationCreatorContainer">
-            <EppClassificationSelect handleChange={handleCurrentClassification} selectedEpp={selectedEpp} />
+            <ElementClassificationSelect handleChange={handleCurrentClassification} selectedEpp={selectedElement} />
 
             <InputBox
               inputName="currentAmount"
@@ -304,7 +334,7 @@ function EditEppForm({eppEditor} : {eppEditor: ElementEditor}) {
             </div>
           </div>
           <div className="chipsContainer">
-            {epp.classification.map((classification, index) => (
+            {element.classification.map((classification, index) => (
               <div className="primary_theme" key={index}>
                 {classification.name}: {classification.amount}
               </div>
@@ -345,14 +375,22 @@ function EditEppForm({eppEditor} : {eppEditor: ElementEditor}) {
 }
 
 function DistributeForm({ cardInfo }: RemisionCard) {
-  const [editEpp, { loading, error, data }] = useMutation(EDIT_ELEMENT, {
-    refetchQueries: ["GetEpps"],
+  const {id} = useUser();
+  const [editElement, { loading, error, data }] = useMutation(EDIT_ELEMENT, {
+    refetchQueries: ["GetElements"],
     variables: {
       editElementId: cardInfo._id,
     },
   });
-  const [selectedEpp, setSelectedEpp] = useState<ElementFromQuery>(cardInfo);
-  const eppEditor = new ElementEditor(cardInfo);
+  const [selectedElement, setSelectedElement] = useState<ElementFromQuery>(cardInfo);
+  const elementEditor = new ElementEditor(cardInfo);
+
+  //Remisiones
+  const remision = new Remision(REMISION_FROM_QUERY);
+  const [saveRemision, { data: dataRemision, loading: loadingRemision, error: errorRemision }] = useMutation(CREATE_REMISION, {
+      refetchQueries: [{query: GET_REMISIONS}],
+    });
+    
   // Realiza chequeo de los inputs válidos
   const [validInputs, setValidInputs] = useState<string[]>([]);
   //Toast
@@ -363,28 +401,48 @@ function DistributeForm({ cardInfo }: RemisionCard) {
     footer: "Footer del toast",
     theme: "primary_theme",
   });
-  const [epp, setEpp] = useState(eppEditor.stateCopy);
+  const [element, setElement] = useState(elementEditor.stateCopy);
   const [currentClassification, setCurrentClassification] = useState("");
   const [owner, setOwner] = useState("");
   const [location, setLocation] = useState("");
   const [amount, setAmount] = useState(0);
 
+  //Remision
+
   const handleSubmit = (evt: React.FormEvent<HTMLFormElement>) => {
     evt.preventDefault();
 
+    //Remision information
+    let remisionData = {
+      receiver: owner,
+      remitent: id,
+      date: `${new Date()}`,
+      elementsList: [{element: cardInfo._id, amount: amount}],
+      receiverProject: location,
+      remitentProject: "CAMBIAR !!!!!!!!!!!!!",
+      observation: "Remisión generada automaticamente al realizar distribución de elementos"
+    }
+
+    saveRemision({
+      variables: {
+        remisionData,
+      },
+    });
+
     //Check if there is enough to distribute
-    if (eppEditor.allowDistribution(currentClassification, amount)) {
-      eppEditor.assignEpp({
+    if (elementEditor.allowDistribution(currentClassification, amount)) {
+      elementEditor.assignEpp({
         owner,
         location,
         amount,
         classificationId: currentClassification,
       });
-      setEpp(eppEditor.stateCopy);
-      editEpp({
+      setElement(elementEditor.stateCopy);
+
+      editElement({
         variables: {
           editElementId: cardInfo._id,
-          info: eppEditor.toApi,
+          info: elementEditor.toApi,
         },
       });
     } else {
@@ -472,7 +530,7 @@ function DistributeForm({ cardInfo }: RemisionCard) {
         />
         <div className="containerWithChips">
           <div className="classificationCreatorContainer">
-            <EppClassificationSelect handleChange={handleCurrentClassification} selectedEpp={selectedEpp} />
+            <ElementClassificationSelect handleChange={handleCurrentClassification} selectedEpp={selectedElement} />
             <InputBox
               inputName="currentAmount"
               isEmpty={false}
@@ -483,9 +541,9 @@ function DistributeForm({ cardInfo }: RemisionCard) {
             />
           </div>
           <div className="chipsContainer">
-            {epp.classification.map((classification, index) => (
+            {element.stock?.map((classification, index) => (
               <div className="primary_theme" key={index}>
-                {classification.name}: {classification.amount}
+                {classification.classificationId}: {classification.amount}
               </div>
             ))}
           </div>

@@ -6,7 +6,7 @@ import { imagesSource } from "../api/datasources";
 import { DELETE_WORKER_BY_ID, EDIT_WORKER_BY_ID, UPDATE_USER_STATUS } from "../api/myMutations";
 import ActivateUser from "../assets/icon/activateUser";
 import DeactivateUser from "../assets/icon/deactivateUser";
-import EditIcon from "../assets/icon/edit";
+import EditIcon from "../assets/icon/sitemap";
 import EyeIcon from "../assets/icon/eye";
 import TrashCan from "../assets/icon/trashcan";
 import LOGO_BLUE from "../assets/images/prica_logo_blue.png";
@@ -21,7 +21,7 @@ import Modal from "./modal";
 import Toast from "./toast";
 import WorkerStateSelect from "./workerStateSelect";
 
-export default function UserCard({ name, cc, _id, image, isActive, eppHistory, occupation }: PricaWorker) {
+export default function UserCard({ name, cc, _id, image, isActive, eppHistory, occupation, hide }: PricaWorker) {
   const cardReference = useRef<HTMLDivElement>(null);
   const navigate = useNavigate();
   const [deleteWorker, { data, error, loading }] = useMutation(DELETE_WORKER_BY_ID, {
@@ -116,7 +116,7 @@ export default function UserCard({ name, cc, _id, image, isActive, eppHistory, o
         isActive={toast}
         setToast={setToast}
       />
-      <div className={`userCard_container`} onClick={() => navigate(`/worker/${_id}/${"Material"}`)} ref={cardReference}>
+      <div className={`userCard_container ${hide ? "hide" : ""}`} onClick={() => navigate(`/worker/${_id}/${"Material"}`)} ref={cardReference}>
         <CustomContextMenu cardReference={cardReference}>
           <ul>
             <li onClick={() => navigate(`/worker/${_id}/Material`)}>
@@ -240,7 +240,7 @@ function EditWorkerForm({ userInfo, isActive }: EditWorkerForm) {
     image: userInfo.image,
     occupation: userInfo.occupation,
     isActive: userInfo.isActive,
-    eppHistory: userInfo.eppHistory
+    eppHistory: userInfo.eppHistory,
   });
   const [editWorker, { loading, error, data }] = useMutation(EDIT_WORKER_BY_ID, { refetchQueries: ["GetWorkers"] });
 
@@ -252,6 +252,7 @@ function EditWorkerForm({ userInfo, isActive }: EditWorkerForm) {
     footer: "Footer del toast",
     theme: "primary_theme",
   });
+
   const handleChange = (evt: React.ChangeEvent<HTMLInputElement | HTMLSelectElement>) => {
     const name = evt.target.name;
     let value = evt.target.value;
@@ -276,9 +277,10 @@ function EditWorkerForm({ userInfo, isActive }: EditWorkerForm) {
     if (checkedInputs.length === 0) {
       userData.cc = parseFloat(`${userData.cc}`);
       userData.isActive = userData.isActive === "active" ? true : false;
+      let userDataFixed = workerToApi(userData);
       editWorker({
         variables: {
-          info: userData,
+          info: userDataFixed,
           workerId: userInfo._id,
         },
       });
@@ -427,4 +429,57 @@ function eppTimer(eppHistory: PricaWorker["eppHistory"]) {
     }
   }
   return nextToExpire;
+}
+
+type EppHistoryFromQuery = {
+  folder:{
+    _id: string
+  }
+  eppId: {
+    name: string;
+    classificationName: string;
+    classification: {
+      name: string;
+      amount: number;
+      id: number;
+    }[];
+    category: string;
+    _id: string;
+  };
+  amount: number;
+  date: string;
+};
+
+type EppHistoryToApi = {
+  eppId: string;
+  amount: number;
+  classificationId: number;
+  folder: string;
+  date: string;
+};
+
+function eppToApi(userInfo: any) {
+  let fixedUserInfo = JSON.parse(JSON.stringify(userInfo));
+  let fixedEpp: any;
+  let fixedEppList: EppHistoryToApi[] = [];
+  for (let i = 0; i < fixedUserInfo.eppHistory.length; i++) {
+    let currentEpp = fixedUserInfo.eppHistory[i] as EppHistoryFromQuery;
+    fixedEpp = {
+      eppId: currentEpp.eppId._id,
+      amount: currentEpp.amount,
+      classificationId: currentEpp.eppId.classification[0].id,
+      date: currentEpp.date,
+      folder: currentEpp.folder._id
+    }
+    fixedEppList.push(fixedEpp);
+  }
+  delete fixedUserInfo.eppHistory;
+  fixedUserInfo.eppHistory = fixedEppList;
+  return fixedUserInfo;
+}
+
+function workerToApi(userInfo: any){
+  let fixedUserInfo = JSON.parse(JSON.stringify(userInfo));
+  delete fixedUserInfo.eppHistory
+  return fixedUserInfo
 }

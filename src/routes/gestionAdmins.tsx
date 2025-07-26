@@ -90,7 +90,7 @@ function AdminsList(){
         </button>
       </form>
       <Pagination itemsPerPage={12}>
-      {workersLoaded.map((worker, index)=><AdminCard name={worker.name} cc={worker.cc} role={worker.role} image={worker.image} _id={worker._id} key={index}/>)}
+      {workersLoaded.map((worker, index)=><AdminCard name={worker.name} cc={worker.cc} role={worker.role} image={worker.image} _id={worker._id} hide={worker.hide} key={index}/>)}
       </Pagination>
 
     </>)
