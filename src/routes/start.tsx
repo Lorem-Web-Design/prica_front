@@ -17,7 +17,7 @@ export default function Start() {
       <div className="pt_def_48"></div>
       {/* Barra de meníu inferior - shortcuts */}
       <Grid gap={12} sm={2} md={4} lg={5} def={1} className="center_def">
-      <GestionUsuariosCard roles={["admin","compras"]}/>
+      <GestionUsuariosCard roles={["admin","compras", "coord_sst"]}/>
         {MENU_ITEMS.map((item) => (
           <Card name={item.name} icon={item.icon} route={item.path} key={item.name} />
         ))}

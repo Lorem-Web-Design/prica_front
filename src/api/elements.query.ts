@@ -54,6 +54,7 @@ export const GET_ELEMENTS_BY_FOLDER_STOCK = gql`query GetElementsByStockFolder($
         owner
         amount
         classificationId
+        stockId
       }
     }
   }`

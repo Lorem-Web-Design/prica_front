@@ -13,10 +13,11 @@ type SelectBox = {
     isEmpty: boolean
     value: string | undefined
     disabled?: boolean
+    role: string
   };
-  export default function UserByRoleSelectBox({ onChange, label, name, defaultOption, isEmpty, value, disabled }: SelectBox) {
+  export default function UserByRoleSelectBox({ onChange, label, name, defaultOption, isEmpty, value, disabled, role }: SelectBox) {
     const {loading: workerLoading, error:workerError, data: worker} = useQuery(GET_USER_BY_ROLES, {variables: {
-      role: "coord_sst"
+      role
     }});
     if(worker){
       return (

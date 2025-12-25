@@ -18,11 +18,12 @@ import { ROLES } from "../../enums";
 import { Link } from "react-router-dom";
 import { useReactToPrint } from "react-to-print";
 import useUser from "../customHooks/users/useUser";
+import { excelSource } from "../api/datasources";
 
 const rqControll = new RQControll(RQ_MOCK);
 
 export default function RQViewer() {
-  const {role} = useUser()
+  const { role } = useUser();
   const { rqId } = useParams();
   const [rqInfo, setRqInfo] = useState(rqControll.stateCopy);
   const { loading, error, data } = useQuery(GET_RQ_BY_ID, {
@@ -41,6 +42,11 @@ export default function RQViewer() {
       <Layout>
         {/* Titulo de la página actual */}
         <Title title="Requisición" description="Crea la requisición para nuevos elementos:" />
+        <div className="inventario">
+          <a href={`${excelSource()}/rq/${rqControll.rq._id}`} className="pointer primary_theme defaultButton" target="_blank">
+            Exportar RQ a Excel
+          </a>
+        </div>
         <div className="pt_def_48"></div>
         {/* Barra de meníu inferior - shortcuts */}
         <Grid gap={12} sm={9} md={9} lg={9} def={9} className="rqContainer rqBorder">
@@ -412,7 +418,7 @@ function EndRQButton({ rqId }: { rqId: string }) {
             endRq({
               variables: {
                 endState: "true",
-                rqId
+                rqId,
               },
             })
           }

@@ -26,10 +26,15 @@ import BodegaSelectBox from "./bodegaSelectBox";
 import { ElementFromQuery } from "../@types/elementTypes";
 import ElementEditor from "../utils/elementEditor.controll";
 import { GET_WORKER_BY_ID } from "../api/myQueries";
+import ElementSelect from "./eppSelectList";
+import ElementClassificationSelect from "./eppClassificationSelect";
+import { useAuth } from "../customHooks/centers/auth/useAuth";
+import RemisionCreator from "./forms/remisionForm";
 
 export default function EppMenu({ roles }: { roles: AuthorizedRoles[] }) {
   const [modal, setModal] = useState(false);
   const [listModal, setListModal] = useState(false);
+  const [remisionModal, setRemisionModal] = useState(false);
   const navigate = useNavigate();
   const cardReference = useRef<HTMLDivElement>(null);
   const user = useUser();
@@ -52,6 +57,9 @@ export default function EppMenu({ roles }: { roles: AuthorizedRoles[] }) {
       <Modal modal={listModal} setModal={setListModal}>
         <EPPsList />
       </Modal>
+      <Modal modal={remisionModal} setModal={setRemisionModal}>
+        <RemisionCreator type="EPP"/>
+      </Modal>
       <div
         className={`card_container select_none ${roles.includes(user.role) ? "" : "hide"}`}
         style={{ cursor: "pointer" }}
@@ -70,6 +78,16 @@ export default function EppMenu({ roles }: { roles: AuthorizedRoles[] }) {
               <div className="option">
                 <EyeIcon />
                 Asignar EPP
+              </div>
+            </li>
+            <li
+              onClick={() => {
+                setRemisionModal(true);
+              }}
+            >
+              <div className="option">
+                <EyeIcon />
+                Remisionar EPP
               </div>
             </li>
             <li
@@ -99,6 +117,7 @@ function CreateEppForm() {
   const [createEpp, { loading, error, data }] = useMutation(CREATE_ELEMENT, {
     refetchQueries: ["GetEpps"],
   });
+  const {user} = useAuth()
   const eppEditor = new ElementEditor(MOCK_EPP as ElementFromQuery);
   // Realiza chequeo de los inputs válidos
   const [validInputs, setValidInputs] = useState<string[]>([]);
@@ -139,7 +158,7 @@ function CreateEppForm() {
   };
 
   const addClassification = () => {
-    eppEditor.addClassification(singleClassification, singleClassificationAmount);
+    eppEditor.addClassification(singleClassification, singleClassificationAmount, user.id);
     setEpp(eppEditor.stateCopy);
   };
 
@@ -244,7 +263,7 @@ function CreateEppForm() {
 }
 
 function EPPsList() {
-  const {id} = useUser();
+  const {user} = useAuth();
   const [selectedEpp, setSelectedEpp] = useState(MOCK_EPP as ElementFromQuery);
   const EppEditor = new ElementEditor(selectedEpp);
   const [movementInfo, setMovementInfo] = useState(MOCK_MOVEMENT_INFO);
@@ -277,20 +296,20 @@ function EPPsList() {
   const handleSubmit = (evt: React.FormEvent<HTMLFormElement>) => {
     evt.preventDefault();
     movementInfo.eppId = selectedEpp._id;
-    movementInfo.movementMaker = id;
+    movementInfo.movementMaker = user.id;
     movementInfo.amount = parseFloat(`${movementInfo.amount}`);
 
     const classificationInfo = selectedEpp.classification.find((element) => element.id === movementInfo.classificationId);
 
     //Check if user can move the element
-    if(EppEditor.userCanDistribute(id, movementInfo.amount)){
+    if(EppEditor.userCanDistribute(user.id, movementInfo.amount)){
       assignEpp({
         variables: {
           movementInfo,
         },
       });
     }else{
-      alert("Este usuario no puede realizar este movimiento debido a que no está autorizado o no tiene las existencias necesarias")
+      alert("Este usuario no puede realizar este movimiento debido a que no está autorizado o no tiene las existencias necesarias");
     }
   };
 
@@ -336,7 +355,7 @@ function EPPsList() {
       />
       <form onSubmit={handleSubmit}>
         <Grid def={1} gap={12} lg={1} md={1} sm={1}>
-          <EppSelect isEmpty={false} label="Listado de epps" name="epp" value="00123" setEpp={setSelectedEpp} />
+          <ElementSelect isEmpty={false} label="Listado de epps" name="epp" value="00123" setEpp={setSelectedEpp} type="EPP"/>
           <WorkerSelectBox
             defaultOption={{ label: "Sin seleccionar", value: "0123456" }}
             isEmpty={false}
@@ -355,7 +374,7 @@ function EPPsList() {
               type="date"
             />
           <Grid def={1} gap={12} lg={2} md={2} sm={2}>
-           <EppClassificationSelect handleChange={handleChange} selectedEpp={selectedEpp}/> 
+           <ElementClassificationSelect handleChange={handleChange} selectedEpp={selectedEpp}/> 
             <InputBox
               inputName="amount"
               isEmpty={false}

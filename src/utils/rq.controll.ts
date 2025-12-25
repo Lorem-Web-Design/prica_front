@@ -57,6 +57,7 @@ export default class RQControll {
   editAmount({materialId, amount}:{materialId: string, amount: number}){
     const selectedMaterialIndex = this.rq.rqItems.findIndex(el=>el.materialId===materialId);
     this.rq.rqItems[selectedMaterialIndex].authorizedAmount = amount;
+    this.rq.rqItems[selectedMaterialIndex].pendingAmount = amount;
   }
 
   parseAmounts(){

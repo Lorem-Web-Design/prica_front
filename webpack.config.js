@@ -8,7 +8,12 @@ const sassLoaderRules = {
     // Translates CSS into CommonJS
     "css-loader",
     // Compiles Sass to CSS
-    "sass-loader",
+    {
+      loader: 'sass-loader',
+      options: {
+              implementation: require('sass') // Dart Sass (modern API)
+            }
+    }
   ],
 };
 

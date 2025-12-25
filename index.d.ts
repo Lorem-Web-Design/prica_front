@@ -280,6 +280,8 @@ type PricaOC = {
   ocNumber: number;
   isAlive: boolean;
   project: string;
+  projectName: string;
+  state: string
   rq: string;
   _id?: string
   items: {
@@ -354,6 +356,13 @@ type RQItemsFromQuery = {
       name: string
       amount: number
       id: string
+    }[]
+    stock: {
+      location: string
+      owner: string
+      amount: number
+      classificationId: string
+      stockId: string
     }[]
   } | null;
 };

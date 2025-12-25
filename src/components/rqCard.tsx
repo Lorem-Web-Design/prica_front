@@ -1,4 +1,4 @@
-import { useMutation } from "@apollo/client"
+import { useMutation, useQuery } from "@apollo/client"
 import { useEffect, useRef, useState } from "react"
 import { useNavigate } from "react-router-dom"
 import { DELETE_RQ_BY_ID } from "../api/myMutations"
@@ -7,6 +7,8 @@ import TrashCan from "../assets/icon/trashcan"
 import { useAuth } from "../customHooks/centers/auth/useAuth"
 import CustomContextMenu from "./customContextMenu"
 import Toast from "./toast"
+import { GET_USER_BY_ID } from "../api/user.query"
+import useUser from "../customHooks/users/useUser"
 
 type RQCard = {
     cardInfo: RQFromQuery
@@ -61,13 +63,11 @@ export default function RqCard({cardInfo}:RQCard){
     const [isVisible, setIsVisible] = useState(false)
 
     useEffect(()=>{
-      if(user.role === "compras"){
-        if(cardInfo.isApproved){
-          setIsVisible(true)
-        }
+      if(user.id === cardInfo.petitioner._id){
+        setIsVisible(true);
       }
       
-      if(user.role === "dir_proyectos" || user.role === "admin"){
+      if(user.role === "dir_proyectos" || user.role === "admin" || user.role === "gerente"){
         setIsVisible(true)
       }
     },[user.role])

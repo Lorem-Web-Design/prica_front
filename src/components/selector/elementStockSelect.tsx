@@ -1,5 +1,6 @@
-import { ElementFromQuery } from "../@types/elementTypes"
-import useUser from "../customHooks/users/useUser"
+import { ElementFromQuery } from "../../@types/elementTypes"
+import { useAuth } from "../../customHooks/centers/auth/useAuth"
+import useUser from "../../customHooks/users/useUser"
 
 type EppClassificationSelect = {
   selectedEpp: ElementFromQuery
@@ -13,15 +14,15 @@ type FilterStockById = {
   role: string
 }
 
-export default function EppClassificationSelect({selectedEpp, handleChange}: EppClassificationSelect){
-  const {id, role} = useUser()
-  let stockList = filterStockById({userId: id, selectedEpp, role});
+export default function ElementStockSelect({selectedEpp, handleChange}: EppClassificationSelect){
+  const {user} = useAuth()
+  let stockList = filterStockById({userId: user.id, selectedEpp, role: user.role});
     return(<div className="input_container">
         <label htmlFor="classificationId">Selecciona clasificación</label>
         <select name="classificationId" id="classificationId" className="editable_input" onChange={handleChange}>
           <option value="undefined">Elije la clasificación</option>
           {stockList?.map((stock, index) => (
-            <option value={`${stock.classificationId}-${index}`} key={index}>
+            <option value={index} key={index}>
               {stockClassificationName(stock.classificationId, selectedEpp.classification)} ({stock.amount} UNIDADES)
             </option>
           ))}

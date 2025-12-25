@@ -1,23 +1,23 @@
 {
   "roles": [
     {
-      "name": "Gerente",
+      "name": "GERENTE",
       "slug": "gerente"
     },
     {
-      "name": "Compras",
+      "name": "COMPRAS",
       "slug": "compras"
     },
     {
-      "name": "Director de proyectos",
+      "name": "COORDINADOR",
       "slug": "dir_proyectos"
     },
     {
-      "name": "Ingeniero de proyectos",
+      "name": "INGENIERO",
       "slug": "ing_proyectos"
     },
     {
-      "name": "Coordinador SST",
+      "name": "SST",
       "slug": "coord_sst"
     }
   ]

@@ -7,6 +7,7 @@ export type UserToMutation = {
   role: AuthorizedRoles
   image: string;
   confirmPassword?: string
+  hide?: boolean
 };
 
 export type EditUserToMutation = {

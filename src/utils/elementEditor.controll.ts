@@ -1,5 +1,15 @@
 import { ElementFromQuery, ElementToApi, RawRemision } from "../@types/elementTypes";
 
+type AssignElementTypes = {
+  newLocation: string;
+  newOwner: string;
+  classificationId: string;
+  amountToDistribute: number;
+  currentOwner: string;
+};
+
+import AS_QUERY_ELEMENT from "../data/mock.element.json";
+
 export default class ElementEditor {
   element: ElementFromQuery;
 
@@ -12,7 +22,6 @@ export default class ElementEditor {
   }
 
   get toApi(): ElementToApi {
-    console.log(this.element)
     const info = {
       name: this.element.name,
       unit: this.element.unit,
@@ -51,18 +60,41 @@ export default class ElementEditor {
     return newItem;
   }
 
-  addClassification(name: string, amount: number) {
+  addClassification(name: string, amount: number, userId: string) {
+    let classificationId = `${Date.now()}`;
     this.element.classification.push({
       name,
       amount,
-      id: `${Date.now()}`,
+      id: classificationId,
     });
+
+    this.element.stock?.push({
+      amount,
+      classificationId,
+      location: this.element.takerFolder._id,
+      owner: userId,
+      stockId: `${Date.now()}`
+    });
+  }
+
+  deleteClassification(classificationId: string) {
+    this.element.classification = this.element.classification.filter((clas) => clas.id !== classificationId);
+    this.element.stock = this.element.stock?.filter(
+      (stockItem) => stockItem.classificationId !== classificationId
+    );
   }
 
   addNewItems(classificationId: string, amount: number) {
     let selectedClassification = this.element.classification.find((clas) => clas.id === classificationId);
     if (selectedClassification) {
       selectedClassification.amount += amount;
+    }
+  }
+
+  addStockItem(stockIndex: number, amount: number){
+    let selectedStock = this.element.stock ? this.element.stock[stockIndex] : undefined;
+    if(selectedStock){
+      selectedStock.amount += amount
     }
   }
 
@@ -89,6 +121,7 @@ export default class ElementEditor {
           owner,
           classificationId,
           amount,
+          stockId: `${Date.now()}`
         });
       }
     } else {
@@ -98,15 +131,39 @@ export default class ElementEditor {
         owner,
         classificationId,
         amount,
+        stockId:`${Date.now()}`
       });
     }
     this.updateClassificationOnAssign(amount, classificationId);
   }
 
+  assignElement(stockIndex: number, amountToDistribute: number, newLocation:string, newOwner: string) {
+    // Ensure the stock property exists on the element; initialize it as an empty array if it doesn't.
+    if (!this.element.stock) {
+      this.element.stock = [];
+    }
+    // Filter the stock to find entries where the owner matches the provided owner.
+    const selectedStock = this.element.stock[stockIndex]
+    if(selectedStock.location !== newLocation){
+      this.element.stock.push({
+        location: newLocation,
+        owner: newOwner,
+        classificationId: selectedStock.classificationId,
+        amount: amountToDistribute,
+        stockId: selectedStock.stockId
+      });
+      selectedStock.amount -= amountToDistribute;
+    }
+    
+  }
+
   allowDistribution(classsificationId: string, amountToDistribute: number) {
     const currentClas = this.element.stock?.find((clas) => clas.classificationId === classsificationId);
-    if (currentClas) {
-      return currentClas.amount >= amountToDistribute;
+    if (amountToDistribute > 0) {
+      if (currentClas) {
+        return currentClas.amount >= amountToDistribute;
+      }
+      return false;
     }
     return false;
   }
@@ -124,5 +181,13 @@ export default class ElementEditor {
     if (generalClas) {
       generalClas.amount -= amount;
     }
+  }
+
+  static stockCounter(stock: ElementEditor["element"]["stock"]) {
+    return stock?.reduce((acccumulator, currentValue) => acccumulator + currentValue.amount, 0);
+  }
+
+  defaultElement(){
+    this.element = JSON.parse(JSON.stringify(AS_QUERY_ELEMENT as ElementFromQuery));
   }
 }

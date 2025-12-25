@@ -4,5 +4,6 @@
     "cc": "",
     "role": "compras",
     "image": "/img/user.png",
-    "confirmPassword":""
+    "confirmPassword":"",
+    "hide": false
   }

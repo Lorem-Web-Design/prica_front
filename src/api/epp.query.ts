@@ -53,6 +53,7 @@ export const GET_EPP_LIST  = gql`query GetEpps {
       owner
       amount
       classificationId
+      stockId
     }
   }
 }`

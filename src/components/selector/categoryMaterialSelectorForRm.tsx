@@ -32,7 +32,7 @@ type ChildrenByParent = {
     setRqNewItem: (value: React.SetStateAction<RQItems>) => void
 }
 
-export default function CategoryMaterialSelector({ label, name, isEmpty, value, setState, setRqNewItem }: SelectBox) {
+export default function CategoryMaterialSelectorForRm({ label, name, isEmpty, value, setState, setRqNewItem }: SelectBox) {
   const [parentId, setParentId] = useState("")
   let selectPairs = CATEGORIES.categories.map((activity) => {
     return {

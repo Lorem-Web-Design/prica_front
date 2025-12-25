@@ -3,6 +3,7 @@ import Select, { SingleValue } from 'react-select';
 import { EppFromQuery } from "../@types/eppTypes";
 import { GET_EPP_LIST } from "../api/epp.query";
 import { ElementFromQuery } from "../@types/elementTypes";
+import { GET_ELEMENTS } from "../api/myQueries";
 
 type EppSelectBox = {
     label: string;
@@ -10,6 +11,7 @@ type EppSelectBox = {
     isEmpty: boolean
     value: string
     setEpp: React.Dispatch<React.SetStateAction<ElementFromQuery>>
+    type: string
   };
 
 
@@ -18,12 +20,27 @@ type SelectType = SingleValue<{
     label: string;
 }>
 
-export default function EppSelect({ label, name, isEmpty, value, setEpp }: EppSelectBox){
-    const {data, loading, error} = useQuery(GET_EPP_LIST);
+export default function ElementSelect({ label, name, isEmpty, value, setEpp, type }: EppSelectBox){
+    let query:any;
+    switch (type){
+        case "EPP":
+            query = GET_EPP_LIST
+            break
+        case "ELEMENTS":
+            query = GET_ELEMENTS
+            break
+    }
+    const {data, loading, error} = useQuery(query);
     const handleSelectedMaterial = (evt: React.ChangeEvent<HTMLSelectElement>) => {}
 
     if(data){
-        let eppList = data.getEpps as ElementFromQuery[];
+        let eppList: ElementFromQuery[];
+        if(type === "EPP"){
+            eppList = data.getEpps;
+        }
+        else{
+            eppList = data.getElements;
+        }
         let selectPairs = eppList.map(material=>{return({
             value: material._id,
             label: material.name

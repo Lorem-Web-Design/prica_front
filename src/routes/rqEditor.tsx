@@ -24,6 +24,7 @@ import EppClassificationSelect from "../components/eppClassificationSelect";
 import { ElementFromQuery } from "../@types/elementTypes";
 import UnitSelector from "../components/selector/unitSelector";
 import WorkerSelectBox from "../components/workerSelectBox";
+import ElementClassificationSelect from "../components/selector/elementClassificationSelect";
 
 /*La vaina se puso complicada llave, acá pongo unos conceptos que te daran una luz en el futuro
 
@@ -81,13 +82,12 @@ function GeneralRQInfo() {
   const addNewItem = (evt: React.FormEvent<HTMLFormElement>) => {
     evt.preventDefault();
     let newItem: RQItemsFromQuery;
-    let categoryName = selectedMaterial.classification.find(item=>item.id === selectedEppId);
-      console.log(categoryName);
+    let categoryName = selectedMaterial.classification[parseInt(selectedEppId)]
       newItem = {
         ...rqNewItem,
         materialId: selectedMaterial._id,
         materialCategory: selectedMaterial.category,
-        classificationId: selectedEppId,
+        classificationId: categoryName?.id,
         material: {
           unit: selectedMaterial.unit,
           name: selectedMaterial.name,
@@ -97,7 +97,8 @@ function GeneralRQInfo() {
           unitaryPrice: 0,
           description: selectedMaterial.description === "" ? "SIN DEFINIR" : selectedMaterial.description,
           serial: categoryName?.name || "SIN DEFINIR",
-          classification: []
+          classification: [],
+          stock: []
         }
       };
     rqControll.rq.rqItems.push(JSON.parse(JSON.stringify(newItem)));
@@ -129,7 +130,7 @@ function GeneralRQInfo() {
           name="material"
           value={`${rqNewItem.materialId}`}
           setRqNewItem={setRqNewItem}/>
-        <EppClassificationSelect handleChange={(evt)=>setSelectedEppId(evt.target.value)} selectedEpp={selectedMaterial}/>
+        <ElementClassificationSelect handleChange={(evt)=>setSelectedEppId(evt.target.value)} selectedEpp={selectedMaterial}/>
         <InputBox
           inputName="requiredAmount"
           isEmpty={false}

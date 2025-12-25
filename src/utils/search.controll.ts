@@ -1,4 +1,3 @@
-import { WorkerToApi } from "../@types/usersTypes";
 
 export default class SearchControll<T> {
   list: T[];

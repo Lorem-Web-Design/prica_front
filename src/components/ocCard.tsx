@@ -55,6 +55,29 @@ export default function OcCard({cardInfo}:OCCard){
         }
     }, [data, error, loading]);
 
+    let ocState = "Estado OC";
+    let ocStateColor = "red"
+
+    if(cardInfo.state === "aprobado" && cardInfo.isAlive === false){
+      ocState = "FINALIZADO"
+      ocStateColor = "blue"
+    }
+
+    if(cardInfo.state === "initialized" && cardInfo.isAlive === false){
+      ocState = "Aprobado"
+      ocStateColor = "yellow"
+    }
+
+    if(cardInfo.state === "initialized" && cardInfo.isAlive === true){
+      ocState = "EN PROCESO DE COMPRA"
+      ocStateColor = "orange"
+    }
+
+    if(cardInfo.state === "aprobado" && cardInfo.isAlive === true){
+      ocState = "REVISADO"
+      ocStateColor = "yellow"
+    }
+
     return (
         <>
         <Toast title={toastProps.title} body={toastProps.body} theme={toastProps.theme} footer={toastProps.footer} isActive={toast} setToast={setToast} />
@@ -82,10 +105,10 @@ export default function OcCard({cardInfo}:OCCard){
             </li>
           </ul>
             </CustomContextMenu>
-            <p className="rqTitle">OC: {cardInfo.project ? cardInfo.project : "SIN NOMBRE"}</p>
+            <p className="rqTitle">OC: {cardInfo.project ? cardInfo.projectName : "SIN NOMBRE"}</p>
             <p className="rqDate">Consecutivo: {cardInfo.ocNumber}</p>
             <p className="rqDate">Fecha de creación: {cardInfo.date}</p>
-            <p className={`${cardInfo.isAlive ? "red" : "green"}`}>{`${cardInfo.isAlive ? "Pendiente" : "Aprobado"}`}</p>
+            <p className={`${ocStateColor}`}>{`${ocState}`}</p>
         </div></>
     )
 }

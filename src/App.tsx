@@ -27,6 +27,7 @@ import Subfolder from "./routes/subfolder";
 import Unauthorized from "./routes/unauthorized";
 import UserPanel from "./routes/userPanel";
 import AUTHORIZATION from "./settings/authorized.json";
+import { loremEaster } from "./utils/lorem";
 
 //PAGES
 

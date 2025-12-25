@@ -33,6 +33,10 @@ function RQList(){
         </Grid>
     }
     if(data){
+        console.log(data.getRqs.length)
+        if(data.getRqs.length === 0){
+            return <div>No hay Requisiciones</div>
+        }
         return (
         <Grid gap={12} sm={2} md={3} lg={1} def={1} className="center_def">
         <Pagination itemsPerPage={12}>

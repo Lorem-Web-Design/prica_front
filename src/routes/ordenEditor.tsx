@@ -16,6 +16,7 @@ import { OCFromQuery } from "../@types/oc.types";
 import WorkerSelectBox from "../components/workerSelectBox";
 import Modal from "../components/modal";
 import InputBox from "../components/inputElement";
+import ElementEditor from "../utils/elementEditor.controll";
 
 type ProviderSelector = {
   OC: OrdenDeCompra;
@@ -60,7 +61,7 @@ function OCEditorTable() {
           <td>{index + 1}</td>
           <td>{item.name}</td>
           <td>
-            <input disabled={true} type="text" className="observation" onChange={(evt) => changeAmount(evt, index)} value={item.amount} />
+            <input disabled={false} type="text" className="observation" onChange={(evt) => changeAmount(evt, index)} value={item.amount} />
           </td>
           <td>
             <input type="text" className="observation" onChange={(evt) => changeUnitaryPrice(evt, index)} value={item.unitaryPrice} />
@@ -344,7 +345,7 @@ function OCEditorTable() {
             <tr>
               <td className="primary_background borderGray">Proyecto</td>
               <td colSpan={2} className="borderGray">
-                <input type="text" className="observation" onChange={observation} value={ocInfo.project} disabled />
+                <input type="text" className="observation" onChange={observation} value={ocInfo.projectName} disabled />
               </td>
               <td className="txtBold txtBlue">IVA (19%)</td>
               <td className="txtBold">{OrdenDeCompra.toCurrency(OC.IVA)}</td>
@@ -431,10 +432,11 @@ function LeftPanel() {
   }
   if (data) {
     const rq = data.getRqById as RQFromQuery;
-    OC.info.project = rq.project.name;
+    OC.info.project = rq.project._id;
+    OC.info.projectName = rq.project.name;
     const addElement = (item: RQItemsFromQuery) => {
       let confirmAdd = true;
-      if (item.authorizedAmount <= (item.material?.amount ?? 0)) {
+      if (item.pendingAmount <= (ElementEditor.stockCounter(item.material?.stock) ?? 0)) {
         confirmAdd = confirm("¿Estás seguro que deseas añadir un elemento cuyas existencias superan a la cantidad solicitada?");
       }
       if (confirmAdd) {
@@ -474,18 +476,19 @@ function LeftPanel() {
               </tr>
             </thead>
             <tbody>
+            
               {rq.rqItems.map((item, index) => {
                 let itemName = item.material?.name;
                 let amount = item.material?.amount;
-                if (item.material?.type === "EPP" || item.material?.type === "Dotacion") {
+                if (item.material) {
                   let currentClassification = item.material.classification.find((element) => element.id === item.classificationId);
                   itemName = `${item.material.name} (${currentClassification?.name})`;
-                  amount = currentClassification?.amount || 0;
+                  amount = ElementEditor.stockCounter(item.material.stock);
                 }
                 return (
                   <tr className="elementCell" key={index}>
                     <td>{itemName}</td>
-                    <td>{item.authorizedAmount}</td>
+                    <td>{item.pendingAmount}</td>
                     <td>{amount}</td>
                     <td
                       onClick={() => {

@@ -3,6 +3,7 @@ export type OCFromQuery = {
   request: string;
   receiver: PricaProvider;
   project: string;
+  projectName: string;
   state: string;
   date: string;
   observation: string;

@@ -20,9 +20,11 @@ import InputBox from "./inputElement";
 import Modal from "./modal";
 import Toast from "./toast";
 import WorkerStateSelect from "./workerStateSelect";
+import useUser from "../customHooks/users/useUser";
 
 export default function UserCard({ name, cc, _id, image, isActive, eppHistory, occupation, hide }: PricaWorker) {
   const cardReference = useRef<HTMLDivElement>(null);
+  const {role} = useUser();
   const navigate = useNavigate();
   const [deleteWorker, { data, error, loading }] = useMutation(DELETE_WORKER_BY_ID, {
     refetchQueries: ["GetWorkers"],
@@ -42,6 +44,12 @@ export default function UserCard({ name, cc, _id, image, isActive, eppHistory, o
   });
 
   const eppInfo = eppTimer(eppHistory);
+
+  let optionsVisibility = true;
+
+  if(role !== "admin"){
+    optionsVisibility = false
+  }
 
   useEffect(() => {
     if (loading) {
@@ -119,7 +127,7 @@ export default function UserCard({ name, cc, _id, image, isActive, eppHistory, o
       <div className={`userCard_container ${hide ? "hide" : ""}`} onClick={() => navigate(`/worker/${_id}/${"Material"}`)} ref={cardReference}>
         <CustomContextMenu cardReference={cardReference}>
           <ul>
-            <li onClick={() => navigate(`/worker/${_id}/Material`)}>
+            <li onClick={() => navigate(`/worker/${_id}/Material`)} >
               <div className="option">
                 <EyeIcon />
                 Ver
@@ -129,12 +137,14 @@ export default function UserCard({ name, cc, _id, image, isActive, eppHistory, o
               onClick={() => {
                 setModal(true);
               }}
+              className={`${optionsVisibility ? "" : "hide"}`}
             >
               <div
                 className="option"
                 onClick={() => {
                   setIsVisible(true);
                 }}
+    
               >
                 <EditIcon />
                 Editar
@@ -147,6 +157,7 @@ export default function UserCard({ name, cc, _id, image, isActive, eppHistory, o
                   deleteWorker({ variables: { workerId: _id } });
                 }
               }}
+              className={`${optionsVisibility ? "" : "hide"}`}
             >
               <div className="option">
                 <TrashCan />
@@ -162,6 +173,7 @@ export default function UserCard({ name, cc, _id, image, isActive, eppHistory, o
                   },
                 });
               }}
+              className={`${optionsVisibility ? "" : "hide"}`}
             >
               <div className="option">
                 <ActivateUser />
@@ -177,6 +189,7 @@ export default function UserCard({ name, cc, _id, image, isActive, eppHistory, o
                   },
                 });
               }}
+              className={`${optionsVisibility ? "" : "hide"}`}
             >
               <div className="option">
                 <DeactivateUser />

@@ -19,7 +19,10 @@ export default class Remision {
       elementsList: this.data.elementsList.map(item=>{
         return({
           element: item.element._id,
-          amount: item.amount
+          amount: item.amount,
+          classificationId: item.element.classificationId,
+          location: item.element.location,
+          stockId: item.element.stockId
         })
       }),
       receiverProject: this.data.receiverProject._id,
@@ -28,7 +31,9 @@ export default class Remision {
     }
   }
 
-
+  allowAdd(amountToDistribute: number, selectedStockAmount: number, receiver: string, receiverProjectId: string){
+    return amountToDistribute <=selectedStockAmount && receiver !== "" && receiverProjectId !== ""
+  }
 
 
 }

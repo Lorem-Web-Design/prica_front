@@ -22,18 +22,20 @@ import ElementsCategroySelect from "./ElementsCategorySelec";
 import REMISION_FROM_QUERY from "../data/mock.multipleRemisionFromQuery.json";
 import Remision from "../utils/remision.controller";
 import useUser from "../customHooks/users/useUser";
+import EppClassificationSelect from "./eppClassificationSelect";
+import ElementStockSelect from "./selector/elementStockSelect";
 
 type RemisionCard = {
   cardInfo: ElementFromQuery;
 };
 
 export default function NewElementCard({ cardInfo }: RemisionCard) {
-const elementEditor = new ElementEditor(cardInfo);
+  const elementEditor = new ElementEditor(cardInfo);
   const cardReference = useRef<HTMLDivElement>(null);
   const [deleteElement, { data, error, loading }] = useMutation(DELETE_ELEMENT);
   const [modal, setModal] = useState(false);
   const [distributeModal, setDistributeModal] = useState(false);
-  
+
   const navigate = useNavigate();
   //Toast
   const [toast, setToast] = useState(false);
@@ -89,12 +91,10 @@ const elementEditor = new ElementEditor(cardInfo);
       <Modal modal={distributeModal} setModal={setDistributeModal}>
         <DistributeForm cardInfo={cardInfo} />
       </Modal>
-      <div className="rqCardContainer" ref={cardReference}>
+      <div className={`rqCardContainer ${cardInfo.hide ? "hide" : ""}`} ref={cardReference}>
         <CustomContextMenu cardReference={cardReference}>
           <ul>
-          <li
-              onClick={()=>navigate(`/elemento/${cardInfo._id}`)}
-            >
+            <li onClick={() => navigate(`/elemento/${cardInfo._id}`)}>
               <div className="option">
                 <EyeIcon />
                 Ver
@@ -114,8 +114,9 @@ const elementEditor = new ElementEditor(cardInfo);
               onClick={() => {
                 setDistributeModal(true);
               }}
+              className="hide"
             >
-              <div className="option">
+              <div className="option ">
                 <Sitemap />
                 Distribuir
               </div>
@@ -136,23 +137,22 @@ const elementEditor = new ElementEditor(cardInfo);
           </ul>
         </CustomContextMenu>
         <div className="newElementContainer">
-        <div className="newElementImage">
-          <img src={`${imagesSource()}/${cardInfo.image}`} alt={cardInfo.name} />
-        </div>
-        <div className="newElementInfo">
+          <div className="newElementImage">
+            <img src={`${imagesSource()}/${cardInfo.image}`} alt={cardInfo.name} />
+          </div>
+          <div className="newElementInfo">
             <p className="rqTitle">{cardInfo.name}</p>
-        <p className="rqDate">Clasificación: {cardInfo.classificationName}</p>
-        <p className="rqDate">
-          Cantidad:
-          {cardInfo.classification.map((clas, index) => (
-            <span style={{ paddingRight: 4 }} key={index}>
-              {clas.name}:{clas.amount}
-            </span>
-          ))}
-        </p>
-        <p className="rqDate">Categoría: {cardInfo.category}</p>
-        <p className="rqDate">Proyecto: {cardInfo.takerFolder.name}</p>
-        </div>
+            <p className="rqDate">Clasificación: {cardInfo.classificationName}</p>
+            <p className="rqDate">
+              Cantidad:
+              {cardInfo.classification.map((clas, index) => (
+                <span style={{ paddingRight: 4 }} key={index}>
+                  {clas.name}
+                </span>
+              ))}
+            </p>
+            <p className="rqDate">Categoría: {cardInfo.category}</p>
+          </div>
         </div>
       </div>
     </>
@@ -160,11 +160,12 @@ const elementEditor = new ElementEditor(cardInfo);
 }
 
 function EditElementForm({ elementEditor }: { elementEditor: ElementEditor }) {
-    
+  const { id } = useUser();
+
   const [editElement, { loading, error, data }] = useMutation(EDIT_ELEMENT, {
-    refetchQueries: ["GetElements", {query: GET_ELEMENT_BY_ID, variables: {id: elementEditor.element._id}}],
+    refetchQueries: ["GetElements", { query: GET_ELEMENT_BY_ID, variables: { id: elementEditor.element._id } }],
     variables: {
-        editElementId: elementEditor.element._id,
+      editElementId: elementEditor.element._id,
     },
   });
   const [selectedElement, setSelectedElement] = useState<ElementFromQuery>(elementEditor.element);
@@ -179,7 +180,7 @@ function EditElementForm({ elementEditor }: { elementEditor: ElementEditor }) {
     theme: "primary_theme",
   });
   const [element, setElement] = useState(elementEditor.stateCopy);
-  const [currentClassification, setCurrentClassification] = useState("");
+  const [currentStock, setCurrentStock] = useState("");
   const [currentAmount, setCurrentAmount] = useState(0);
   const [singleClassification, setSingleClassification] = useState("");
   const [singleClassificationAmount, setSingleClassificationAmount] = useState(0);
@@ -206,22 +207,9 @@ function EditElementForm({ elementEditor }: { elementEditor: ElementEditor }) {
     setElement(elementEditor.stateCopy);
   };
 
-  const addItems = () => {
-    elementEditor.addNewItems(currentClassification, currentAmount);
-    setElement(elementEditor.stateCopy);
-  };
-
   const addClassification = () => {
-    elementEditor.addClassification(singleClassification, singleClassificationAmount);
+    elementEditor.addClassification(singleClassification, singleClassificationAmount, id);
     setElement(elementEditor.stateCopy);
-  };
-
-  const handleCurrentClassification = (evt: React.ChangeEvent<HTMLInputElement | HTMLSelectElement>) => {
-    setCurrentClassification(evt.target.value);
-  };
-
-  const handleCurrentAmount = (evt: React.ChangeEvent<HTMLInputElement | HTMLSelectElement>) => {
-    setCurrentAmount(parseFloat(evt.target.value));
   };
 
   const handleSingleClassification = (evt: React.ChangeEvent<HTMLInputElement | HTMLSelectElement>) => {
@@ -230,6 +218,19 @@ function EditElementForm({ elementEditor }: { elementEditor: ElementEditor }) {
 
   const handleSingleClassificationAmount = (evt: React.ChangeEvent<HTMLInputElement | HTMLSelectElement>) => {
     setSingleClassificationAmount(parseInt(evt.target.value));
+  };
+
+  const handleCurrentStock = (evt: React.ChangeEvent<HTMLInputElement | HTMLSelectElement>) => {
+    setCurrentStock(evt.target.value);
+  };
+
+  const handleCurrentAmount = (evt: React.ChangeEvent<HTMLInputElement | HTMLSelectElement>) => {
+    setCurrentAmount(parseFloat(evt.target.value));
+  };
+
+  const addItems = () => {
+    elementEditor.addStockItem(parseInt(currentStock), currentAmount);
+    setElement(elementEditor.stateCopy);
   };
 
   useEffect(() => {
@@ -304,44 +305,44 @@ function EditElementForm({ elementEditor }: { elementEditor: ElementEditor }) {
           className="defaultButton"
         />
         <UserByRoleSelectBox
-          defaultOption={{
-            label: "Selecciona un colaborador...",
-            value: "",
-          }}
-          name="currentOwner"
-          label="Persona a cargo"
-          onChange={handleChange}
-          isEmpty={validInputs.includes("currentOwner")}
-          value={element.currentOwner._id}
-          disabled={false}
-        />
-        <div className="containerWithChips">
-          <div className="classificationCreatorContainer">
-            <ElementClassificationSelect handleChange={handleCurrentClassification} selectedEpp={selectedElement} />
-
-            <InputBox
-              inputName="currentAmount"
-              isEmpty={false}
-              labelTag="Cantidad a ingresar"
-              onChange={handleCurrentAmount}
-              value={`${currentAmount}`}
-              type="number"
-            />
-            <div className="buttonContainer">
-              <button type="button" className="mediumBottom" onClick={addItems}>
-                +
-              </button>
-            </div>
-          </div>
-          <div className="chipsContainer">
-            {element.classification.map((classification, index) => (
-              <div className="primary_theme" key={index}>
-                {classification.name}: {classification.amount}
-              </div>
-            ))}
-          </div>
-        </div>
-
+                  defaultOption={{
+                    label: "Selecciona un colaborador...",
+                    value: "",
+                  }}
+                  name="currentOwner"
+                  label="Persona a cargo"
+                  onChange={handleChange}
+                  isEmpty={validInputs.includes("currentOwner")}
+                  value={element.currentOwner._id}
+                  disabled={false}
+                  role="everyone"
+                />
+                <div className="containerWithChips">
+                  <div className="classificationCreatorContainer">
+                    <ElementStockSelect handleChange={handleCurrentStock} selectedEpp={selectedElement} />
+        
+                    <InputBox
+                      inputName="currentAmount"
+                      isEmpty={false}
+                      labelTag="Cantidad a ingresar"
+                      onChange={handleCurrentAmount}
+                      value={`${currentAmount}`}
+                      type="number"
+                    />
+                    <div className="buttonContainer">
+                      <button type="button" className="mediumBottom" onClick={addItems}>
+                        +
+                      </button>
+                    </div>
+                  </div>
+                  <div className="chipsContainer">
+                    {element.stock?.map((stock, index) => (
+                      <div className="primary_theme" key={index}>
+                        {stock.classificationId}: {stock.amount}
+                      </div>
+                    ))}
+                  </div>
+                </div>
         <h3>Añadir nueva clasificación</h3>
         <div className="classificationCreatorContainer">
           <InputBox
@@ -359,11 +360,22 @@ function EditElementForm({ elementEditor }: { elementEditor: ElementEditor }) {
             onChange={handleSingleClassificationAmount}
             value={`${singleClassificationAmount}`}
             type="number"
+            className="hide"
           />
+
           <div className="buttonContainer">
             <button type="button" className="mediumBottom" onClick={addClassification}>
               +
             </button>
+          </div>
+        </div>
+        <div className="containerWithChips">
+          <div className="chipsContainer">
+            {element.classification.map((classification, index) => (
+              <div className="primary_theme" key={index}>
+                {classification.name}
+              </div>
+            ))}
           </div>
         </div>
         <button type="submit" className="mediumBottom">
@@ -375,7 +387,7 @@ function EditElementForm({ elementEditor }: { elementEditor: ElementEditor }) {
 }
 
 function DistributeForm({ cardInfo }: RemisionCard) {
-  const {id} = useUser();
+  const { id } = useUser();
   const [editElement, { loading, error, data }] = useMutation(EDIT_ELEMENT, {
     refetchQueries: ["GetElements"],
     variables: {
@@ -388,9 +400,9 @@ function DistributeForm({ cardInfo }: RemisionCard) {
   //Remisiones
   const remision = new Remision(REMISION_FROM_QUERY);
   const [saveRemision, { data: dataRemision, loading: loadingRemision, error: errorRemision }] = useMutation(CREATE_REMISION, {
-      refetchQueries: [{query: GET_REMISIONS}],
-    });
-    
+    refetchQueries: [{ query: GET_REMISIONS }],
+  });
+
   // Realiza chequeo de los inputs válidos
   const [validInputs, setValidInputs] = useState<string[]>([]);
   //Toast
@@ -406,52 +418,36 @@ function DistributeForm({ cardInfo }: RemisionCard) {
   const [owner, setOwner] = useState("");
   const [location, setLocation] = useState("");
   const [amount, setAmount] = useState(0);
+  const [stockIndex, setStockIndex] = useState(0);
 
   //Remision
 
   const handleSubmit = (evt: React.FormEvent<HTMLFormElement>) => {
     evt.preventDefault();
 
-    //Remision information
-    let remisionData = {
-      receiver: owner,
-      remitent: id,
-      date: `${new Date()}`,
-      elementsList: [{element: cardInfo._id, amount: amount}],
-      receiverProject: location,
-      remitentProject: "CAMBIAR !!!!!!!!!!!!!",
-      observation: "Remisión generada automaticamente al realizar distribución de elementos"
-    }
-
-    saveRemision({
-      variables: {
-        remisionData,
-      },
-    });
-
     //Check if there is enough to distribute
     if (elementEditor.allowDistribution(currentClassification, amount)) {
-      elementEditor.assignEpp({
-        owner,
-        location,
-        amount,
-        classificationId: currentClassification,
-      });
-      setElement(elementEditor.stateCopy);
+      elementEditor.assignElement(stockIndex, amount, location, owner);
 
+      setElement(elementEditor.stateCopy);
+      
       editElement({
         variables: {
           editElementId: cardInfo._id,
           info: elementEditor.toApi,
         },
       });
+
     } else {
       alert("No hay suficientes elementos");
     }
   };
 
   const handleCurrentClassification = (evt: React.ChangeEvent<HTMLInputElement | HTMLSelectElement>) => {
-    setCurrentClassification(evt.target.value);
+    const info = evt.target.value;
+    const splitInfo = info.split("-");
+    setCurrentClassification(splitInfo[0]);
+    setStockIndex(parseInt(splitInfo[1]));
   };
 
   const handleCurrentAmount = (evt: React.ChangeEvent<HTMLInputElement | HTMLSelectElement>) => {
@@ -488,6 +484,10 @@ function DistributeForm({ cardInfo }: RemisionCard) {
     }
   }, [data, error, loading]);
 
+  useEffect(()=>{
+    setLocation(cardInfo.takerFolder._id)
+  },[])
+
   return (
     <>
       <Toast
@@ -520,13 +520,14 @@ function DistributeForm({ cardInfo }: RemisionCard) {
             value: "",
           }}
           name="currentOwner"
-          label="Persona a cargo"
+          label="Se le entrega al administrador: "
           onChange={(evt) => {
             setOwner(evt.target.value);
           }}
           isEmpty={validInputs.includes("currentOwner")}
           value={owner}
           disabled={false}
+          role="everyone"
         />
         <div className="containerWithChips">
           <div className="classificationCreatorContainer">
@@ -549,7 +550,7 @@ function DistributeForm({ cardInfo }: RemisionCard) {
           </div>
         </div>
         <button type="submit" className="mediumBottom">
-          Actualizar
+          Distribuir
         </button>
       </form>
     </>

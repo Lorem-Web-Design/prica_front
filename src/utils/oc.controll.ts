@@ -50,10 +50,10 @@ export default class OrdenDeCompra {
   addItem(item: RQItemsFromQuery) {
     const parsedItem = {
       name: item.material?.name ?? "",
-      amount: item.authorizedAmount,
+      amount: item.pendingAmount,
       id: item.material?._id ?? "",
       unitaryPrice: item.material?.unitaryPrice ?? 0,
-      totalPrice: this.toCurrency(item.material?.unitaryPrice ?? 0 * item.authorizedAmount),
+      totalPrice: this.toCurrency(item.material?.unitaryPrice ?? 0 * item.pendingAmount),
       category: item.material?.type,
       classificationId: item.classificationId
     };

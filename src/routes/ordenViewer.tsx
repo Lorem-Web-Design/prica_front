@@ -127,7 +127,6 @@ function OCInfo() {
 
   useEffect(() => {
     if (data) {
-      console.log(data.getOcById)
       OCControll.ocData = JSON.parse(JSON.stringify(data.getOcById));
       setReview(OCControll.ocData.state === "aprobado" ? false : true)
       setOrdenDeCompra(OCControll.ocData)
@@ -343,7 +342,7 @@ function OCInfo() {
             <tr>
               <td className="primary_background borderGray">Proyecto</td>
               <td colSpan={2} className="borderGray">
-                {ordenDeCompra.project}
+                {ordenDeCompra.projectName}
               </td>
               <td className="txtBold txtBlue">IVA (19%)</td>
               <td className="txtBold">{OrdenDeCompra.toCurrency(OCControll.IVA)}</td>

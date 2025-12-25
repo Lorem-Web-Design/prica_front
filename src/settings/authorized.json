@@ -3,7 +3,7 @@
     "RQ_PANEL": ["admin", "compras", "dir_proyectos", "ing_proyectos", "gerente", "super", "coord_sst"],
     "RQ_VIEWER": ["admin", "compras", "dir_proyectos", "super", "coord_sst"],
     "RQ_EDITOR": ["admin", "compras", "dir_proyectos", "ing_proyectos", "gerente", "super", "coord_sst"],
-    "RQ_LIST": ["admin", "compras", "dir_proyectos", "super", "coord_sst"],
+    "RQ_LIST": ["admin", "compras", "dir_proyectos", "super", "coord_sst", "ing_proyectos", "gerente"],
     "BODEGA_PANEL": ["admin", "compras", "dir_proyectos", "super", "coord_sst"],
     "BODEGA_CHILDREN": ["admin", "compras", "dir_proyectos", "super", "coord_sst"],
     "BODEGA_VIEWER": ["admin", "compras", "dir_proyectos", "super", "coord_sst"],

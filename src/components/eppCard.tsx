@@ -16,6 +16,7 @@ import InputBox from "./inputElement";
 import Modal from "./modal";
 import Toast from "./toast";
 import UserByRoleSelectBox from "./userByRoleSelectBox";
+import { useAuth } from "../customHooks/centers/auth/useAuth";
 
 type RemisionCard = {
   cardInfo: ElementFromQuery;
@@ -144,6 +145,8 @@ function EditEppForm({eppEditor} : {eppEditor: ElementEditor}) {
       editElementId: eppEditor.element._id,
     },
   });
+
+  const {user} = useAuth()
   const [selectedEpp, setSelectedEpp] = useState<ElementFromQuery>(eppEditor.element);
   // Realiza chequeo de los inputs válidos
   const [validInputs, setValidInputs] = useState<string[]>([]);
@@ -189,7 +192,7 @@ function EditEppForm({eppEditor} : {eppEditor: ElementEditor}) {
   };
 
   const addClassification = () => {
-    eppEditor.addClassification(singleClassification, singleClassificationAmount);
+    eppEditor.addClassification(singleClassification, singleClassificationAmount, user.id);
     setEpp(eppEditor.stateCopy);
   };
 
@@ -284,6 +287,7 @@ function EditEppForm({eppEditor} : {eppEditor: ElementEditor}) {
           isEmpty={validInputs.includes("currentOwner")}
           value={epp.currentOwner._id}
           disabled={false}
+          role="coord_sst"
         />
         <div className="containerWithChips">
           <div className="classificationCreatorContainer">
@@ -373,12 +377,13 @@ function DistributeForm({ cardInfo }: RemisionCard) {
     evt.preventDefault();
 
     //Check if there is enough to distribute
-    if (eppEditor.allowDistribution(currentClassification, amount)) {
+    const classIdIndex = currentClassification.split("-")
+    if (eppEditor.allowDistribution(classIdIndex[0], amount)) {
       eppEditor.assignEpp({
         owner,
         location,
         amount,
-        classificationId: currentClassification,
+        classificationId: currentClassification
       });
       setEpp(eppEditor.stateCopy);
       editEpp({
@@ -469,6 +474,7 @@ function DistributeForm({ cardInfo }: RemisionCard) {
           isEmpty={validInputs.includes("currentOwner")}
           value={owner}
           disabled={false}
+          role="coord_sst"
         />
         <div className="containerWithChips">
           <div className="classificationCreatorContainer">

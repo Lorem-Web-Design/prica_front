@@ -150,6 +150,9 @@ export default function CreateElementProvider({ children }: PropsWithChildren) {
         theme: "primary_theme",
       });
       setToast(true);
+      setTimeout(() => {
+        window.location.reload();
+      }, 2000);
     }
     if (elementError) {
       setToastProps({
@@ -160,7 +163,7 @@ export default function CreateElementProvider({ children }: PropsWithChildren) {
       });
       setToast(true);
     }
-  }, [elementData, elementError, elementData]);
+  }, [elementData, elementError, elementLoading]);
 
   useEffect(() => {
     if (imageUrl !== null) {

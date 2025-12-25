@@ -23,7 +23,9 @@ export interface RemisionFromQuery {
       _id: string,
       name: string,
       unit: string
-
+      classificationId: string,
+      location: string
+      stockId: string
     }
   }[];
   _id: string
@@ -39,7 +41,9 @@ export interface RemisionToApi {
   remitentProject: string;
   elementsList: {
     amount: number,
-    element: string
+    element: string,
+    classificationId: string,
+    location: string
   }[];
   date: string;
   observation: string;

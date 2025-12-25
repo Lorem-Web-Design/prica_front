@@ -106,63 +106,15 @@ export const GET_FOLDERS = gql`
   }
 `;
 
-export const GET_ELEMENTS = gql`
-  query GetElements {
-    getElements {
-      name
-      description
-      classification {
-        name
-        amount
-        id
-      }
-      classificationName
-      code
-      serial
-      image
-      amount
-      provider
-      hide
-      unit
-      category
-      history {
-        giverFolder {
-          name
-          _id
-        }
-        takerFolder {
-          name
-          _id
-        }
-        giver {
-          name
-          _id
-        }
-        taker {
-          name
-          _id
-        }
-      }
-      currentOwner {
-      name
-      _id
-    }
-      giverFolder {
-          name
-          _id
-        }
-      takerFolder {
-        name
-        _id
-      }
-      onDelivery
-      _id
-      remision {
-      amount
-      giverFolder {
-        name
-        _id
-      }
+export const GET_ELEMENTS = gql`query GetElements {
+  getElements {
+    _id
+    name
+    description
+    code
+    serial
+    image
+    history {
       giver {
         name
         _id
@@ -171,20 +123,47 @@ export const GET_ELEMENTS = gql`
         name
         _id
       }
-      takerFolder {
-        name
-        _id
-      }
+      amount
     }
-      stock {
+    remision {
+      amount
+    }
+    currentOwner {
+      name
+      _id
+    }
+    giverFolder {
+      name
+      _id
+    }
+    takerFolder {
+      name
+      _id
+    }
+    onDelivery
+    category
+    amount
+    size
+    price
+    provider
+    lastMovement
+    unit
+    classification {
+      name
+      amount
+      id
+    }
+    classificationName
+    stock {
       location
       owner
       amount
       classificationId
-      
+      stockId
     }
-    }
+    hide
   }
+}
 `;
 
 export const GET_RQ_ELEMENTS = gql`
@@ -304,6 +283,7 @@ export const GET_ELEMENT_BY_ID = gql`query GetElementById($getElementById: Strin
       owner
       amount
       classificationId
+      stockId
     }
   }
 }
@@ -557,6 +537,12 @@ export const GET_RQ_BY_ID = gql`query GetRqById($rqId: String!) {
           id
           name
         }
+        stock {
+          location
+          owner
+          amount
+          classificationId
+        }
       }
       classificationId
       materialCategory
@@ -612,6 +598,7 @@ export const GET_OCS = gql`
         _id
       }
       project
+      projectName
       date
       observation
       paymentMethod
@@ -643,6 +630,7 @@ export const GET_OC_BY_ID = gql`query GetOcById($ocId: ID!) {
       email
       _id
     }
+    projectName
     discount {
       name
       value
@@ -896,6 +884,13 @@ export const GET_ELEMENTS_BY_CATEGORY = gql`query GetElementByCategory($category
     code
     serial
     image
+    stock {
+      location
+      owner
+      amount
+      classificationId
+      stockId
+    }
     history {
       giver {
         name

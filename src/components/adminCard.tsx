@@ -339,10 +339,10 @@ function roleParser(role: string): string {
       roleParsed = "Gerente";
       break;
     case "ing_proyectos":
-      roleParsed = "Ingeniero de Proyectos";
+      roleParsed = "Ingeniero";
       break;
     case "dir_proyectos":
-      roleParsed = "Director de Proyectos";
+      roleParsed = "Coordinador";
       break;
     case "coord_sst":
       roleParsed = "SST";

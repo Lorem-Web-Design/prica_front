@@ -75,12 +75,15 @@ export type ElementFromQuery = {
   _id: string;
   classification: Classification[],
   classificationName: string
-  stock?: {
-    amount: number,
+  stock?: Stock[]
+}
+
+type Stock = {
+  amount: number,
     classificationId: string,
     owner: string,
     location: string
-  }[]
+    stockId: string
 }
 
 type Classification = {
