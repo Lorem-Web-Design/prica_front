@@ -1,5 +1,5 @@
 import { MODE } from "./mode"
-//Test
+//Tests
 export function excelSource(){
     if(MODE === "PRODUCTION"){
         return "https://api.lorem.fun/createExcel"
