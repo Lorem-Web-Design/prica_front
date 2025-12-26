@@ -34,7 +34,7 @@ export interface RemisionFromQuery {
   observation: string
   number: string
 }
-
+//Test
 export interface RemisionToApi {
   remitent: string;
   receiver: string;
