@@ -1,7 +1,7 @@
 import { useQuery } from "@apollo/client";
 import { FormEvent, useEffect, useState } from "react";
 import { Link } from "react-router-dom";
-import { ElementFromQuery } from "../@types/elementTypes";
+import { ElementFromQuery, EppElementFromQuery } from "../@types/elementTypes";
 import BottomStart from "../components/bottomStart";
 import Grid from "../components/grid";
 import Layout from "../components/layout";
@@ -17,11 +17,11 @@ import EppsControll from "../utils/epps.controll";
 import EppCard from "../components/eppCard";
 import { GET_EPP_LIST } from "../api/epp.query";
 
-const Epp = new EppsControll([MOCK_EPP] as EppFromQuery[]);
+const Epp = new EppsControll([MOCK_EPP] as EppElementFromQuery[]);
 
 export default function EppPage() {
   const { loading, error, data } = useQuery(GET_EPP_LIST);
-  const [elementLoaded, setElementsLoaded] = useState<EppFromQuery[]>([]);
+  const [elementLoaded, setElementsLoaded] = useState<EppElementFromQuery[]>([]);
   const [searchString, setSearchString] = useState<string>("");
   const [selectedCategory, setSelectedCategory] = useState("Todos");
   //Modal de remisiones
@@ -48,6 +48,7 @@ export default function EppPage() {
       }
     }
   };
+  
 
   const handleChange = (evt: React.ChangeEvent<HTMLInputElement>) => {
     const value = evt.target.value;
@@ -58,9 +59,6 @@ export default function EppPage() {
     <Layout>
       {/* Titulo de la página actual */}
       <Title title="EPP y Dotación" description="Listado de Epps y dotación" />
-      <Modal modal={modal} setModal={setModal}>
-        
-      </Modal>
       <div className="pt_def_48"></div>
       {/* Barra de meníu inferior - shortcuts */}
       <form className="search_container" onSubmit={handleSearch}>

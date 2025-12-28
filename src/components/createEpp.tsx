@@ -113,12 +113,13 @@ export default function EppMenu({ roles }: { roles: AuthorizedRoles[] }) {
   );
 }
 
+const eppEditor = new ElementEditor(MOCK_EPP as ElementFromQuery);
+
 function CreateEppForm() {
   const [createEpp, { loading, error, data }] = useMutation(CREATE_ELEMENT, {
     refetchQueries: ["GetEpps"],
   });
   const {user} = useAuth()
-  const eppEditor = new ElementEditor(MOCK_EPP as ElementFromQuery);
   // Realiza chequeo de los inputs válidos
   const [validInputs, setValidInputs] = useState<string[]>([]);
   //Toast
@@ -132,6 +133,11 @@ function CreateEppForm() {
   const [epp, setEpp] = useState(eppEditor.stateCopy);
   const [singleClassification, setSingleClassification] = useState("");
   const [singleClassificationAmount, setSingleClassificationAmount] = useState(0);
+
+    const deleteClassification = (classificationId: string) => {
+    eppEditor.deleteClassification(classificationId);
+    setEpp(eppEditor.stateCopy);
+  }
 
   const handleSubmit = (evt: React.FormEvent<HTMLFormElement>) => {
     evt.preventDefault();
@@ -249,7 +255,7 @@ function CreateEppForm() {
           <div className="chipsContainer">
             {epp.classification.map((classification, index) => (
               <div className="primary_theme" key={index}>
-                {classification.name}: {classification.amount}
+                {classification.name}: {classification.amount} <span className="material-symbols-outlined delete_category" onClick={()=>deleteClassification(classification.id)}>x_circle</span>
               </div>
             ))}
           </div>

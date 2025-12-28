@@ -4,7 +4,7 @@
   "code": "INDEFINIDO",
   "serial": "INDEFINIDO",
   "image": "images/default.jpg",
-  "unit": "",
+  "unit": "UND",
   "history": [],
   "remision": [],
   "currentOwner": {
@@ -22,7 +22,7 @@
     "_id": "INDEFINIDO"
   },
   "onDelivery": true,
-  "category": "Equipo",
+  "category": "EPP",
   "_id": "",
   "classification": [],
   "classificationName": "VARIANTE",
