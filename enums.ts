@@ -1,3 +1,4 @@
+"Fix"
 export enum ROLES {
     ADMINISTRADOR = "admin",
     DIRECTOR_PROYECTOS = "dir_proyectos",
