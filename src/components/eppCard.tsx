@@ -1,6 +1,6 @@
 import { useMutation } from "@apollo/client";
 import { useEffect, useRef, useState } from "react";
-import { ElementFromQuery } from "../@types/elementTypes";
+import { ElementFromQuery, EppElementFromQuery } from "../@types/elementTypes";
 import { DELETE_ELEMENT } from "../api/myMutations";
 import { EDIT_ELEMENT } from "../api/myQueries";
 import EditIcon from "../assets/icon/edit";
@@ -27,7 +27,8 @@ export default function EppCard({ cardInfo }: RemisionCard) {
   const [deleteEpp, { data, error, loading }] = useMutation(DELETE_ELEMENT);
   const [modal, setModal] = useState(false);
   const [distributeModal, setDistributeModal] = useState(false);
-  const eppEditor = new ElementEditor(cardInfo);
+  const eppEditor = new ElementEditor(JSON.parse(JSON.stringify(cardInfo)) as ElementFromQuery);
+
   //Toast
   const [toast, setToast] = useState(false);
   const [toastProps, setToastProps] = useState({
@@ -138,7 +139,7 @@ export default function EppCard({ cardInfo }: RemisionCard) {
 }
 
 function EditEppForm({eppEditor} : {eppEditor: ElementEditor}) {
-  
+
   const [editEpp, { loading, error, data }] = useMutation(EDIT_ELEMENT, {
     refetchQueries: ["GetEpps"],
     variables: {
@@ -166,6 +167,7 @@ function EditEppForm({eppEditor} : {eppEditor: ElementEditor}) {
 
   const handleSubmit = (evt: React.FormEvent<HTMLFormElement>) => {
     evt.preventDefault();
+
     const checks = new checkForms(epp);
     const checkedInputs = checks.checkEmpty({ name: "name", type: "string" }, { name: "classificationName", type: "string" });
     setValidInputs(checkedInputs);
@@ -272,7 +274,7 @@ function EditEppForm({eppEditor} : {eppEditor: ElementEditor}) {
           label="Bodega"
           onChange={handleChange}
           isEmpty={false}
-          value={epp.takerFolder._id}
+          value={epp.takerFolder?._id}
           disabled={false}
           className="defaultButton"
         />
@@ -285,7 +287,7 @@ function EditEppForm({eppEditor} : {eppEditor: ElementEditor}) {
           label="Persona a cargo"
           onChange={handleChange}
           isEmpty={validInputs.includes("currentOwner")}
-          value={epp.currentOwner._id}
+          value={epp.currentOwner?._id}
           disabled={false}
           role="coord_sst"
         />
@@ -355,7 +357,7 @@ function DistributeForm({ cardInfo }: RemisionCard) {
       editElementId: cardInfo._id,
     },
   });
-  const [selectedEpp, setSelectedEpp] = useState<ElementFromQuery>(cardInfo);
+  const [selectedEpp, setSelectedEpp] = useState<EppElementFromQuery>(cardInfo);
   const eppEditor = new ElementEditor(cardInfo);
   // Realiza chequeo de los inputs válidos
   const [validInputs, setValidInputs] = useState<string[]>([]);
@@ -375,16 +377,18 @@ function DistributeForm({ cardInfo }: RemisionCard) {
 
   const handleSubmit = (evt: React.FormEvent<HTMLFormElement>) => {
     evt.preventDefault();
-
     //Check if there is enough to distribute
-    const classIdIndex = currentClassification.split("-")
-    if (eppEditor.allowDistribution(classIdIndex[0], amount)) {
-      eppEditor.assignEpp({
+    if (eppEditor.allowDistribution(currentClassification, amount)) {
+      eppEditor.stockFixer();
+      //Object to assign
+      const distributeObject = {
         owner,
         location,
         amount,
         classificationId: currentClassification
-      });
+      };
+
+      eppEditor.assignEpp(distributeObject);
       setEpp(eppEditor.stateCopy);
       editEpp({
         variables: {
@@ -489,11 +493,13 @@ function DistributeForm({ cardInfo }: RemisionCard) {
             />
           </div>
           <div className="chipsContainer">
-            {epp.classification.map((classification, index) => (
+            {epp.classification.map((classification, index) => {
+              return(
               <div className="primary_theme" key={index}>
                 {classification.name}: {classification.amount}
               </div>
-            ))}
+            )
+            })}
           </div>
         </div>
         <button type="submit" className="mediumBottom">
