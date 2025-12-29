@@ -1,0 +1,9 @@
+{
+  "requiredAmount": 0,
+  "authorizedAmount":0 ,
+  "receivedAmount": 0,
+  "pendingAmount": 0,
+  "observation": "SIN DEFINIR",
+  "materialId": "",
+  "material":[]
+}

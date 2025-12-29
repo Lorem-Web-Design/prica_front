@@ -1,0 +1,31 @@
+.rqContainer{
+    .rqLogoContainer{
+        img{
+            width: 100%;
+        }
+    }
+}
+
+.rqFlexYCentered{
+    display: flex;
+        align-items: center;
+        justify-content: center;
+}
+
+.rqCenteredText{
+    text-align: center;
+}
+
+.rqBorder{
+    border: solid rgb(122, 122, 122) 1px;
+}
+
+.deleteRqItem{
+    cursor: pointer;
+    svg{
+        width: 16px;
+    }
+    &:hover{
+        fill: rgb(255, 38, 38);
+    }
+}

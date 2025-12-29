@@ -1,0 +1,9 @@
+{
+    "name": "",
+    "password": "",
+    "cc": "",
+    "role": "compras",
+    "image": "/img/user.png",
+    "confirmPassword":"",
+    "hide": false
+  }

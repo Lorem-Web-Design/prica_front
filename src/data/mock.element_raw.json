@@ -1,0 +1,22 @@
+{
+  "name": "",
+  "description": "",
+  "code": "0001",
+  "serial": "",
+  "provider": "",
+  "image": "",
+  "amount": 1,
+  "history": [
+    {
+      "giverFolder": "66a3d58374da7c41306d9b42",
+      "takerFolder": "66a3d58374da7c41306d9b42",
+      "giver": "66a3d58374da7c41306d9b42",
+      "taker": "66a3d58374da7c41306d9b42"
+    }
+  ],
+  "currentOwner": "66c4eb87f8592f3a68a7cf5d",
+  "giverFolder": "66a4007ee6a83a54a8fd5f0d",
+  "takerFolder": "66a4007ee6a83a54a8fd5f0d",
+  "onDelivery": true,
+  "category": "Material"
+}

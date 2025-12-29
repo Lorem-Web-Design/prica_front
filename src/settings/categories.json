@@ -1,0 +1,29 @@
+{
+    "categories": [
+      {
+        "name": "Material",
+        "slug": "Material"
+      },
+      {
+        "name": "Herramienta",
+        "slug": "Herramienta"
+      },
+      {
+        "name": "Equipo",
+        "slug": "Equipo"
+      },
+      {
+        "name": "EPCC",
+        "slug": "EPCC"
+      },
+      {
+        "name": "EPP",
+        "slug": "EPP"
+      },
+      {
+        "name": "Dotación",
+        "slug": "DOTACION"
+      }
+    ]
+  }
+  

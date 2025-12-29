@@ -1,0 +1,73 @@
+@use 'colors';
+$panelWidth: 400px;
+
+.leftPanel{
+    position: fixed;
+    width: $panelWidth;
+    height: 100vh;
+    top: 0;
+    right: 0;
+    border: solid black 3px;
+    background-color: colors.$primary_blue;
+    z-index: 10;
+    transition: ease 0.3s;
+    padding: 16px 12px;
+    .revealButton{
+        position: absolute;
+        top: 50vh;
+        right: $panelWidth - 6px;
+        border: solid black 3px;
+        background-color: white;
+        color: colors.$primary_blue;
+        border-top-left-radius: 4px;
+        border-bottom-left-radius: 4px;
+        padding: 16px 4px;
+        cursor: pointer;
+        user-select: none;
+        .revealIcon{
+            display: flex;
+            width: 12px;
+            svg{
+                fill: colors.$primary_blue;
+            }
+        }
+    }
+
+    &.hideMenu{
+        right: -$panelWidth+3px;
+        transition: ease 0.3s;
+
+        .revealIcon{
+            color: red;
+            transition: ease 0.3s;
+            transform: rotate(180deg);
+        }
+    }
+
+    .panelLogo{
+        display: flex;
+        gap: 12px;
+        border-bottom: solid 2px white;
+        padding-bottom: 8px;
+        user-select: none;
+        .logo{
+            img{
+                width: 32px;
+            }
+        }
+        .pricaName{
+            #name{
+                color: white;
+                font-size: 24px;
+            }
+            #extended{
+                color: white;
+                font-size:8px;
+            }
+        }
+        
+    }
+    .panelBody{
+        padding-top: 16px;
+    }
+}

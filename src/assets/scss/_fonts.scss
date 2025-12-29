@@ -1,0 +1,9 @@
+@use 'colors';
+
+.txtBold{
+    font-weight: bolder;
+}
+
+.txtBlue{
+    color: colors.$primary_blue;
+}

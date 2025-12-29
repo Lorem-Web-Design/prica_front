@@ -1,0 +1,92 @@
+@use 'grid';
+@use 'bottomStart';
+@use 'navbar';
+@use 'layout';
+@use 'cards';
+@use 'userCard';
+@use 'buttons';
+@use 'inputs';
+@use 'elementCard';
+@use 'navigation';
+@use 'dropdown';
+@use 'toast';
+@use 'paginator';
+@use 'table';
+@use 'rq';
+@use 'modal';
+@use 'panels';
+@use 'gallery';
+@use 'contextMenu';
+@use 'fonts';
+@use 'print';
+
+@import url('https://fonts.googleapis.com/css2?family=Montserrat:ital,wght@0,100..900;1,100..900&display=swap');
+
+
+*{
+  font-family: "Montserrat", sans-serif;
+  box-sizing: border-box;
+  margin: 0;
+}
+
+body{
+  margin: 0;
+}
+
+.body_background{
+  position: fixed;
+  right: -240px;
+  bottom: -200px;
+  z-index: -50;
+}
+
+.select_none{
+    user-select: none;
+    -webkit-user-select: none; 
+}
+
+.errorContainer{
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  flex-direction: column;
+  .notFoundTitle{
+    text-shadow: 6px 6px rgb(172, 172, 172), 12px 12px #6c6666;
+    font-size: 10rem;
+    color: #004A87;
+    font-weight: bolder;
+  }
+  .notFoundTrack{
+    font-family: 'Courier New', Courier, monospace;
+    font-size: 12px;
+  }
+}
+
+.txt_center{
+  text-align: center;
+}
+
+.freyContainer{
+  border: solid red 2px;
+  padding: 5px;
+  p{
+    font-weight: bold;
+    font-size: 24px;
+    color: rgb(145, 65, 199);
+    &:hover{
+      font-size: 30px;
+      cursor: pointer;
+    }
+  }
+}
+
+.containerFreyPadre{
+  display: flex;
+  gap: 12px;
+}
+
+@keyframes colorWarning {
+  0% { color: red; }
+  50% { color: blue; }
+  100% { color: red; }
+}

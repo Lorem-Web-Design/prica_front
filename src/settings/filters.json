@@ -1,0 +1,24 @@
+{
+  "categories": [
+    {
+      "name": "Todos",
+      "slug": "Todos"
+    },
+    {
+      "name": "Material",
+      "slug": "Material"
+    },
+    {
+      "name": "Herramienta",
+      "slug": "Herramienta"
+    },
+    {
+      "name": "Equipo",
+      "slug": "Equipo"
+    },
+    {
+      "name": "EPCC",
+      "slug": "EPCC"
+    }
+  ]
+}

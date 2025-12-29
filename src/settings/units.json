@@ -1,0 +1,67 @@
+[
+    {
+    "name": "UNIDAD",
+    "value": "UN"
+},
+{
+    "name": "MILÍMETRO",
+    "value": "MM"
+},
+{
+    "name": "CENTÍMETRO",
+    "value": "CM"
+},
+{
+    "name": "METRO LINEAL",
+    "value": "ML"
+},{
+    "name": "MILÍMETRO CUADRADO",
+    "value": "MM²"
+},{
+    "name": "CENTÍMETRO CUADRADO",
+    "value": "CM²"
+},{
+    "name": "METRO CUADRADO",
+    "value": "M²"
+},{
+    "name": "MILÍMETRO CÚBICO",
+    "value": "MM³"
+},{
+    "name": "CENTÍMETRO CÚBICO",
+    "value": "CM³"
+},{
+    "name": "METRO CÚBICO",
+    "value": "M³"
+},{
+    "name": "MILILITRO",
+    "value": "MLT"
+},{
+    "name": "LITRO",
+    "value": "L"
+},{
+    "name": "GRAMO",
+    "value": "G"
+},{
+    "name": "KILOGRAMO",
+    "value": "KG"
+},{
+    "name": "HORA",
+    "value": "HR"
+},{
+    "name": "ROLLO",
+    "value": "RLL"
+},{
+    "name": "JUEGO",
+    "value": "JG"
+},{
+    "name": "GLOBAL",
+    "value": "GL"
+},{
+    "name": "PORCENTAJE MANO DE OBRA (HERRAMIENTA)",
+    "value": "(%)MO"
+},
+{
+    "name": "PORCENTAJE TRANSPORTE (MATERIAL)",
+    "value": "(%)M"
+}
+]

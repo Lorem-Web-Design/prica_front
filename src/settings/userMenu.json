@@ -1,0 +1,22 @@
+[
+    {
+        "name": "Material",
+        "isActive": false
+    },
+    {
+        "name": "Herramienta",
+        "isActive": false
+    },
+    {
+        "name": "Equipo",
+        "isActive": false
+    },
+    {
+        "name": "EPCC",
+        "isActive": false
+    },
+    {
+        "name": "EPP",
+        "isActive": false
+    }
+]

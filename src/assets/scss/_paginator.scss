@@ -1,0 +1,27 @@
+@use 'colors';
+
+.paginatorContainer{
+    width: 100%;
+    .paginatorPages{
+        ul{
+            padding: 0;
+            display: grid;
+            grid-template-columns: repeat(35, 1fr);
+            gap: 8px;
+            justify-content: center;
+            li{
+                list-style: none;
+                padding: 8px;
+                background-color: colors.$primary_blue;
+                color: white;
+                font-weight: bolder;
+                text-align: center;
+                user-select: none;
+                cursor: pointer;
+                &:hover{
+                    background-color: #5f5f5f;
+                }
+            }
+        }
+    }
+}

@@ -1,0 +1,102 @@
+[
+    {
+      "name": "ARANDELA CURVA CUADRADA 2-1/4X2-1/4X3/16",
+      "type": "material",
+      "unit": "UN"
+    },
+    {
+      "name": "ARANDELA PLANA REDONDA 5/8",
+      "type": "material",
+      "unit": "UN"
+    },
+    {
+      "name": "ARENA PARA CONCRETO",
+      "type": "material",
+      "unit": "M3"
+    },
+    {
+      "name": "ARENA FINA PARA MORTERO",
+      "type": "material",
+      "unit": "M3"
+    },
+    {
+      "name": "CINTA BANDIT 3/4",
+      "type": "material",
+      "unit": "ML"
+    },
+    {
+      "name": "BLOQUE DE PRUEBAS PARA MEDIDA TRES ELEMENTOS",
+      "type": "material",
+      "unit": "UN"
+    },
+    {
+      "name": "BORNA PARA PONCHAR ESTAÑADA TIPO PALA 2AWG",
+      "type": "material",
+      "unit": "UN"
+    },
+    {
+      "name": "BORNA TIPO PALA ESTAÑADA #3/0AWG",
+      "type": "material",
+      "unit": "UN"
+    },
+    {
+      "name": "BORNA ESTAÑADA PARA PONCHAR #6AWG",
+      "type": "material",
+      "unit": "UN"
+    },
+    {
+      "name": "BORNA ESTAÑADA PARA PONCHAR #2AWG",
+      "type": "material",
+      "unit": "UN"
+    },
+    {
+      "name": "CAJA METALICA PARA MEDIDOR",
+      "type": "material",
+      "unit": "UN"
+    },
+    {
+      "name": "CAJA DE PUESTA A TIERRA 30X30CM",
+      "type": "material",
+      "unit": "UN"
+    },
+    {
+      "name": "CAPACETE METALICO 4",
+      "type": "material",
+      "unit": "UN"
+    },
+    {
+      "name": "BOLSA DE CEMENTO GRIS POR 50KG",
+      "type": "material",
+      "unit": "UN"
+    },
+    {
+      "name": "CINTA AISLANTE 20M NEGRA",
+      "type": "material",
+      "unit": "UN"
+    },
+    {
+      "name": "CORTACIRCUITO 100A 15KV CON FUSIBLE 5A TIPO K",
+      "type": "material",
+      "unit": "UN"
+    },
+    {
+      "name": "CRUCETA ANGULAR METALICA 2400MM AUTOSOPORTADA",
+      "type": "material",
+      "unit": "UN"
+    },
+    {
+      "name": "TRANSFORMADOR DE CORRIENTE 3/5A 15KV",
+      "type": "material",
+      "unit": "UN"
+    },
+    {
+      "name": "CABLE COBRE DESNUDO #2/0AWG",
+      "type": "material",
+      "unit": "ML"
+    },
+    {
+      "name": "CABLE COBRE DESNUDO #2AWG",
+      "type": "material",
+      "unit": "ML"
+    }
+  ]

@@ -1,0 +1,54 @@
+$primary_blue: #004A87;
+
+.primary_theme{
+    background-color: $primary_blue;
+    color: white;
+}
+
+.green{
+    color: green;
+    font-weight: 600;
+}
+
+.blue{
+    color: $primary_blue;
+    font-weight: 600;
+}
+
+.red{
+    color: red;
+    font-weight: 600;
+}
+
+.yellow{
+    color: rgb(199, 199, 0);
+    font-weight: 600;
+}
+
+.orange{
+    color: orange;
+    font-weight: 600
+}
+
+.warning_theme{
+    background-color: #ff682d;
+    color: rgb(255, 255, 255);
+}
+
+.success_theme {
+    background-color: green;
+    color: rgb(255, 255, 255);
+}
+
+.error_theme{
+    background-color: rgb(255, 0, 0);
+    color: white;
+}
+
+.txtWhite{
+    color: white;
+}
+
+.txtBlue{
+    color: #004A87;
+}

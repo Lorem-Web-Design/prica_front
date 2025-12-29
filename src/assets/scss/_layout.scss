@@ -1,0 +1,128 @@
+.layout_container{
+    padding: 32px 64px 64px 64px;
+    min-height: 100vh;
+    overflow: hidden;
+}
+
+.center_def{
+  justify-items: center;
+}
+.user_image_container{
+    .user_image{
+        border: solid black 3px;
+        aspect-ratio: 1/1;
+        display: flex;
+        align-items: center;
+        justify-content: center;
+        
+        img{
+            width: 200px;
+            border-radius: 50%;
+            object-fit: cover;
+            aspect-ratio: 1/1;
+        }
+    }
+}
+
+.hide{
+    display: none !important;
+}
+
+//Tooltips
+.tooltip {
+  position: relative;
+  display: inline-block;
+  border-bottom: 1px dotted black;
+}
+
+.tooltip .tooltiptext {
+  visibility: hidden;
+  width: 120px;
+  background-color: black;
+  color: #fff;
+  text-align: center;
+  border-radius: 6px;
+  padding: 4px 4px;
+  font-size: 12px;
+
+  /* Position the tooltip */
+  position: absolute;
+  z-index: 1;
+  right: 0;
+  top: -35px;
+}
+
+.tooltip:hover .tooltiptext {
+  visibility: visible;
+}
+
+/* HTML: <div class="loader"></div> */
+.loader {
+    width: 50px;
+    aspect-ratio: 1;
+    display: grid;
+    border-radius: 50%;
+    background:
+      linear-gradient(0deg ,rgb(0 0 0/50%) 30%,#0000 0 70%,rgb(0 0 0/100%) 0) 50%/8% 100%,
+      linear-gradient(90deg,rgb(0 0 0/25%) 30%,#0000 0 70%,rgb(0 0 0/75% ) 0) 50%/100% 8%;
+    background-repeat: no-repeat;
+    animation: l23 1s infinite steps(12);
+  }
+  .loader::before,
+  .loader::after {
+     content: "";
+     grid-area: 1/1;
+     border-radius: 50%;
+     background: inherit;
+     opacity: 0.915;
+     transform: rotate(30deg);
+  }
+  .loader::after {
+     opacity: 0.83;
+     transform: rotate(60deg);
+  }
+  @keyframes l23 {
+    100% {transform: rotate(1turn)}
+  }
+
+  .notFound{
+    display: flex;
+    flex-direction: column;
+    justify-content: center;
+    align-items: center;
+    padding-bottom: 24px;
+    p{
+        font-weight: bolder;
+    }
+    img{
+        width: 200px;
+    }
+  }
+
+  .uploadImageContainer{
+    display: flex;
+    flex-direction: column;
+    gap: 8px;
+    padding-bottom: 8px;
+    justify-content: center;
+    .uploadedImage{
+        border: solid black 2px;
+        width: 250px;
+        height: 250px;
+        img{
+          width: 100%;
+          height: 100%;
+          object-fit: contain;
+        }
+    }
+  }
+
+  
+@media (min-width: 599px) {
+}
+@media (min-width: 904px) {
+
+}
+@media (min-width: 1239px) {
+    
+}

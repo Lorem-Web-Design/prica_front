@@ -1,0 +1,38 @@
+[
+    {
+        "name": "Lorenzo",
+        "cc": 1234567890,
+        "occupation": "Ayudante",
+        "image": "/img/user.png"
+    },
+    {
+        "name": "Marisole",
+        "cc": 987654321,
+        "occupation": "Oficial",
+        "image": "/img/user.png"
+    },
+    {
+        "name": "Victor",
+        "cc": 1122334455,
+        "occupation": "Dir. Proyectos",
+        "image": "/img/user.png"
+    },
+    {
+        "name": "Julián",
+        "cc": 2233445566,
+        "occupation": "Residente",
+        "image": "/img/user.png"
+    },
+    {
+        "name": "Sofía",
+        "cc": 3344556677,
+        "occupation": "HSEQ",
+        "image": "/img/user.png"
+    },
+    {
+        "name": "Fernando",
+        "cc": 4455667788,
+        "occupation": "Ayudante",
+        "image": "/img/user.png"
+    }
+]
