@@ -58,10 +58,12 @@ export default function EppMenu({ roles }: { roles: AuthorizedRoles[] }) {
         <EPPsList />
       </Modal>
       <Modal modal={remisionModal} setModal={setRemisionModal}>
-        <RemisionCreator type="EPP"/>
+        <RemisionCreator type="EPP" />
       </Modal>
       <div
-        className={`card_container select_none ${roles.includes(user.role) ? "" : "hide"}`}
+        className={`card_container select_none ${
+          roles.includes(user.role) ? "" : "hide"
+        }`}
         style={{ cursor: "pointer" }}
         onClick={() => {
           navigate("/epp");
@@ -117,7 +119,7 @@ function CreateEppForm() {
   const [createEpp, { loading, error, data }] = useMutation(CREATE_ELEMENT, {
     refetchQueries: ["GetEpps"],
   });
-  const {user} = useAuth()
+  const { user } = useAuth();
   const eppEditor = new ElementEditor(MOCK_EPP as ElementFromQuery);
   // Realiza chequeo de los inputs válidos
   const [validInputs, setValidInputs] = useState<string[]>([]);
@@ -131,14 +133,15 @@ function CreateEppForm() {
   });
   const [epp, setEpp] = useState(eppEditor.stateCopy);
   const [singleClassification, setSingleClassification] = useState("");
-  const [singleClassificationAmount, setSingleClassificationAmount] = useState(0);
+  const [singleClassificationAmount, setSingleClassificationAmount] =
+    useState(0);
 
   const handleSubmit = (evt: React.FormEvent<HTMLFormElement>) => {
     evt.preventDefault();
     const checks = new checkForms(epp);
     const checkedInputs = checks.checkEmpty(
       { name: "name", type: "string" },
-      { name: "classificationName", type: "string" },
+      { name: "classificationName", type: "string" }
     );
     setValidInputs(checkedInputs);
     if (checkedInputs.length === 0 && epp.classification.length > 0) {
@@ -149,7 +152,9 @@ function CreateEppForm() {
       });
     }
   };
-  const handleChange = (evt: React.ChangeEvent<HTMLInputElement | HTMLSelectElement>) => {
+  const handleChange = (
+    evt: React.ChangeEvent<HTMLInputElement | HTMLSelectElement>
+  ) => {
     const name = evt.target.name;
     const value = evt.target.value;
     //@ts-ignore
@@ -158,15 +163,23 @@ function CreateEppForm() {
   };
 
   const addClassification = () => {
-    eppEditor.addClassification(singleClassification, singleClassificationAmount, user.id);
+    eppEditor.addClassification(
+      singleClassification,
+      singleClassificationAmount,
+      user.id
+    );
     setEpp(eppEditor.stateCopy);
   };
 
-  const handleSingleClassification = (evt: React.ChangeEvent<HTMLInputElement | HTMLSelectElement>) => {
+  const handleSingleClassification = (
+    evt: React.ChangeEvent<HTMLInputElement | HTMLSelectElement>
+  ) => {
     setSingleClassification(evt.target.value);
   };
 
-  const handleSingleClassificationAmount = (evt: React.ChangeEvent<HTMLInputElement | HTMLSelectElement>) => {
+  const handleSingleClassificationAmount = (
+    evt: React.ChangeEvent<HTMLInputElement | HTMLSelectElement>
+  ) => {
     setSingleClassificationAmount(parseInt(evt.target.value));
   };
 
@@ -211,7 +224,14 @@ function CreateEppForm() {
         footer={toastProps.footer}
       />
       <form onSubmit={handleSubmit}>
-        <InputBox inputName="name" isEmpty={validInputs.includes("name")} labelTag="Nombre" onChange={handleChange} value={epp.name} type="text" />
+        <InputBox
+          inputName="name"
+          isEmpty={validInputs.includes("name")}
+          labelTag="Nombre"
+          onChange={handleChange}
+          value={epp.name}
+          type="text"
+        />
         <InputBox
           inputName="classificationName"
           isEmpty={validInputs.includes("classificationName")}
@@ -220,7 +240,7 @@ function CreateEppForm() {
           value={epp.classificationName}
           type="text"
         />
-        <EppCategroySelect handleChange={handleChange}/>
+        <EppCategroySelect handleChange={handleChange} />
         <div className="classificationContainer"></div>
         <div className="containerWithChips">
           <div className="classificationCreatorContainer">
@@ -241,7 +261,11 @@ function CreateEppForm() {
               type="number"
             />
             <div className="buttonContainer">
-              <button type="button" className="mediumBottom" onClick={addClassification}>
+              <button
+                type="button"
+                className="mediumBottom"
+                onClick={addClassification}
+              >
                 +
               </button>
             </div>
@@ -263,16 +287,21 @@ function CreateEppForm() {
 }
 
 function EPPsList() {
-  const {user} = useAuth();
+  const { user } = useAuth();
   const [selectedEpp, setSelectedEpp] = useState(MOCK_EPP as ElementFromQuery);
   const EppEditor = new ElementEditor(selectedEpp);
   const [movementInfo, setMovementInfo] = useState(MOCK_MOVEMENT_INFO);
-  const [assignEpp, { loading, error, data }] = useMutation(ASSIGN_EPP, {refetchQueries: ["GetEpps", {
-    variables: {
-      workerId: movementInfo.workerId
-    },
-    query: GET_WORKER_BY_ID
-  }]});
+  const [assignEpp, { loading, error, data }] = useMutation(ASSIGN_EPP, {
+    refetchQueries: [
+      "GetEpps",
+      {
+        variables: {
+          workerId: movementInfo.workerId,
+        },
+        query: GET_WORKER_BY_ID,
+      },
+    ],
+  });
   //Toast
   const [toast, setToast] = useState(false);
   const [toastProps, setToastProps] = useState({
@@ -282,7 +311,9 @@ function EPPsList() {
     theme: "primary_theme",
   });
 
-  const handleChange = (evt: React.ChangeEvent<HTMLInputElement | HTMLSelectElement>) => {
+  const handleChange = (
+    evt: React.ChangeEvent<HTMLInputElement | HTMLSelectElement>
+  ) => {
     const name = evt.target.name;
     const value = evt.target.value;
     setMovementInfo((prev) => {
@@ -299,17 +330,21 @@ function EPPsList() {
     movementInfo.movementMaker = user.id;
     movementInfo.amount = parseFloat(`${movementInfo.amount}`);
 
-    const classificationInfo = selectedEpp.classification.find((element) => element.id === movementInfo.classificationId);
+    const classificationInfo = selectedEpp.classification.find(
+      (element) => element.id === movementInfo.classificationId
+    );
 
     //Check if user can move the element
-    if(EppEditor.userCanDistribute(user.id, movementInfo.amount)){
+    if (EppEditor.userCanDistribute(user.id, movementInfo.amount)) {
       assignEpp({
         variables: {
           movementInfo,
         },
       });
-    }else{
-      alert("Este usuario no puede realizar este movimiento debido a que no está autorizado o no tiene las existencias necesarias");
+    } else {
+      alert(
+        "Este usuario no puede realizar este movimiento debido a que no está autorizado o no tiene las existencias necesarias"
+      );
     }
   };
 
@@ -355,7 +390,14 @@ function EPPsList() {
       />
       <form onSubmit={handleSubmit}>
         <Grid def={1} gap={12} lg={1} md={1} sm={1}>
-          <ElementSelect isEmpty={false} label="Listado de epps" name="epp" value="00123" setEpp={setSelectedEpp} type="EPP"/>
+          <ElementSelect
+            isEmpty={false}
+            label="Listado de epps"
+            name="epp"
+            value="00123"
+            setEpp={setSelectedEpp}
+            type="EPP"
+          />
           <WorkerSelectBox
             defaultOption={{ label: "Sin seleccionar", value: "0123456" }}
             isEmpty={false}
@@ -364,17 +406,27 @@ function EPPsList() {
             onChange={handleChange}
             value={movementInfo.workerId}
           />
-          <BodegaSelectBox defaultOption={{label: "Selecciona centro de costos", value: ""}} isEmpty={false} label="Selecciona centro de costos" name="folder" onChange={handleChange} value={movementInfo.folder}/>
+          <BodegaSelectBox
+            defaultOption={{ label: "Selecciona centro de costos", value: "" }}
+            isEmpty={false}
+            label="Selecciona centro de costos"
+            name="folder"
+            onChange={handleChange}
+            value={movementInfo.folder}
+          />
           <InputBox
-              inputName="date"
-              isEmpty={false}
-              labelTag="Fecha de entrega"
-              onChange={handleChange}
-              value={`${movementInfo.date}`}
-              type="date"
-            />
+            inputName="date"
+            isEmpty={false}
+            labelTag="Fecha de entrega"
+            onChange={handleChange}
+            value={`${movementInfo.date}`}
+            type="date"
+          />
           <Grid def={1} gap={12} lg={2} md={2} sm={2}>
-           <ElementClassificationSelect handleChange={handleChange} selectedEpp={selectedEpp}/> 
+            <ElementClassificationSelect
+              handleChange={handleChange}
+              selectedEpp={selectedEpp}
+            />
             <InputBox
               inputName="amount"
               isEmpty={false}
@@ -383,7 +435,6 @@ function EPPsList() {
               value={`${movementInfo.amount}`}
               type="text"
             />
-            
           </Grid>
           <button type="submit" className="mediumBottom">
             Asignar

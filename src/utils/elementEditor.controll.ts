@@ -1,4 +1,8 @@
-import { ElementFromQuery, ElementToApi, RawRemision } from "../@types/elementTypes";
+import {
+  ElementFromQuery,
+  ElementToApi,
+  RawRemision,
+} from "../@types/elementTypes";
 
 type AssignElementTypes = {
   newLocation: string;
@@ -47,7 +51,9 @@ export default class ElementEditor {
   }
 
   historyAndRemisionToApi(history: ElementFromQuery["history"]): RawHistory[] {
-    const cleanHistory = JSON.parse(JSON.stringify(history)) as ElementFromQuery["history"];
+    const cleanHistory = JSON.parse(
+      JSON.stringify(history)
+    ) as ElementFromQuery["history"];
     let newItem = cleanHistory.map((item) => {
       return {
         takerFolder: item.takerFolder._id,
@@ -73,32 +79,48 @@ export default class ElementEditor {
       classificationId,
       location: this.element.takerFolder._id,
       owner: userId,
-      stockId: `${Date.now()}`
+      stockId: `${Date.now()}`,
     });
   }
 
   deleteClassification(classificationId: string) {
-    this.element.classification = this.element.classification.filter((clas) => clas.id !== classificationId);
+    this.element.classification = this.element.classification.filter(
+      (clas) => clas.id !== classificationId
+    );
     this.element.stock = this.element.stock?.filter(
       (stockItem) => stockItem.classificationId !== classificationId
     );
   }
 
   addNewItems(classificationId: string, amount: number) {
-    let selectedClassification = this.element.classification.find((clas) => clas.id === classificationId);
+    let selectedClassification = this.element.classification.find(
+      (clas) => clas.id === classificationId
+    );
     if (selectedClassification) {
       selectedClassification.amount += amount;
     }
   }
 
-  addStockItem(stockIndex: number, amount: number){
-    let selectedStock = this.element.stock ? this.element.stock[stockIndex] : undefined;
-    if(selectedStock){
-      selectedStock.amount += amount
+  addStockItem(stockIndex: number, amount: number) {
+    let selectedStock = this.element.stock
+      ? this.element.stock[stockIndex]
+      : undefined;
+    if (selectedStock) {
+      selectedStock.amount += amount;
     }
   }
 
-  assignEpp({ location, owner, classificationId, amount }: { location: string; owner: string; classificationId: string; amount: number }) {
+  assignEpp({
+    location,
+    owner,
+    classificationId,
+    amount,
+  }: {
+    location: string;
+    owner: string;
+    classificationId: string;
+    amount: number;
+  }) {
     // Ensure the stock property exists on the element; initialize it as an empty array if it doesn't.
     if (!this.element.stock) {
       this.element.stock = [];
@@ -109,7 +131,9 @@ export default class ElementEditor {
     // Check if there is at least one stock entry for the given owner.
     if (isOwner.length >= 1) {
       // Look for an existing stock entry with the same classificationId for the owner.
-      const isItem = isOwner.find((item) => item.classificationId === classificationId);
+      const isItem = isOwner.find(
+        (item) => item.classificationId === classificationId
+      );
 
       if (isItem) {
         // If a matching stock entry is found, increment its amount by the provided amount.
@@ -121,7 +145,7 @@ export default class ElementEditor {
           owner,
           classificationId,
           amount,
-          stockId: `${Date.now()}`
+          stockId: `${Date.now()}`,
         });
       }
     } else {
@@ -131,34 +155,40 @@ export default class ElementEditor {
         owner,
         classificationId,
         amount,
-        stockId:`${Date.now()}`
+        stockId: `${Date.now()}`,
       });
     }
     this.updateClassificationOnAssign(amount, classificationId);
   }
 
-  assignElement(stockIndex: number, amountToDistribute: number, newLocation:string, newOwner: string) {
+  assignElement(
+    stockIndex: number,
+    amountToDistribute: number,
+    newLocation: string,
+    newOwner: string
+  ) {
     // Ensure the stock property exists on the element; initialize it as an empty array if it doesn't.
     if (!this.element.stock) {
       this.element.stock = [];
     }
     // Filter the stock to find entries where the owner matches the provided owner.
-    const selectedStock = this.element.stock[stockIndex]
-    if(selectedStock.location !== newLocation){
+    const selectedStock = this.element.stock[stockIndex];
+    if (selectedStock.location !== newLocation) {
       this.element.stock.push({
         location: newLocation,
         owner: newOwner,
         classificationId: selectedStock.classificationId,
         amount: amountToDistribute,
-        stockId: selectedStock.stockId
+        stockId: selectedStock.stockId,
       });
       selectedStock.amount -= amountToDistribute;
     }
-    
   }
 
   allowDistribution(classsificationId: string, amountToDistribute: number) {
-    const currentClas = this.element.stock?.find((clas) => clas.classificationId === classsificationId);
+    const currentClas = this.element.stock?.find(
+      (clas) => clas.classificationId === classsificationId
+    );
     if (amountToDistribute > 0) {
       if (currentClas) {
         return currentClas.amount >= amountToDistribute;
@@ -169,7 +199,9 @@ export default class ElementEditor {
   }
 
   userCanDistribute(userId: string, movementAmount: number) {
-    const canDistribute = this.element.stock?.find((item) => item.owner === userId);
+    const canDistribute = this.element.stock?.find(
+      (item) => item.owner === userId
+    );
     if (canDistribute) {
       return movementAmount <= canDistribute.amount;
     }
@@ -177,17 +209,24 @@ export default class ElementEditor {
   }
 
   updateClassificationOnAssign(amount: number, classificationId: string) {
-    const generalClas = this.element.stock?.find((item) => item.classificationId === classificationId);
+    const generalClas = this.element.stock?.find(
+      (item) => item.classificationId === classificationId
+    );
     if (generalClas) {
       generalClas.amount -= amount;
     }
   }
 
   static stockCounter(stock: ElementEditor["element"]["stock"]) {
-    return stock?.reduce((acccumulator, currentValue) => acccumulator + currentValue.amount, 0);
+    return stock?.reduce(
+      (acccumulator, currentValue) => acccumulator + currentValue.amount,
+      0
+    );
   }
 
-  defaultElement(){
-    this.element = JSON.parse(JSON.stringify(AS_QUERY_ELEMENT as ElementFromQuery));
+  defaultElement() {
+    this.element = JSON.parse(
+      JSON.stringify(AS_QUERY_ELEMENT as ElementFromQuery)
+    );
   }
 }

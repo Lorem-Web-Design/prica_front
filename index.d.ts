@@ -25,22 +25,22 @@ type User = {
   cargo: string;
   image: string;
   id: string;
-  isActive: boolean
+  isActive: boolean;
   eppHistory: {
     eppId: {
-      name: string,
-      classificationName: string
+      name: string;
+      classificationName: string;
       classification: {
-        name: string
-        amount: number
-        id: string
-      }
-      category: string
-      _id: string
-    }
-    amount: number
-    date: string
-  }[]
+        name: string;
+        amount: number;
+        id: string;
+      };
+      category: string;
+      _id: string;
+    };
+    amount: number;
+    date: string;
+  }[];
 };
 
 type Button = {
@@ -63,7 +63,7 @@ type Bodega = {
   name: string;
   parentId: string;
   _id: string;
-  hide?: boolean
+  hide?: boolean;
 };
 
 type PricaWorker = {
@@ -73,41 +73,47 @@ type PricaWorker = {
   occupation: string;
   _id: string;
   isActive: boolean;
-  eppHistory: EppInfo[]
-  hide?: boolean
+  eppHistory: EppInfo[];
+  hide?: boolean;
+  role: string;
+  elements: {
+    _id;
+    name;
+    category;
+  }[];
 };
 
 type EppInfo = {
-  amount: number,
-  date: string
-  folder: Bodega 
+  amount: number;
+  date: string;
+  folder: Bodega;
   eppId?: {
     classification: {
       amount: number;
       id: string;
       name: string;
-    }[] 
+    }[];
     classificationName: string;
     icons: string;
     name: string;
     _id: string;
-  }
-}
+  };
+};
 
 type EppInfoApi = {
-  amount: number,
-  date: string
-  folder: string 
-  eppId: string
-    classificationId: string;
-}
+  amount: number;
+  date: string;
+  folder: string;
+  eppId: string;
+  classificationId: string;
+};
 
 type PricaWorkerToApi = {
   cc: number;
   image: string;
   name: string;
   occupation: string;
-  isActive: boolean
+  isActive: boolean;
 };
 
 type ElementInformation = {
@@ -116,7 +122,7 @@ type ElementInformation = {
   code: string;
   serial: string;
   image: string;
-  unit?: string
+  unit?: string;
   history: {
     giverFolder: {
       name: string;
@@ -146,8 +152,8 @@ type ElementInformation = {
   };
   onDelivery: boolean;
   category: string;
-  amount: number,
-  provider: string,
+  amount: number;
+  provider: string;
   _id: string;
 };
 
@@ -157,7 +163,7 @@ type RawElementInformation = {
   code: string;
   serial: string;
   provider: string;
-  amount: number
+  amount: number;
   image: string;
   history: RawHistory[];
   currentOwner: string;
@@ -195,7 +201,15 @@ type RQItemsForMutation = {
   materialId: string;
 };
 
-type RQControllTypesKeys = "date" | "project" | "rq" | "ppto" | "rqItems" | "petitioner" | "_id" | "isApproved";
+type RQControllTypesKeys =
+  | "date"
+  | "project"
+  | "rq"
+  | "ppto"
+  | "rqItems"
+  | "petitioner"
+  | "_id"
+  | "isApproved";
 
 type RQControllTypes = {
   date: number;
@@ -252,7 +266,7 @@ type AuthUser = {
   name: string;
   role: string;
   token: string;
-  image: string
+  image: string;
   name: string;
   id: string;
 };
@@ -281,15 +295,15 @@ type PricaOC = {
   isAlive: boolean;
   project: string;
   projectName: string;
-  state: string
+  state: string;
   rq: string;
-  _id?: string
+  _id?: string;
   items: {
     name?: string;
     amount: number;
     id: string;
     unitaryPrice: number;
-    totalPrice?: string
+    totalPrice?: string;
   }[];
 };
 
@@ -298,7 +312,7 @@ type PricaMaterial = {
   unit: string;
   category: string;
   _id: string;
-  amount: number
+  amount: number;
 };
 
 type SelectBox = {
@@ -307,7 +321,7 @@ type SelectBox = {
   name: string;
   isEmpty: boolean;
   value: string;
-  disabled?: boolean
+  disabled?: boolean;
 };
 
 type AddState<T> = T & {
@@ -316,7 +330,7 @@ type AddState<T> = T & {
 
 type RQFromQuery = {
   date: string;
-  hide?: boolean
+  hide?: boolean;
   project: {
     name: string;
     _id: string;
@@ -329,9 +343,9 @@ type RQFromQuery = {
     _id: string;
   };
   _id?: string;
-  haveOC: boolean
+  haveOC: boolean;
   isApproved: boolean;
-  isEnded: boolean
+  isEnded: boolean;
 };
 
 type RQItemsFromQuery = {
@@ -341,29 +355,29 @@ type RQItemsFromQuery = {
   pendingAmount: number;
   observation: string;
   materialId: string;
-  materialCategory: string,
-  classificationId?: string
+  materialCategory: string;
+  classificationId?: string;
   material?: {
     name: string;
     unit: string;
     type: string;
     _id: string;
     amount: number;
-    unitaryPrice: number
-    serial: string 
-    description: string
+    unitaryPrice: number;
+    serial: string;
+    description: string;
     classification: {
-      name: string
-      amount: number
-      id: string
-    }[]
+      name: string;
+      amount: number;
+      id: string;
+    }[];
     stock: {
-      location: string
-      owner: string
-      amount: number
-      classificationId: string
-      stockId: string
-    }[]
+      location: string;
+      owner: string;
+      amount: number;
+      classificationId: string;
+      stockId: string;
+    }[];
   } | null;
 };
 

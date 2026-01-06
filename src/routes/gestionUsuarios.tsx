@@ -36,16 +36,27 @@ export default function GestionUsuarios() {
   return (
     <Layout>
       {/* Titulo de la página actual */}
-      <Title title="Gestión usuarios" description="A continuación selecciona lo que deseas hacer:" />
+      <Title
+        title="Gestión usuarios"
+        description="A continuación selecciona lo que deseas hacer:"
+      />
       <div className="pt_def_48"></div>
       {/* Barra de meníu inferior - shortcuts */}
       <WorkersList />
       <div className="pt_def_12"></div>
       <Grid gap={12} def={1} sm={1} md={2} lg={5} className="">
-        <Link to="/create/user" className={`mediumBottom defaultButton ${addWorkerButtonVisibility ? "" : "hide"}`}>
+        <Link
+          to="/create/user"
+          className={`mediumBottom defaultButton ${
+            addWorkerButtonVisibility ? "" : "hide"
+          }`}
+        >
           Añadir colaborador
         </Link>
-        <button className={`mediumBottom ${addAdminButtonVisibility ? "" : "hide"}`} onClick={() => setModal(true)}>
+        <button
+          className={`mediumBottom ${addAdminButtonVisibility ? "" : "hide"}`}
+          onClick={() => setModal(true)}
+        >
           Añadir administrador
         </button>
       </Grid>
@@ -87,8 +98,19 @@ function WorkersList() {
   if (data) {
     return (
       <>
-        <form className="search_container" onSubmit={handleSearch} style={{ paddingBottom: 12 }}>
-          <input type="text" placeholder="Buscar usuarios..." className="search" name="search" onChange={handleChange} value={searchString} />
+        <form
+          className="search_container"
+          onSubmit={handleSearch}
+          style={{ paddingBottom: 12 }}
+        >
+          <input
+            type="text"
+            placeholder="Buscar usuarios..."
+            className="search"
+            name="search"
+            onChange={handleChange}
+            value={searchString}
+          />
           <button className="searchButton" type="submit">
             Buscar
           </button>
@@ -105,6 +127,8 @@ function WorkersList() {
               key={index}
               eppHistory={worker.eppHistory}
               hide={worker.hide}
+              role={worker.role}
+              elements={worker.elements}
             />
           ))}
         </Pagination>

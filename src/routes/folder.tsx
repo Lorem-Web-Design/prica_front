@@ -77,7 +77,16 @@ export default function Folder() {
         {/* Barra de meníu inferior - shortcuts */}
         <Grid gap={12} sm={2} md={3} lg={6} def={1} className="center_def">
           {myData.map(({ name, image, _id, isParent, parentId, hide }) => (
-            <FolderCard name={name} icon={image} route={_id} key={_id} ID={_id} isParent={isParent} parentId={parentId} hide={hide}/>
+            <FolderCard
+              name={name}
+              icon={image}
+              route={_id}
+              key={_id}
+              ID={_id}
+              isParent={isParent}
+              parentId={parentId}
+              hide={hide}
+            />
           ))}
           <Modal modal={modal} setModal={setModal}>
             <CreateFolderForm folderControll={folderControll} />
@@ -96,5 +105,3 @@ export default function Folder() {
 
   return <div>Holi!</div>;
 }
-
-

@@ -107,9 +107,14 @@ export default function EppCard({ cardInfo }: RemisionCard) {
             </li>
             <li
               onClick={() => {
-                const deleteConfirmed = confirm("¿Estás seguro que deseas eliminar este elemento?");
+                const deleteConfirmed = confirm(
+                  "¿Estás seguro que deseas eliminar este elemento?"
+                );
                 if (deleteConfirmed) {
-                  deleteEpp({ variables: { deleteElementById: cardInfo._id }, refetchQueries: ["GetEpps"] });
+                  deleteEpp({
+                    variables: { deleteElementById: cardInfo._id },
+                    refetchQueries: ["GetEpps"],
+                  });
                 }
               }}
             >
@@ -137,8 +142,7 @@ export default function EppCard({ cardInfo }: RemisionCard) {
   );
 }
 
-function EditEppForm({eppEditor} : {eppEditor: ElementEditor}) {
-  
+function EditEppForm({ eppEditor }: { eppEditor: ElementEditor }) {
   const [editEpp, { loading, error, data }] = useMutation(EDIT_ELEMENT, {
     refetchQueries: ["GetEpps"],
     variables: {
@@ -146,8 +150,10 @@ function EditEppForm({eppEditor} : {eppEditor: ElementEditor}) {
     },
   });
 
-  const {user} = useAuth()
-  const [selectedEpp, setSelectedEpp] = useState<ElementFromQuery>(eppEditor.element);
+  const { user } = useAuth();
+  const [selectedEpp, setSelectedEpp] = useState<ElementFromQuery>(
+    eppEditor.element
+  );
   // Realiza chequeo de los inputs válidos
   const [validInputs, setValidInputs] = useState<string[]>([]);
   //Toast
@@ -162,12 +168,16 @@ function EditEppForm({eppEditor} : {eppEditor: ElementEditor}) {
   const [currentClassification, setCurrentClassification] = useState("");
   const [currentAmount, setCurrentAmount] = useState(0);
   const [singleClassification, setSingleClassification] = useState("");
-  const [singleClassificationAmount, setSingleClassificationAmount] = useState(0);
+  const [singleClassificationAmount, setSingleClassificationAmount] =
+    useState(0);
 
   const handleSubmit = (evt: React.FormEvent<HTMLFormElement>) => {
     evt.preventDefault();
     const checks = new checkForms(epp);
-    const checkedInputs = checks.checkEmpty({ name: "name", type: "string" }, { name: "classificationName", type: "string" });
+    const checkedInputs = checks.checkEmpty(
+      { name: "name", type: "string" },
+      { name: "classificationName", type: "string" }
+    );
     setValidInputs(checkedInputs);
     if (checkedInputs.length === 0 && epp.classification.length > 0) {
       editEpp({
@@ -178,7 +188,9 @@ function EditEppForm({eppEditor} : {eppEditor: ElementEditor}) {
       });
     }
   };
-  const handleChange = (evt: React.ChangeEvent<HTMLInputElement | HTMLSelectElement>) => {
+  const handleChange = (
+    evt: React.ChangeEvent<HTMLInputElement | HTMLSelectElement>
+  ) => {
     const name = evt.target.name;
     const value = evt.target.value;
     //@ts-ignore
@@ -192,23 +204,35 @@ function EditEppForm({eppEditor} : {eppEditor: ElementEditor}) {
   };
 
   const addClassification = () => {
-    eppEditor.addClassification(singleClassification, singleClassificationAmount, user.id);
+    eppEditor.addClassification(
+      singleClassification,
+      singleClassificationAmount,
+      user.id
+    );
     setEpp(eppEditor.stateCopy);
   };
 
-  const handleCurrentClassification = (evt: React.ChangeEvent<HTMLInputElement | HTMLSelectElement>) => {
+  const handleCurrentClassification = (
+    evt: React.ChangeEvent<HTMLInputElement | HTMLSelectElement>
+  ) => {
     setCurrentClassification(evt.target.value);
   };
 
-  const handleCurrentAmount = (evt: React.ChangeEvent<HTMLInputElement | HTMLSelectElement>) => {
+  const handleCurrentAmount = (
+    evt: React.ChangeEvent<HTMLInputElement | HTMLSelectElement>
+  ) => {
     setCurrentAmount(parseFloat(evt.target.value));
   };
 
-  const handleSingleClassification = (evt: React.ChangeEvent<HTMLInputElement | HTMLSelectElement>) => {
+  const handleSingleClassification = (
+    evt: React.ChangeEvent<HTMLInputElement | HTMLSelectElement>
+  ) => {
     setSingleClassification(evt.target.value);
   };
 
-  const handleSingleClassificationAmount = (evt: React.ChangeEvent<HTMLInputElement | HTMLSelectElement>) => {
+  const handleSingleClassificationAmount = (
+    evt: React.ChangeEvent<HTMLInputElement | HTMLSelectElement>
+  ) => {
     setSingleClassificationAmount(parseInt(evt.target.value));
   };
 
@@ -253,7 +277,14 @@ function EditEppForm({eppEditor} : {eppEditor: ElementEditor}) {
         footer={toastProps.footer}
       />
       <form onSubmit={handleSubmit}>
-        <InputBox inputName="name" isEmpty={validInputs.includes("name")} labelTag="Nombre" onChange={handleChange} value={epp.name} type="text" />
+        <InputBox
+          inputName="name"
+          isEmpty={validInputs.includes("name")}
+          labelTag="Nombre"
+          onChange={handleChange}
+          value={epp.name}
+          type="text"
+        />
         <InputBox
           inputName="classificationName"
           isEmpty={validInputs.includes("classificationName")}
@@ -291,7 +322,10 @@ function EditEppForm({eppEditor} : {eppEditor: ElementEditor}) {
         />
         <div className="containerWithChips">
           <div className="classificationCreatorContainer">
-            <EppClassificationSelect handleChange={handleCurrentClassification} selectedEpp={selectedEpp} />
+            <EppClassificationSelect
+              handleChange={handleCurrentClassification}
+              selectedEpp={selectedEpp}
+            />
 
             <InputBox
               inputName="currentAmount"
@@ -335,7 +369,11 @@ function EditEppForm({eppEditor} : {eppEditor: ElementEditor}) {
             type="number"
           />
           <div className="buttonContainer">
-            <button type="button" className="mediumBottom" onClick={addClassification}>
+            <button
+              type="button"
+              className="mediumBottom"
+              onClick={addClassification}
+            >
               +
             </button>
           </div>
@@ -377,13 +415,13 @@ function DistributeForm({ cardInfo }: RemisionCard) {
     evt.preventDefault();
 
     //Check if there is enough to distribute
-    const classIdIndex = currentClassification.split("-")
+    const classIdIndex = currentClassification.split("-");
     if (eppEditor.allowDistribution(classIdIndex[0], amount)) {
       eppEditor.assignEpp({
         owner,
         location,
         amount,
-        classificationId: currentClassification
+        classificationId: currentClassification,
       });
       setEpp(eppEditor.stateCopy);
       editEpp({
@@ -397,11 +435,15 @@ function DistributeForm({ cardInfo }: RemisionCard) {
     }
   };
 
-  const handleCurrentClassification = (evt: React.ChangeEvent<HTMLInputElement | HTMLSelectElement>) => {
+  const handleCurrentClassification = (
+    evt: React.ChangeEvent<HTMLInputElement | HTMLSelectElement>
+  ) => {
     setCurrentClassification(evt.target.value);
   };
 
-  const handleCurrentAmount = (evt: React.ChangeEvent<HTMLInputElement | HTMLSelectElement>) => {
+  const handleCurrentAmount = (
+    evt: React.ChangeEvent<HTMLInputElement | HTMLSelectElement>
+  ) => {
     setAmount(parseFloat(evt.target.value));
   };
 
@@ -478,7 +520,10 @@ function DistributeForm({ cardInfo }: RemisionCard) {
         />
         <div className="containerWithChips">
           <div className="classificationCreatorContainer">
-            <EppClassificationSelect handleChange={handleCurrentClassification} selectedEpp={selectedEpp} />
+            <EppClassificationSelect
+              handleChange={handleCurrentClassification}
+              selectedEpp={selectedEpp}
+            />
             <InputBox
               inputName="currentAmount"
               isEmpty={false}

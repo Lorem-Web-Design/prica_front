@@ -4,17 +4,28 @@ type InputBox = {
   ) => void;
   labelTag: string;
   inputName: string;
-  isEmpty: boolean
-  value: string | undefined
-  type: "text" | "number" | "password" | "email" | "date"
-  className?: string
-  disabled?: boolean
+  isEmpty: boolean;
+  value: string | undefined;
+  type: "text" | "number" | "password" | "email" | "date";
+  className?: string;
+  disabled?: boolean;
 };
-export default function InputBox({ onChange, labelTag, inputName, isEmpty, value, type, className, disabled }: InputBox) {
+export default function InputBox({
+  onChange,
+  labelTag,
+  inputName,
+  isEmpty,
+  value,
+  type,
+  className,
+  disabled,
+}: InputBox) {
   return (
-    <div className= {`input_container gap_12 ${isEmpty ? 'error' : ''} ${className || 
-      ""
-    }`}>
+    <div
+      className={`input_container gap_12 ${isEmpty ? "error" : ""} ${
+        className || ""
+      }`}
+    >
       <label htmlFor={inputName}>{labelTag}</label>
       <input
         type={type}

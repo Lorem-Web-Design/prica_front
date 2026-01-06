@@ -2,7 +2,11 @@ import { useMutation } from "@apollo/client";
 import { useEffect, useRef, useState } from "react";
 import { Link, useNavigate } from "react-router-dom";
 import { imagesSource } from "../api/datasources";
-import { DELETE_WORKER_BY_ID, EDIT_USER, EDIT_WORKER_BY_ID } from "../api/myMutations";
+import {
+  DELETE_WORKER_BY_ID,
+  EDIT_USER,
+  EDIT_WORKER_BY_ID,
+} from "../api/myMutations";
 import EditIcon from "../assets/icon/sitemap";
 import EyeIcon from "../assets/icon/eye";
 import TrashCan from "../assets/icon/trashcan";
@@ -14,12 +18,24 @@ import Toast from "./toast";
 import Modal from "./modal";
 import InputBox from "./inputElement";
 import checkForms from "../utils/checkForms";
-import { EditUserToMutation, UserToMutation, VisibleAdmin, WorkerToApi } from "../@types/usersTypes";
+import {
+  EditUserToMutation,
+  UserToMutation,
+  VisibleAdmin,
+  WorkerToApi,
+} from "../@types/usersTypes";
 import GalleryViewer from "./galleryViewer";
 import Grid from "./grid";
 import { DELETE_ADMINS } from "../api/myQueries";
 
-export default function AdminCard({ name, cc, role, _id, image, hide }: VisibleAdmin) {
+export default function AdminCard({
+  name,
+  cc,
+  role,
+  _id,
+  image,
+  hide,
+}: VisibleAdmin) {
   const cardReference = useRef<HTMLDivElement>(null);
   const [deleteWorker, { data, error, loading }] = useMutation(DELETE_ADMINS);
   const [modal, setModal] = useState(false);
@@ -66,7 +82,10 @@ export default function AdminCard({ name, cc, role, _id, image, hide }: VisibleA
   return (
     <>
       <Modal modal={modal} setModal={setModal}>
-        <EditAdminForm userInfo={{ name, cc, image, role, _id }} isActive={isActive} />
+        <EditAdminForm
+          userInfo={{ name, cc, image, role, _id }}
+          isActive={isActive}
+        />
       </Modal>
       <Toast
         title={toastProps.title}
@@ -76,7 +95,10 @@ export default function AdminCard({ name, cc, role, _id, image, hide }: VisibleA
         isActive={toast}
         setToast={setToast}
       />
-      <div className={`userCard_container ${hide ? "hide" : ''}`} ref={cardReference}>
+      <div
+        className={`userCard_container ${hide ? "hide" : ""}`}
+        ref={cardReference}
+      >
         <CustomContextMenu cardReference={cardReference}>
           <ul>
             <li onClick={() => setModal(true)}>
@@ -92,7 +114,9 @@ export default function AdminCard({ name, cc, role, _id, image, hide }: VisibleA
             </li>
             <li
               onClick={() => {
-                const deleteConfirmed = confirm("¿Estás seguro que deseas eliminar este administrador?");
+                const deleteConfirmed = confirm(
+                  "¿Estás seguro que deseas eliminar este administrador?"
+                );
                 if (deleteConfirmed) {
                   deleteWorker({ variables: { userId: _id } });
                 }
@@ -158,7 +182,9 @@ function EditAdminForm({ userInfo, isActive }: EditAdminForm) {
     password: "",
     confirmPassword: "",
   });
-  const [editWorker, { loading, error, data }] = useMutation(EDIT_USER, { refetchQueries: ["GetUsers"] });
+  const [editWorker, { loading, error, data }] = useMutation(EDIT_USER, {
+    refetchQueries: ["GetUsers"],
+  });
 
   //Toast
   const [toast, setToast] = useState(false);
@@ -168,7 +194,9 @@ function EditAdminForm({ userInfo, isActive }: EditAdminForm) {
     footer: "Footer del toast",
     theme: "primary_theme",
   });
-  const handleChange = (evt: React.ChangeEvent<HTMLInputElement | HTMLSelectElement>) => {
+  const handleChange = (
+    evt: React.ChangeEvent<HTMLInputElement | HTMLSelectElement>
+  ) => {
     const name = evt.target.name;
     let value = evt.target.value;
     setUserData((prev) => {

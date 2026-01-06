@@ -47,51 +47,101 @@ export const GET_WORKERS = gql`
       _id
       isActive
       eppHistory {
-        folder{
+        folder {
           _id
         }
-      eppId {
-        name
-        classificationName
-        classification {
+        eppId {
           name
-          amount
-          id
+          classificationName
+          classification {
+            name
+            amount
+            id
+          }
+          category
+          _id
         }
-        category
-        _id
+        amount
+        date
       }
-      amount
-      date
-    }
     }
   }
 `;
 
 export const GET_ADMINS = gql`
   query GetUsers {
-  getUsers {
-    name
-    cc
-    role
-    image
-    _id
-    hide
-  }
-}
-`;
-
-export const DELETE_ADMINS = gql`mutation DeleteUserById($userId: String!) {
-  deleteUserById(userId: $userId) {
-    code
-    message
-    success
-    user {
+    getUsers {
       name
+      cc
       role
+      image
+      _id
+      hide
     }
   }
-}
+`;
+
+export const SUPER_QUERY = gql`
+  query GetWorkerById($workerId: ID!) {
+    getWorkerById(workerId: $workerId) {
+      name
+      cc
+      occupation
+      image
+      _id
+      isActive
+      eppHistory {
+        eppId {
+          _id
+          name
+          description
+          code
+          serial
+          image
+          onDelivery
+          category
+          amount
+          size
+          price
+          provider
+          lastMovement
+          unit
+          classificationName
+          hide
+        }
+        amount
+        date
+        folder {
+          name
+          _id
+          isParent
+          parentId
+          image
+          hide
+        }
+      }
+      hide
+      elements {
+        _id
+        name
+        category
+      }
+    }
+  }
+`;
+
+export const DELETE_ADMINS = gql`
+  mutation DeleteUserById($userId: String!) {
+    deleteUserById(userId: $userId) {
+      code
+      message
+      success
+      user {
+        name
+        role
+      }
+    }
+  }
 `;
 
 export const GET_FOLDERS = gql`
@@ -106,187 +156,189 @@ export const GET_FOLDERS = gql`
   }
 `;
 
-export const GET_ELEMENTS = gql`query GetElements {
-  getElements {
-    _id
-    name
-    description
-    code
-    serial
-    image
-    history {
-      giver {
-        name
-        _id
-      }
-      taker {
-        name
-        _id
-      }
-      amount
-    }
-    remision {
-      amount
-    }
-    currentOwner {
-      name
+export const GET_ELEMENTS = gql`
+  query GetElements {
+    getElements {
       _id
-    }
-    giverFolder {
       name
-      _id
-    }
-    takerFolder {
-      name
-      _id
-    }
-    onDelivery
-    category
-    amount
-    size
-    price
-    provider
-    lastMovement
-    unit
-    classification {
-      name
-      amount
-      id
-    }
-    classificationName
-    stock {
-      location
-      owner
-      amount
-      classificationId
-      stockId
-    }
-    hide
-  }
-}
-`;
-
-export const GET_RQ_ELEMENTS = gql`
-query GetRqElements {
-  getElementsForRq {
-    _id
-    name
-    description
-    code
-    serial
-    image
-    history {
-      giver {
-        name
-        _id
-      }
-      taker {
-        name
-        _id
-      }
-      amount
-    }
-    remision {
-      amount
-    }
-    currentOwner {
-      name
-      _id
-    }
-    giverFolder {
-      name
-      _id
-    }
-    takerFolder {
-      name
-      _id
-    }
-    onDelivery
-    category
-    amount
-    size
-    price
-    provider
-    lastMovement
-    unit
-  }
-}
-`
-
-export const GET_ELEMENT_BY_ID = gql`query GetElementById($getElementById: String!) {
-  getElementById(id: $getElementById) {
-    _id
-    name
-    description
-    code
-    serial
-    image
-    history {
-      giverFolder {
-        name
-        _id
-      }
-      giver {
-        name
-        _id
-      }
-      taker {
-        name
-        _id
-      }
-      takerFolder {
-        name
-        _id
-      }
-    }
-    remision {
-      amount
-      giverFolder {
-        name
-        _id
-      }
-      giver {
-        name
-        _id
-      }
-      taker {
-        name
-        _id
-      }
-      takerFolder {
-        name
-        _id
-      }
-    }
-    currentOwner {
-      name
-      _id
-    }
-    giverFolder {
+      description
+      code
+      serial
+      image
+      history {
+        giver {
           name
           _id
         }
-    takerFolder {
-      name
-      _id
-    }
-    onDelivery
-    category
-    amount
-    size
-    price
-    provider
-    lastMovement
-    unit
-    stock {
-      location
-      owner
+        taker {
+          name
+          _id
+        }
+        amount
+      }
+      remision {
+        amount
+      }
+      currentOwner {
+        name
+        _id
+      }
+      giverFolder {
+        name
+        _id
+      }
+      takerFolder {
+        name
+        _id
+      }
+      onDelivery
+      category
       amount
-      classificationId
-      stockId
+      size
+      price
+      provider
+      lastMovement
+      unit
+      classification {
+        name
+        amount
+        id
+      }
+      classificationName
+      stock {
+        location
+        owner
+        amount
+        classificationId
+        stockId
+      }
+      hide
     }
   }
-}
+`;
+
+export const GET_RQ_ELEMENTS = gql`
+  query GetRqElements {
+    getElementsForRq {
+      _id
+      name
+      description
+      code
+      serial
+      image
+      history {
+        giver {
+          name
+          _id
+        }
+        taker {
+          name
+          _id
+        }
+        amount
+      }
+      remision {
+        amount
+      }
+      currentOwner {
+        name
+        _id
+      }
+      giverFolder {
+        name
+        _id
+      }
+      takerFolder {
+        name
+        _id
+      }
+      onDelivery
+      category
+      amount
+      size
+      price
+      provider
+      lastMovement
+      unit
+    }
+  }
+`;
+
+export const GET_ELEMENT_BY_ID = gql`
+  query GetElementById($getElementById: String!) {
+    getElementById(id: $getElementById) {
+      _id
+      name
+      description
+      code
+      serial
+      image
+      history {
+        giverFolder {
+          name
+          _id
+        }
+        giver {
+          name
+          _id
+        }
+        taker {
+          name
+          _id
+        }
+        takerFolder {
+          name
+          _id
+        }
+      }
+      remision {
+        amount
+        giverFolder {
+          name
+          _id
+        }
+        giver {
+          name
+          _id
+        }
+        taker {
+          name
+          _id
+        }
+        takerFolder {
+          name
+          _id
+        }
+      }
+      currentOwner {
+        name
+        _id
+      }
+      giverFolder {
+        name
+        _id
+      }
+      takerFolder {
+        name
+        _id
+      }
+      onDelivery
+      category
+      amount
+      size
+      price
+      provider
+      lastMovement
+      unit
+      stock {
+        location
+        owner
+        amount
+        classificationId
+        stockId
+      }
+    }
+  }
 `;
 
 export const EDIT_ELEMENT = gql`
@@ -339,8 +391,14 @@ export const EDIT_ELEMENT = gql`
 `;
 
 export const GET_ELEMENTS_BY_ID_AND_CATEGORY = gql`
-  query GetElementsByWorkerAndCategory($workerId: String!, $categoryId: String!) {
-    getElementsByWorkerAndCategory(workerId: $workerId, categoryId: $categoryId) {
+  query GetElementsByWorkerAndCategory(
+    $workerId: String!
+    $categoryId: String!
+  ) {
+    getElementsByWorkerAndCategory(
+      workerId: $workerId
+      categoryId: $categoryId
+    ) {
       name
       description
       code
@@ -365,13 +423,13 @@ export const GET_ELEMENTS_BY_ID_AND_CATEGORY = gql`
         }
       }
       currentOwner {
-      name
-      _id
-    }
-      giverFolder{
-          name
-          _id
-        }
+        name
+        _id
+      }
+      giverFolder {
+        name
+        _id
+      }
       takerFolder {
         name
         _id
@@ -411,13 +469,13 @@ export const GET_ELEMENTS_BY_FOLDER_ID = gql`
         }
       }
       currentOwner {
-      name
-      _id
-    }
-      giverFolder{
-          name
-          _id
-        }
+        name
+        _id
+      }
+      giverFolder {
+        name
+        _id
+      }
       takerFolder {
         name
         _id
@@ -429,8 +487,14 @@ export const GET_ELEMENTS_BY_FOLDER_ID = gql`
 `;
 
 export const GET_ELEMENTS_BY_FOLDER_AND_CATEGORY = gql`
-  query GetElementsByFolderAndCategory($folderId: String!, $categoryId: String!) {
-    getElementsByFolderAndCategory(folderId: $folderId, categoryId: $categoryId) {
+  query GetElementsByFolderAndCategory(
+    $folderId: String!
+    $categoryId: String!
+  ) {
+    getElementsByFolderAndCategory(
+      folderId: $folderId
+      categoryId: $categoryId
+    ) {
       _id
       name
       description
@@ -456,9 +520,9 @@ export const GET_ELEMENTS_BY_FOLDER_AND_CATEGORY = gql`
         }
       }
       currentOwner {
-      name
-      _id
-    }
+        name
+        _id
+      }
       giverFolder {
         name
         _id
@@ -509,54 +573,55 @@ export const GET_RQS = gql`
   }
 `;
 
-export const GET_RQ_BY_ID = gql`query GetRqById($rqId: String!) {
-  getRqById(rqId: $rqId) {
-    date
-    project {
-      name
-      _id
-    }
-    rq
-    ppto
-    rqItems {
-      requiredAmount
-      authorizedAmount
-      receivedAmount
-      pendingAmount
-      observation
-      materialId
-      material {
+export const GET_RQ_BY_ID = gql`
+  query GetRqById($rqId: String!) {
+    getRqById(rqId: $rqId) {
+      date
+      project {
         name
-        unit
-        type
-        amount
         _id
-        serial
-        classification {
-          amount
-          id
-          name
-        }
-        stock {
-          location
-          owner
-          amount
-          classificationId
-        }
       }
-      classificationId
-      materialCategory
-    }
-    petitioner {
-      name
+      rq
+      ppto
+      rqItems {
+        requiredAmount
+        authorizedAmount
+        receivedAmount
+        pendingAmount
+        observation
+        materialId
+        material {
+          name
+          unit
+          type
+          amount
+          _id
+          serial
+          classification {
+            amount
+            id
+            name
+          }
+          stock {
+            location
+            owner
+            amount
+            classificationId
+          }
+        }
+        classificationId
+        materialCategory
+      }
+      petitioner {
+        name
+        _id
+      }
+      isApproved
+      isEnded
       _id
+      haveOC
     }
-    isApproved
-    isEnded
-    _id
-    haveOC
   }
-}
 `;
 
 export const GET_PROVIDERS = gql`
@@ -618,34 +683,151 @@ export const GET_OCS = gql`
   }
 `;
 
-export const GET_OC_BY_ID = gql`query GetOcById($ocId: ID!) {
-  getOcById(ocId: $ocId) {
-    provider {
-      name
-      nit
-      address
-      city
-      contact
-      contactNumber
-      email
+export const GET_OC_BY_ID = gql`
+  query GetOcById($ocId: ID!) {
+    getOcById(ocId: $ocId) {
+      provider {
+        name
+        nit
+        address
+        city
+        contact
+        contactNumber
+        email
+        _id
+      }
+      projectName
+      discount {
+        name
+        value
+      }
+      receiver {
+        name
+        nit
+        address
+        city
+        contact
+        contactNumber
+        email
+        _id
+      }
+      taker {
+        name
+        cc
+        occupation
+        image
+        _id
+        isActive
+        eppHistory {
+          eppId {
+            name
+            classificationName
+            classification {
+              name
+              amount
+              id
+            }
+            category
+            _id
+          }
+          amount
+          date
+          folder {
+            name
+            _id
+            isParent
+            parentId
+            image
+          }
+        }
+      }
+      request
+      state
+      project
+      date
+      observation
+      paymentMethod
+      deliverMethod
+      deliverDate
+      deliverConditions
+      deliverAddress
+      ocNumber
+      isAlive
+      rq {
+        date
+        project {
+          name
+          _id
+        }
+        rq
+        ppto
+        rqItems {
+          requiredAmount
+          authorizedAmount
+          receivedAmount
+          pendingAmount
+          observation
+          materialId
+          material {
+            name
+            unit
+            type
+            amount
+            _id
+            serial
+          }
+          classificationId
+          materialCategory
+        }
+        petitioner {
+          name
+          _id
+        }
+        isApproved
+        _id
+        haveOC
+      }
+      items {
+        name
+        amount
+        unitaryPrice
+        id
+        classificationId
+        category
+      }
       _id
     }
-    projectName
-    discount {
-      name
-      value
-    }
-    receiver {
-      name
-      nit
-      address
-      city
-      contact
-      contactNumber
-      email
+  }
+`;
+
+export const GET_IMAGES = gql`
+  query GetImages {
+    getImages
+  }
+`;
+
+export const GET_MATERIALS = gql`
+  query GetElements {
+    getElements {
       _id
+      unit
+      name
+      category
     }
-    taker {
+  }
+`;
+
+export const GET_COUNTER = gql`
+  query GetOcCount {
+    getOcCount {
+      remision
+      oc
+    }
+  }
+`;
+export const GET_WORKER_BY_ID = gql`
+  query GetWorkerById($workerId: ID!) {
+    getWorkerById(workerId: $workerId) {
       name
       cc
       occupation
@@ -675,270 +857,169 @@ export const GET_OC_BY_ID = gql`query GetOcById($ocId: ID!) {
         }
       }
     }
-    request
-    state
-    project
-    date
-    observation
-    paymentMethod
-    deliverMethod
-    deliverDate
-    deliverConditions
-    deliverAddress
-    ocNumber
-    isAlive
-    rq {
-      date
-      project {
+  }
+`;
+
+export const CREATE_ADMIN = gql`
+  mutation AddUser($userData: UserInput!) {
+    addUser(userData: $userData) {
+      code
+      message
+      success
+    }
+  }
+`;
+
+export const GET_PENDING_RQS = gql`
+  query GetPendingRqs {
+    getPendingRq
+  }
+`;
+
+export const GET_REMISIONS = gql`
+  query GetRemision {
+    getRemision {
+      remitent {
+        name
+        role
+        _id
+      }
+      observation
+      remitentProject {
         name
         _id
       }
-      rq
-      ppto
-      rqItems {
-        requiredAmount
-        authorizedAmount
-        receivedAmount
-        pendingAmount
-        observation
-        materialId
-        material {
+      receiverProject {
+        name
+        _id
+      }
+      receiver {
+        name
+        cc
+        _id
+        occupation
+      }
+      elementsList {
+        amount
+        element {
+          _id
           name
           unit
-          type
-          amount
-          _id
-          serial
         }
-        classificationId
-        materialCategory
       }
-      petitioner {
-        name
-        _id
-      }
-      isApproved
       _id
-      haveOC
-    }
-    items {
-      name
-      amount
-      unitaryPrice
-      id
-      classificationId
-      category
-    }
-    _id
-  }
-}
-`;
-
-export const GET_IMAGES = gql`
-query GetImages {
-  getImages
-}`
-
-export const GET_MATERIALS = gql`
-  query GetElements {
-  getElements {
-    _id
-    unit
-    name
-    category
-  }
-}
-`;
-
-export const GET_COUNTER = gql`
-  query GetOcCount {
-    getOcCount {
-      remision
-      oc
-    }
-  }
-`;
-export const GET_WORKER_BY_ID = gql`query GetWorkerById($workerId: ID!) {
-  getWorkerById(workerId: $workerId) {
-    name
-    cc
-    occupation
-    image
-    _id
-    isActive
-    eppHistory {
-      eppId {
-        name
-        classificationName
-        classification {
-          name
-          amount
-          id
-        }
-        category
-        _id
-      }
-      amount
       date
-      folder {
+      number
+    }
+  }
+`;
+
+export const GET_REMISION_BY_ID = gql`
+  query GetRemision($remisionId: ID!) {
+    getRemisionById(remisionId: $remisionId) {
+      date
+      number
+      observation
+      remitent {
+        name
+        cc
+        role
+        _id
+      }
+      remitentProject {
         name
         _id
-        isParent
-        parentId
-        image
+      }
+      receiverProject {
+        name
+        _id
+      }
+      receiver {
+        name
+        cc
+        _id
+        occupation
+      }
+      _id
+      elementsList {
+        element {
+          _id
+          name
+          unit
+        }
+        amount
       }
     }
   }
-}`
+`;
 
-export const CREATE_ADMIN = gql`mutation AddUser($userData: UserInput!) {
-  addUser(userData: $userData) {
-    code
-    message
-    success
-  }
-}`
-
-export const GET_PENDING_RQS = gql`query GetPendingRqs {
-  getPendingRq
-}`
-
-export const GET_REMISIONS = gql`query GetRemision {
-  getRemision {
-    remitent {
+export const GET_ELEMENTS_BY_CATEGORY = gql`
+  query GetElementByCategory($category: String!) {
+    getElementByCategory(category: $category) {
+      _id
       name
+      description
+      code
+      serial
+      image
+      stock {
+        location
+        owner
+        amount
+        classificationId
+        stockId
+      }
+      history {
+        giver {
+          name
+          _id
+        }
+        taker {
+          name
+          _id
+        }
+        amount
+      }
+      remision {
+        amount
+      }
+      currentOwner {
+        name
+        _id
+      }
+      giverFolder {
+        name
+        _id
+      }
+      takerFolder {
+        name
+        _id
+      }
+      onDelivery
+      category
+      amount
+      size
+      price
+      provider
+      lastMovement
+      unit
+      classification {
+        name
+        amount
+        id
+      }
+      classificationName
+    }
+  }
+`;
+
+export const GET_USER_BY_ROLES = gql`
+  query GetUserByRole($role: String!) {
+    getUserByRole(role: $role) {
+      _id
+      name
+      cc
       role
-      _id
-    }
-    observation
-    remitentProject {
-      name
-      _id
-    }
-    receiverProject {
-      name
-      _id
-    }
-    receiver {
-      name
-      cc
-      _id
-      occupation
-    }
-    elementsList {
-      amount
-      element {
-        _id
-        name
-        unit
-      }
-    }
-    _id
-    date
-    number
-  }
-}`
-
-export const GET_REMISION_BY_ID = gql`query GetRemision($remisionId: ID!) {
-  getRemisionById(remisionId: $remisionId) {
-    date
-    number
-    observation
-    remitent {
-      name
-      cc
-      role
-      _id
-    }
-    remitentProject {
-      name
-      _id
-    }
-    receiverProject {
-      name
-      _id
-    }
-    receiver {
-      name
-      cc
-      _id
-      occupation
-    }
-    _id
-    elementsList {
-      element {
-        _id
-        name
-        unit
-      }
-      amount
     }
   }
-}`
-
-export const GET_ELEMENTS_BY_CATEGORY = gql`query GetElementByCategory($category: String!) {
-  getElementByCategory(category: $category) {
-    _id
-    name
-    description
-    code
-    serial
-    image
-    stock {
-      location
-      owner
-      amount
-      classificationId
-      stockId
-    }
-    history {
-      giver {
-        name
-        _id
-      }
-      taker {
-        name
-        _id
-      }
-      amount
-    }
-    remision {
-      amount
-    }
-    currentOwner {
-      name
-      _id
-    }
-    giverFolder {
-      name
-      _id
-    }
-    takerFolder {
-      name
-      _id
-    }
-    onDelivery
-    category
-    amount
-    size
-    price
-    provider
-    lastMovement
-    unit
-    classification {
-      name
-      amount
-      id
-    }
-    classificationName
-  }
-}`
-
-export const GET_USER_BY_ROLES = gql`query GetUserByRole($role: String!) {
-  getUserByRole(role: $role) {
-    _id
-    name
-    cc
-    role
-  }
-}`
+`;

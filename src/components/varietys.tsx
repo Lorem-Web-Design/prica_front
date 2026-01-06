@@ -1,4 +1,4 @@
-import UNITS from "../../settings/units.json";
+import VARIANTES from "../settings/variantes.json";
 
 type SelectBox = {
   onChange: (
@@ -9,27 +9,29 @@ type SelectBox = {
   isEmpty: boolean;
 };
 
-export default function UnitSelector({
+export default function VarietySelectBox({
   onChange,
+
+  isEmpty,
   value,
   disabled,
-  isEmpty,
 }: SelectBox) {
   return (
     <div className={`input_container gap_12 ${isEmpty ? "error" : ""}`}>
-      <label htmlFor="unit">Unidad de medida</label>
+      <label htmlFor="variedad">Elige una variedad</label>
       <select
         className="editable_input width_100"
-        id="unit"
-        name="unit"
+        id="variedad"
+        name="variedad"
         onChange={onChange}
         value={value}
         disabled={disabled}
       >
-        <option value="SIN_DEFINIR">Seleccione unidad de medida</option>
-        {UNITS.map((option) => (
-          <option key={option.value} value={option.value}>
-            {option.name} ({option.value})
+        <option value="SIN_DEFINIR">Seleccione una variedad</option>
+
+        {VARIANTES.variedad.map((category) => (
+          <option value={category.slug} key={category.slug}>
+            {category.name}
           </option>
         ))}
       </select>

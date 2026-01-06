@@ -1,4 +1,3 @@
-
 export default class SearchControll<T> {
   list: T[];
 

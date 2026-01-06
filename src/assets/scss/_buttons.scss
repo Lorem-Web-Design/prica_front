@@ -1,101 +1,109 @@
-@use 'colors';
+@use "colors";
 
-.pointer{
-    cursor: pointer;
+.pointer {
+  cursor: pointer;
 }
 
-.bigButton{
-    background-color: colors.$primary_blue;
-    font-size: 32px;
-    color: white;
-    padding: 8px;
+.bigButton {
+  background-color: colors.$primary_blue;
+  font-size: 32px;
+  color: white;
+  padding: 8px;
+  text-decoration: none;
+  cursor: pointer;
+  &:hover {
+    background-color: #000000;
+    transition: 0.3s ease;
+  }
+}
+
+.mediumBottom {
+  background-color: colors.$primary_blue;
+  font-size: 18px;
+  color: white;
+  padding: 6px;
+  text-decoration: none;
+  width: 100%;
+  text-align: center;
+  cursor: pointer;
+  height: 50px;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+
+  &.active {
+    background-color: #000000;
+  }
+}
+
+.searchButton {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  background-color: colors.$primary_blue;
+  cursor: pointer;
+  color: white;
+  padding: 8px;
+  border-radius: 8px;
+}
+
+.smallButton {
+  font-size: 12px;
+  padding: 2px;
+  width: 100%;
+  border-radius: 4px;
+  text-decoration: none;
+  text-align: center;
+  cursor: pointer;
+  a {
     text-decoration: none;
-    cursor: pointer;
-    &:hover{
-        background-color: #000000;
-        transition: 0.3s ease;
-    }
-}
-
-.mediumBottom{
-    background-color: colors.$primary_blue;
-    font-size: 24px;
     color: white;
-    padding: 6px;
-    text-decoration: none;
-    width: 100%;
-    text-align: center;
-    cursor: pointer;
-    &.active{
-        background-color: #000000;
-    }
+  }
 }
 
-.searchButton{
-    display: flex;
-    align-items: center;
-    justify-content: center;
-    background-color: colors.$primary_blue;
-    cursor: pointer;
-    color: white;
-    padding: 8px;
-    border-radius: 8px;
+.successTheme {
+  background-color: green;
+  color: white;
 }
 
-.smallButton{
-    font-size: 12px;
-    padding: 2px;
-    width: 100%;
-    border-radius: 4px;
-    text-decoration: none;
-    text-align: center;
-    cursor: pointer; 
-    a{
-        text-decoration: none;
-        color: white;
-    }
+.pricaTheme {
+  background-color: colors.$primary_blue;
+  color: white;
 }
 
-.successTheme{
-    background-color: green;
-    color: white;
+.addElementButton {
+  height: fit-content;
+  background-color: colors.$primary_blue;
+  cursor: pointer;
+  color: white;
+  width: 100%;
 }
 
-.pricaTheme{
-    background-color: colors.$primary_blue;
-    color: white;
-}
-
-.addElementButton{
-    height: fit-content;
-    background-color: colors.$primary_blue;
-    cursor: pointer;
-    color: white;
-    width: 100%;
-}
-
-.defaultButton{
-    border-top: 2px solid #545454;
-    border-right: 2px solid #000000;
-    border-bottom: 2px solid #000000;
-    border-left: 2px solid #545454;
-    &:active{
-        border-bottom: 2px solid #545454;
+.defaultButton {
+  border-top: 2px solid #545454;
+  border-right: 2px solid #000000;
+  border-bottom: 2px solid #000000;
+  border-left: 2px solid #545454;
+  &:active {
+    border-bottom: 2px solid #545454;
     border-left: 2px solid #000000;
     border-top: 2px solid #000000;
     border-right: 2px solid #545454;
-    }
+  }
 }
 
-.chipsContainer{
+.chipsContainer {
+  display: flex;
+  align-items: center;
+  gap: 12px;
+  padding-bottom: 12px;
+  div {
+    text-align: center;
+    font-size: 16px;
+    min-width: 30px;
+    padding: 4px;
     display: flex;
     align-items: center;
-    gap: 12px;
-    padding-bottom: 12px;
-    div{
-        text-align: center;
-        font-size: 16px;
-        min-width: 30px;
-        padding: 4px;
-    }
+    gap: 1rem;
+  }
 }

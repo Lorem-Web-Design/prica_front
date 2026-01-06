@@ -23,13 +23,20 @@ type SelectType = SingleValue<{
 }>;
 
 type ChildrenByParent = {
-    parentId: string
-}
+  parentId: string;
+};
 
-export default function ParentChildrenSelector({ label, name, isEmpty, value }: SelectBox) {
+export default function ParentChildrenSelector({
+  label,
+  name,
+  isEmpty,
+  value,
+}: SelectBox) {
   const { data, loading, error } = useQuery(GET_PARENTFOLDERS);
-  const handleSelectedMaterial = (evt: React.ChangeEvent<HTMLSelectElement>) => {};
-  const [parentId, setParentId] = useState("")
+  const handleSelectedMaterial = (
+    evt: React.ChangeEvent<HTMLSelectElement>
+  ) => {};
+  const [parentId, setParentId] = useState("");
   if (data) {
     let list = data.parentFolders as ActivityProps[];
     let selectPairs = list.map((activity) => {
@@ -41,22 +48,23 @@ export default function ParentChildrenSelector({ label, name, isEmpty, value }: 
 
     const handleSelect = (evt: SelectType) => {
       const value = evt?.value;
-      setParentId(value || "")
+      setParentId(value || "");
     };
 
     return (
       <>
-      <div className={`input_container gap_12 ${isEmpty ? "error" : ""}`}>
-        <label htmlFor={name}>{label}</label>
-        {/* @ts-ignore */}
-        <Select styles={selectStyles}
-          options={selectPairs}
-          onChange={handleSelect}
-          className="editable_input"
-          placeholder="Selecciona un centro de costos..."
-        />
-      </div>
-      <ChildrenByParentSelect parentId={parentId}/>
+        <div className={`input_container gap_12 ${isEmpty ? "error" : ""}`}>
+          <label htmlFor={name}>{label}</label>
+          {/* @ts-ignore */}
+          <Select
+            styles={selectStyles}
+            options={selectPairs}
+            onChange={handleSelect}
+            className="editable_input"
+            placeholder="Selecciona un centro de costos..."
+          />
+        </div>
+        <ChildrenByParentSelect parentId={parentId} />
       </>
     );
   }
@@ -65,8 +73,16 @@ export default function ParentChildrenSelector({ label, name, isEmpty, value }: 
     return (
       <div className={`input_container gap_12 ${isEmpty ? "error" : ""}`}>
         <label htmlFor={name}>{label}</label>
-        <select className="editable_input width_100" id={name} name={name} onChange={handleSelectedMaterial} value={value}>
-          <option value="undefined">Ha ocurrido un error cargando los centros de costos.</option>
+        <select
+          className="editable_input width_100"
+          id={name}
+          name={name}
+          onChange={handleSelectedMaterial}
+          value={value}
+        >
+          <option value="undefined">
+            Ha ocurrido un error cargando los centros de costos.
+          </option>
         </select>
       </div>
     );
@@ -76,7 +92,13 @@ export default function ParentChildrenSelector({ label, name, isEmpty, value }: 
     return (
       <div className={`input_container gap_12 ${isEmpty ? "error" : ""}`}>
         <label htmlFor={name}>{label}</label>
-        <select className="editable_input width_100" id={name} name={name} onChange={handleSelectedMaterial} value={value}>
+        <select
+          className="editable_input width_100"
+          id={name}
+          name={name}
+          onChange={handleSelectedMaterial}
+          value={value}
+        >
           <option value="undefined">Cargando centros de costos.</option>
         </select>
       </div>
@@ -86,71 +108,106 @@ export default function ParentChildrenSelector({ label, name, isEmpty, value }: 
   return (
     <div className={`input_container gap_12 ${isEmpty ? "error" : ""}`}>
       <label htmlFor={name}>{label}</label>
-      <select className="editable_input width_100" id={name} name={name} onChange={handleSelectedMaterial} value={value}>
+      <select
+        className="editable_input width_100"
+        id={name}
+        name={name}
+        onChange={handleSelectedMaterial}
+        value={value}
+      >
         <option value="undefined">Cargando centros de costos.</option>
       </select>
     </div>
   );
 }
 
-function ChildrenByParentSelect({parentId}: ChildrenByParent){
-    const { data, loading, error } = useQuery(GET_CHILDRENFOLDERS, {variables: {parentId}});
-      const { handleFullSelects } = useContext(CreateRqContext);
-    const handleSelectedMaterial = (evt: React.ChangeEvent<HTMLSelectElement>) => {};
-  
-    if (data) {
-      let list = data.folderByParentId as ActivityProps[];
-      let selectPairs = list.map((activity) => {
-        return {
-          value: activity._id,
-          label: activity.name,
-        };
-      });
-  
-      return (
-        <>
+function ChildrenByParentSelect({ parentId }: ChildrenByParent) {
+  const { data, loading, error } = useQuery(GET_CHILDRENFOLDERS, {
+    variables: { parentId },
+  });
+  const { handleFullSelects } = useContext(CreateRqContext);
+  const handleSelectedMaterial = (
+    evt: React.ChangeEvent<HTMLSelectElement>
+  ) => {};
+
+  if (data) {
+    let list = data.folderByParentId as ActivityProps[];
+    let selectPairs = list.map((activity) => {
+      return {
+        value: activity._id,
+        label: activity.name,
+      };
+    });
+
+    return (
+      <>
         <div className={`input_container gap_12`}>
           <label htmlFor="childrenSelect">Seleccione centro de costos</label>
           {/* @ts-ignore */}
-          <Select styles={selectStyles}
+          <Select
+            styles={selectStyles}
             options={selectPairs}
             onChange={handleFullSelects}
             className="editable_input"
             placeholder="Selecciona una centro de costos..."
           />
         </div>
-        </>
-      );
-    }
-  
-    if (error) {
-      return (
-        <div className={`input_container gap_12`}>
-          <label htmlFor="childrenSelect">Seleccione centro de costos</label>
-          <select className="editable_input width_100" id="childrenSelect" name="childrenSelect" onChange={handleSelectedMaterial} value={0}>
-            <option value="undefined">Ha ocurrido un error cargando los centros de costos.</option>
-          </select>
-        </div>
-      );
-    }
-  
-    if (loading) {
-      return (
-        <div className={`input_container gap_12`}>
-          <label htmlFor="childrenSelect">Seleccione centro de costos</label>
-          <select className="editable_input width_100" id="childrenSelect" name="childrenSelect" onChange={handleSelectedMaterial} value={0}>
-            <option value="undefined">Ha ocurrido un error cargando los centros de costos.</option>
-          </select>
-        </div>
-      );
-    }
-  
+      </>
+    );
+  }
+
+  if (error) {
     return (
       <div className={`input_container gap_12`}>
         <label htmlFor="childrenSelect">Seleccione centro de costos</label>
-        <select className="editable_input width_100" id="childrenSelect" name="childrenSelect" onChange={handleSelectedMaterial} value={0}>
-            <option value="undefined">Ha ocurrido un error cargando los centros de costos.</option>
-          </select>
+        <select
+          className="editable_input width_100"
+          id="childrenSelect"
+          name="childrenSelect"
+          onChange={handleSelectedMaterial}
+          value={0}
+        >
+          <option value="undefined">
+            Ha ocurrido un error cargando los centros de costos.
+          </option>
+        </select>
       </div>
     );
+  }
+
+  if (loading) {
+    return (
+      <div className={`input_container gap_12`}>
+        <label htmlFor="childrenSelect">Seleccione centro de costos</label>
+        <select
+          className="editable_input width_100"
+          id="childrenSelect"
+          name="childrenSelect"
+          onChange={handleSelectedMaterial}
+          value={0}
+        >
+          <option value="undefined">
+            Ha ocurrido un error cargando los centros de costos.
+          </option>
+        </select>
+      </div>
+    );
+  }
+
+  return (
+    <div className={`input_container gap_12`}>
+      <label htmlFor="childrenSelect">Seleccione centro de costos</label>
+      <select
+        className="editable_input width_100"
+        id="childrenSelect"
+        name="childrenSelect"
+        onChange={handleSelectedMaterial}
+        value={0}
+      >
+        <option value="undefined">
+          Ha ocurrido un error cargando los centros de costos.
+        </option>
+      </select>
+    </div>
+  );
 }

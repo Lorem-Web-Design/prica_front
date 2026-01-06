@@ -43,8 +43,8 @@ type HistoryAndRemision = {
     name: string;
     _id: string;
   };
-  amount?: string
-}
+  amount?: string;
+};
 
 export type ElementFromQuery = {
   name: string;
@@ -54,7 +54,7 @@ export type ElementFromQuery = {
   image: string;
   unit: string;
   history: HistoryAndRemision[];
-  remision: HistoryAndRemision[]
+  remision: HistoryAndRemision[];
   currentOwner: {
     name: string;
     _id: string;
@@ -69,48 +69,54 @@ export type ElementFromQuery = {
   };
   onDelivery: boolean;
   category: Categories;
-  amount: number,
-  hide?: boolean
-  provider: string,
+  amount: number;
+  hide?: boolean;
+  provider: string;
   _id: string;
-  classification: Classification[],
-  classificationName: string
-  stock?: Stock[]
-}
+  classification: Classification[];
+  classificationName: string;
+  stock?: Stock[];
+};
 
 type Stock = {
-  amount: number,
-    classificationId: string,
-    owner: string,
-    location: string
-    stockId: string
-}
+  amount: number;
+  classificationId: string;
+  owner: string;
+  location: string;
+  stockId: string;
+};
 
 type Classification = {
-  name: string,
-  amount: number,
-  id: string
-}
+  name: string;
+  amount: number;
+  id: string;
+};
 
 export type RawRemision = {
   giverFolder: string;
   takerFolder: string;
   giver: string;
   taker: string;
-  amount: string
-}
+  amount: string;
+};
 
 type MinifiedInfo = {
-  name: string, 
-  _id: string
-}
+  name: string;
+  _id: string;
+};
 
 export type RemisionExtended = {
   giverFolder: MinifiedInfo;
   takerFolder: MinifiedInfo;
   giver: MinifiedInfo;
   taker: MinifiedInfo;
-  amount: string
-}
+  amount: string;
+};
 
-type Categories = "Material" | "Equipo" | "Dotacion" | "EPP" | "Herramienta" | "Todos";
+type Categories =
+  | "Material"
+  | "Equipo"
+  | "Dotacion"
+  | "EPP"
+  | "Herramienta"
+  | "Todos";

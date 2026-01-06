@@ -1,6 +1,7 @@
 import { gql } from "@apollo/client";
 
-export const EDIT_EPP_BY_ID = gql`mutation Mutation($eppId: ID!, $info: EppInput!) {
+export const EDIT_EPP_BY_ID = gql`
+  mutation Mutation($eppId: ID!, $info: EppInput!) {
     editEppById(eppId: $eppId, info: $info) {
       code
       success
@@ -16,9 +17,11 @@ export const EDIT_EPP_BY_ID = gql`mutation Mutation($eppId: ID!, $info: EppInput
         _id
       }
     }
-  }`
+  }
+`;
 
-  export const DELETE_EPP_BY_ID = gql`mutation Mutation($eppId: String!) {
+export const DELETE_EPP_BY_ID = gql`
+  mutation Mutation($eppId: String!) {
     deleteEppById(eppId: $eppId) {
       code
       success
@@ -34,4 +37,5 @@ export const EDIT_EPP_BY_ID = gql`mutation Mutation($eppId: ID!, $info: EppInput
         _id
       }
     }
-  }`
+  }
+`;

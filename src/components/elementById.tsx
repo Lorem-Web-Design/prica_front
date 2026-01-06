@@ -3,7 +3,11 @@ import { useEffect, useState } from "react";
 import { useParams } from "react-router-dom";
 import { ElementFromQuery, RawRemision } from "../@types/elementTypes";
 import { imagesSource } from "../api/datasources";
-import { EDIT_ELEMENT, GET_ELEMENT_BY_ID, GET_ELEMENTS } from "../api/myQueries";
+import {
+  EDIT_ELEMENT,
+  GET_ELEMENT_BY_ID,
+  GET_ELEMENTS,
+} from "../api/myQueries";
 import FROM_QUERY_ELEMENT from "../data/mock.element.json";
 import checkForms from "../utils/checkForms";
 import ElementEditor from "../utils/elementEditor.controll";
@@ -18,22 +22,32 @@ import WorkerSelectBox from "./workerSelectBox";
 import Remision from "./remision";
 import GalleryViewer from "./galleryViewer";
 import UnitSelector from "./selector/unitSelector";
+import VarietySelectBox from "./varietys";
 
-export default function ElementById({ elementEditor }: { elementEditor: ElementEditor }) {
+export default function ElementById({
+  elementEditor,
+}: {
+  elementEditor: ElementEditor;
+}) {
   var { id } = useParams();
 
-  const [elementInfo, setElementInfo] = useState<ElementFromQuery>(FROM_QUERY_ELEMENT as ElementFromQuery);
+  const [elementInfo, setElementInfo] = useState<ElementFromQuery>(
+    FROM_QUERY_ELEMENT as ElementFromQuery
+  );
   const [validInputs, setValidInputs] = useState<string[]>([]);
   const [modal, setModal] = useState(false);
   const [imageModal, setImageModal] = useState(false);
   const [activeTab, setActiveTab] = useState("FOLDER");
-  const [isGalleryActive, setIsGalleryActive] = useState(false)
+  const [isGalleryActive, setIsGalleryActive] = useState(false);
 
   const { loading, error, data } = useQuery(GET_ELEMENT_BY_ID, {
     variables: { getElementById: id },
   });
 
-  const [editElement, { data: elementData, loading: elementLoading, error: elementError }] = useMutation(EDIT_ELEMENT, {
+  const [
+    editElement,
+    { data: elementData, loading: elementLoading, error: elementError },
+  ] = useMutation(EDIT_ELEMENT, {
     variables: {
       info: elementEditor.toApi,
       editElementId: id,
@@ -43,7 +57,7 @@ export default function ElementById({ elementEditor }: { elementEditor: ElementE
         query: GET_ELEMENT_BY_ID,
         variables: { getElementById: id },
       },
-      "GetElements"
+      "GetElements",
     ],
   });
 
@@ -55,22 +69,33 @@ export default function ElementById({ elementEditor }: { elementEditor: ElementE
     theme: "primary_theme",
   });
 
-  const handleChange = (evt: React.ChangeEvent<HTMLInputElement | HTMLSelectElement>) => {
+  const handleChange = (
+    evt?: React.ChangeEvent<HTMLInputElement | HTMLSelectElement>
+  ) => {
+    if (!evt || !evt.target) return; // 🛡️ blindaje CRÍTICO
+
     const name = evt.target.name;
-    let value: string | number = evt.target.value;
+    const value = evt.target.value;
+
     //@ts-ignore
     elementEditor.element[name] = value;
     setElementInfo(elementEditor.stateCopy);
   };
 
-  const handleChangeFolderWithHistory = (evt: React.ChangeEvent<HTMLSelectElement>) => {
+  const handleChangeFolderWithHistory = (
+    evt: React.ChangeEvent<HTMLSelectElement>
+  ) => {
     const name = evt.target.options[evt.target.selectedIndex].text;
     let value: string | number = evt.target.value;
     //Defining new taker and giver folder
     // New giver folder is the current takerFolder if onDelivery flag is set to true
     const newGiverFolder = {
-      _id: elementEditor.element.onDelivery ? elementEditor.element.giverFolder._id : elementEditor.element.takerFolder._id,
-      name: elementEditor.element.onDelivery ? elementEditor.element.giverFolder.name : elementEditor.element.takerFolder.name,
+      _id: elementEditor.element.onDelivery
+        ? elementEditor.element.giverFolder._id
+        : elementEditor.element.takerFolder._id,
+      name: elementEditor.element.onDelivery
+        ? elementEditor.element.giverFolder.name
+        : elementEditor.element.takerFolder.name,
     };
     //newTakerFolder is the value selected by the user
     const newTakerFolder = {
@@ -78,7 +103,9 @@ export default function ElementById({ elementEditor }: { elementEditor: ElementE
       _id: value,
     };
 
-    const acceptChange = confirm("Obtendras una vista previa en la pestaña de Historial, una vez selecciones Registrar cambios la información se almacenará permanentemente");
+    const acceptChange = confirm(
+      "Obtendras una vista previa en la pestaña de Historial, una vez selecciones Registrar cambios la información se almacenará permanentemente"
+    );
     if (acceptChange) {
       //Update takerFolder and giverFolder with the new info
       elementEditor.element.takerFolder = newTakerFolder;
@@ -97,7 +124,9 @@ export default function ElementById({ elementEditor }: { elementEditor: ElementE
     }
   };
 
-  const handleChangeWorkerWithHistory = (evt: React.ChangeEvent<HTMLSelectElement>) => {
+  const handleChangeWorkerWithHistory = (
+    evt: React.ChangeEvent<HTMLSelectElement>
+  ) => {
     const name = evt.target.options[evt.target.selectedIndex].text;
     let value: string | number = evt.target.value;
     //newTakerFolder is the value selected by the user
@@ -106,7 +135,9 @@ export default function ElementById({ elementEditor }: { elementEditor: ElementE
       _id: value,
     };
 
-    const acceptChange = confirm("Obtendras una vista previa en la pestaña de Historial, una vez selecciones Registrar cambios la información se almacenará permanentemente");
+    const acceptChange = confirm(
+      "Obtendras una vista previa en la pestaña de Historial, una vez selecciones Registrar cambios la información se almacenará permanentemente"
+    );
     if (acceptChange) {
       //Update takerFolder and giverFolder with the new info
       const historyItem = JSON.parse(
@@ -119,7 +150,7 @@ export default function ElementById({ elementEditor }: { elementEditor: ElementE
       );
       elementEditor.element.currentOwner = {
         name: "",
-        _id: value
+        _id: value,
       };
       elementEditor.element.history.push(historyItem);
       setElementInfo(elementEditor.stateCopy);
@@ -127,14 +158,14 @@ export default function ElementById({ elementEditor }: { elementEditor: ElementE
   };
 
   const handleFolderAndUser = (evt: React.FormEvent<HTMLFormElement>) => {
-    evt.preventDefault()
+    evt.preventDefault();
     editElement({
       variables: {
         info: elementEditor.toApi,
         editElementId: id,
       },
     });
-  }
+  };
 
   const handleSubmit = async (evt: React.FormEvent<HTMLFormElement>) => {
     evt.preventDefault();
@@ -181,68 +212,66 @@ export default function ElementById({ elementEditor }: { elementEditor: ElementE
   const updateImage = (image: string) => {
     elementEditor.element.image = image;
     setElementInfo(elementEditor.stateCopy);
-  }
+  };
 
   useEffect(() => {
     if (data) {
-      console.log(data)
-      elementEditor.element = JSON.parse(JSON.stringify(data.getElementById)) as ElementFromQuery;
+      console.log(data);
+      elementEditor.element = JSON.parse(
+        JSON.stringify(data.getElementById)
+      ) as ElementFromQuery;
       setElementInfo(data.getElementById);
     }
   }, [data]);
 
-  useEffect(()=>{
-    if(elementLoading){
+  useEffect(() => {
+    if (elementLoading) {
       setToastProps({
-          title: "Actualización en curso",
-          body: "Guardando información, espere...",
-          footer: "SUCCESS",
-          theme: "primary_theme"
-      })
+        title: "Actualización en curso",
+        body: "Guardando información, espere...",
+        footer: "SUCCESS",
+        theme: "primary_theme",
+      });
       setToast(true);
-  }
-  if(elementData){
+    }
+    if (elementData) {
       setToastProps({
-          title: "Actualización del elemento",
-          body: "El elemento se ha actualizado exitosamente",
-          footer: "SUCCESS",
-          theme: "primary_theme"
-      })
+        title: "Actualización del elemento",
+        body: "El elemento se ha actualizado exitosamente",
+        footer: "SUCCESS",
+        theme: "primary_theme",
+      });
       setToast(true);
-  }
-  if(elementError){
+    }
+    if (elementError) {
       setToastProps({
-          title: "Actualización del elemento",
-          body: "Ha ocurrido un error actualizando la información del elemento",
-          footer: "ERROR",
-          theme: "error_theme"
-      })
+        title: "Actualización del elemento",
+        body: "Ha ocurrido un error actualizando la información del elemento",
+        footer: "ERROR",
+        theme: "error_theme",
+      });
       setToast(true);
-  }
-  },[elementLoading, elementError, elementData])
-
-
+    }
+  }, [elementLoading, elementError, elementData]);
 
   const modalChild = () => {
     if (activeTab === "WORKER") {
       return (
         <Grid gap={12} def={1} sm={1} md={1} lg={1}>
           <form onSubmit={handleFolderAndUser}>
-          <WorkerSelectBox
-            defaultOption={{
-              label: "Selecciona un colaborador...",
-              value: "",
-            }}
-            name="currentOwner"
-            label="Persona a cargo"
-            onChange={handleChangeWorkerWithHistory}
-            isEmpty={validInputs.includes("currentOwner")}
-            value={elementInfo.currentOwner._id}
-            disabled={false}
-          />
-          <button className="btn mediumBottom">
-            Registrar cambio
-          </button>
+            <WorkerSelectBox
+              defaultOption={{
+                label: "Selecciona un colaborador...",
+                value: "",
+              }}
+              name="currentOwner"
+              label="Persona a cargo"
+              onChange={handleChangeWorkerWithHistory}
+              isEmpty={validInputs.includes("currentOwner")}
+              value={elementInfo.currentOwner._id}
+              disabled={false}
+            />
+            <button className="btn mediumBottom">Registrar cambio</button>
           </form>
         </Grid>
       );
@@ -252,31 +281,21 @@ export default function ElementById({ elementEditor }: { elementEditor: ElementE
       return (
         <Grid gap={12} def={1} sm={1} md={1} lg={1}>
           <form onSubmit={handleFolderAndUser}>
-          <BodegaSelectBox
-            defaultOption={{
-              label: "Selecciona una bodega...",
-              value: "",
-            }}
-            name="takerFolder"
-            label="Bodega"
-            onChange={handleChangeFolderWithHistory}
-            isEmpty={false}
-            value={elementInfo.takerFolder._id}
-            disabled={false}
-            className="defaultButton"
-          />
-          <button className="btn mediumBottom" type="submit">
-            Registrar cambio
-          </button>
+            <button className="btn mediumBottom" type="submit">
+              Registrar cambio
+            </button>
           </form>
         </Grid>
       );
     }
 
-    if(activeTab === "REMISION"){
+    if (activeTab === "REMISION") {
       return (
-        <Remision elementEditor={elementEditor} setElementInfo={setElementInfo}/>
-      )
+        <Remision
+          elementEditor={elementEditor}
+          setElementInfo={setElementInfo}
+        />
+      );
     }
   };
 
@@ -299,21 +318,27 @@ export default function ElementById({ elementEditor }: { elementEditor: ElementE
           {modalChild()}
         </Modal>
         <Modal modal={imageModal} setModal={setImageModal}>
-          <GalleryViewer action={updateImage} isActive={isGalleryActive}/>
+          <GalleryViewer action={updateImage} isActive={isGalleryActive} />
         </Modal>
         <form encType="multipart/form-data" onSubmit={handleSubmit}>
           <Grid gap={12} def={1} sm={6} md={6} lg={6} className="center_def">
             {/* <InputImage  /> */}
             <div className="user_image_container">
-              <div className="user_image" onClick={()=>{
-                setImageModal(true)
-                setIsGalleryActive(true)
-              }}>
-                <img src={`${imagesSource()}/${elementInfo.image}`} alt="Element image" />
+              <div
+                className="user_image"
+                onClick={() => {
+                  setImageModal(true);
+                  setIsGalleryActive(true);
+                }}
+              >
+                <img
+                  src={`${imagesSource()}/${elementInfo.image}`}
+                  alt="Element image"
+                />
               </div>
             </div>
             <div className="new_user_info col_s5">
-            <InputBox
+              <InputBox
                 onChange={handleChange}
                 inputName="image"
                 labelTag="Imagen"
@@ -359,6 +384,14 @@ export default function ElementById({ elementEditor }: { elementEditor: ElementE
                 value={elementInfo.provider}
                 type="text"
               />
+              <VarietySelectBox
+                isEmpty={validInputs.includes("variedad")}
+                label="Variedad"
+                name="variedad"
+                onChange={handleChange}
+                value={elementInfo.classificationName}
+                disabled={false}
+              />
               <InputBox
                 onChange={handleChange}
                 inputName="amount"
@@ -400,58 +433,35 @@ export default function ElementById({ elementEditor }: { elementEditor: ElementE
                 value={elementInfo.category}
                 disabled={false}
               />
+
               <Grid gap={12} def={1} sm={2} md={3} lg={4}>
                 <button className="mediumBottom" type="submit">
                   Actualizar
                 </button>
-                <a
-                  className="mediumBottom defaultButton"
-                  onClick={() => {
-                    setModal(true);
-                    setActiveTab("REMISION");
-                  }}
-                >
-                  Remisión
-                </a>
-                <a
-                  className="mediumBottom defaultButton"
-                  onClick={() => {
-                    setModal(true);
-                    setActiveTab("FOLDER");
-                  }}
-                >
-                  Cambio de Bodega
-                </a>
-                <a
-                  className="mediumBottom defaultButton"
-                  onClick={() => {
-                    setModal(true);
-                    setActiveTab("WORKER");
-                  }}
-                >
-                  Cambio Encargado
-                </a>
               </Grid>
             </div>
           </Grid>
           <div style={{ paddingTop: 16 }}></div>
-
-          
         </form>
         <Grid gap={12} def={1} sm={1} md={1} lg={1}>
-            <h2>Remisiones</h2>
-            <table>
-              <thead>
+          <h2>Remisiones</h2>
+          <table>
+            <thead>
+              <tr>
+                <th>Entrega</th>
+                <th>Recibe</th>
+                <th>Bodega anterior</th>
+                <th>Bodega Actual</th>
+                <th>Cantidad entregada</th>
+              </tr>
+            </thead>
+            <tbody>
+              {elementInfo.remision.length === 0 ? (
                 <tr>
-                  <th>Entrega</th>
-                  <th>Recibe</th>
-                  <th>Bodega anterior</th>
-                  <th>Bodega Actual</th>
-                  <th>Cantidad entregada</th>
+                  <td colSpan={5}>No se han creado remisiones</td>
                 </tr>
-              </thead>
-              <tbody>
-                {elementInfo.remision.length === 0  ? <tr><td colSpan={5}>No se han creado remisiones</td></tr> : elementInfo.remision.map((remision, index: number) => {
+              ) : (
+                elementInfo.remision.map((remision, index: number) => {
                   return (
                     <tr key={index}>
                       <td>{remision.giver.name}</td>
@@ -461,35 +471,11 @@ export default function ElementById({ elementEditor }: { elementEditor: ElementE
                       <td>{remision.amount}</td>
                     </tr>
                   );
-                })}
-              </tbody>
-              </table>
-          </Grid>
-          <Grid gap={12} def={1} sm={1} md={1} lg={1}>
-            <h2>Historial del elemento</h2>
-            <table>
-              <thead>
-                <tr>
-                  <th>Último a cargo</th>
-                  <th>Actual a cargo</th>
-                  <th>Bodega anterior</th>
-                  <th>Bodega Actual</th>
-                </tr>
-              </thead>
-              <tbody>
-                {elementInfo.history.length === 0  ? <tr><td colSpan={5}>Este elemento aún no tiene un historial</td></tr> :elementInfo.history.map((history, index: number) => {
-                  return (
-                    <tr key={index}>
-                      <td>{history.giver.name}</td>
-                      <td>{history.taker.name}</td>
-                      <td>{history.giverFolder.name}</td>
-                      <td>{history.takerFolder.name}</td>
-                    </tr>
-                  );
-                })}
-              </tbody>
-            </table>
-          </Grid>
+                })
+              )}
+            </tbody>
+          </table>
+        </Grid>
       </>
     );
   }
@@ -501,4 +487,3 @@ export default function ElementById({ elementEditor }: { elementEditor: ElementE
 
   return <div>No se ha podido cargar la información :(</div>;
 }
-
