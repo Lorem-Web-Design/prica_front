@@ -1,4 +1,4 @@
-import { ElementFromQuery } from "../@types/elementTypes";
+import { ElementFromQuery, EppElementFromQuery } from "../@types/elementTypes";
 import useUser from "../customHooks/users/useUser";
 
 type EppClassificationSelect = {
@@ -9,7 +9,7 @@ type EppClassificationSelect = {
 };
 
 type FilterStockById = {
-  selectedEpp: ElementFromQuery;
+  selectedEpp: EppElementFromQuery;
   userId: string;
   role: string;
 };
@@ -31,12 +31,12 @@ export default function EppClassificationSelect({
       >
         <option value="undefined">Elije la clasificación</option>
         {stockList?.map((stock, index) => (
-          <option value={`${stock.classificationId}-${index}`} key={index}>
+          <option value={`${stock.classificationId}`} key={index}>
             {stockClassificationName(
               stock.classificationId,
               selectedEpp.classification
             )}{" "}
-            ({stock.amount} UNIDADES)
+            ({stock.amount} UNIDADES) - {stock.owner.name}
           </option>
         ))}
       </select>

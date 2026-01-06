@@ -197,7 +197,7 @@ function FormByType() {
             <InputBox
               inputName="singleAmount"
               isEmpty={false}
-              labelTag="Variante"
+              labelTag="Cantidad"
               onChange={handleSingleClassificationAmount}
               value={`${singleClassificationAmount}`}
               type="number"
@@ -217,12 +217,12 @@ function FormByType() {
             <div className="chipsContainer">
               {elementInfo.classification.map((classification, index) => (
                 <div className="primary_theme" key={index}>
-                  {classification.name}{" "}
+                  {classification.name}: {classification.amount}{" "}
                   <span
-                    className="delete"
+                    className="material-symbols-outlined delete_category"
                     onClick={() => deleteClassification(classification.id)}
                   >
-                    {""} x
+                    x_circle
                   </span>
                 </div>
               ))}

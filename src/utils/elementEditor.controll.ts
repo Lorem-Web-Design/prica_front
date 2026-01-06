@@ -26,6 +26,7 @@ export default class ElementEditor {
   }
 
   get toApi(): ElementToApi {
+    
     const info = {
       name: this.element.name,
       unit: this.element.unit,
@@ -48,6 +49,17 @@ export default class ElementEditor {
       stock: this.element.stock,
     };
     return info;
+  }
+
+  stockFixer = () => {
+      if (this.element.stock) {
+        this.element.stock = this.element.stock.map((stockItem) => {
+          return {
+            ...stockItem,
+            owner: typeof stockItem.owner === "object" ? stockItem.owner._id : stockItem.owner,
+          };
+        })
+      }
   }
 
   historyAndRemisionToApi(history: ElementFromQuery["history"]): RawHistory[] {

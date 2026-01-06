@@ -78,6 +78,46 @@ export type ElementFromQuery = {
   stock?: Stock[];
 };
 
+export type EppElementFromQuery = {
+  name: string;
+  description: string;
+  code: string;
+  serial: string;
+  image: string;
+  unit: string;
+  history: HistoryAndRemision[];
+  remision: HistoryAndRemision[];
+  currentOwner: {
+    name: string;
+    _id: string;
+  };
+  giverFolder: {
+    name: string;
+    _id: string;
+  };
+  takerFolder: {
+    name: string;
+    _id: string;
+  };
+  onDelivery: boolean;
+  category: Categories;
+  amount: number;
+  hide?: boolean;
+  provider: string;
+  _id: string;
+  classification: Classification[];
+  classificationName: string;
+  stock?: EppStock[];
+};
+
+type EppStock = {
+  amount: number;
+  classificationId: string;
+  owner: UserToMutation;
+  location: string;
+  stockId: string;
+};
+
 type Stock = {
   amount: number;
   classificationId: string;

@@ -104,6 +104,16 @@
     padding: 4px;
     display: flex;
     align-items: center;
-    gap: 1rem;
+    gap: 12px;
+    padding-bottom: 12px;
+    div {
+      display: flex;
+      gap: 8px;
+      align-items: center;
+      text-align: center;
+      font-size: 16px;
+      min-width: 30px;
+      padding: 4px;
+    }
   }
 }
